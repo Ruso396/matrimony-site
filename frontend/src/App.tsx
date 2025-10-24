@@ -8,6 +8,7 @@ import Login from "./components/assets/Login";
 import Register from "./components/assets/Register";
 import BioData from "./pages/BioData";
 import ProfileDetails from "./pages/ProfileDetails";
+import MatrimonyContact from "./pages/contact";
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -18,7 +19,6 @@ const ScrollToTop: React.FC = () => {
 
   return null;
 };
-import MatrimonyContact from "./pages/contact";
 
 const App: React.FC = () => {
   return (
@@ -43,6 +43,10 @@ const App: React.FC = () => {
             {/* Add more routes here later, like: */}
             {/* <Route path="/about" element={<About />} /> */}
             {/* <Route path="/contact" element={<Contact />} /> */}
+            <Route path="/contact" element={<MatrimonyContact />} />
+
+            <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+            {/* Add more routes later */}
           </Routes>
         </main>
 
