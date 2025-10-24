@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, User, Lock, Check, AlertCircle, Camera, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 type FormErrors = {
   profileFor?: string;
@@ -58,6 +60,8 @@ const ModernRegister = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const navigate = useNavigate();
+
 
   const options = {
     profileFor: ['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend'],
@@ -102,20 +106,17 @@ const ModernRegister = () => {
 
   const validateStep = (step: number): boolean => {
     const newErrors: FormErrors = {};
-    
     if (step === 1) {
       if (!formData.fullName.trim()) newErrors.fullName = 'Name is required';
       if (!formData.dob) newErrors.dob = 'Date of birth is required';
       if (!formData.caste.trim()) newErrors.caste = 'Caste/Sub-caste is required';
       if (!formData.height) newErrors.height = 'Height is required';
     }
-    
     if (step === 2) {
       if (!formData.education.trim()) newErrors.education = 'Education is required';
       if (!formData.occupation.trim()) newErrors.occupation = 'Occupation is required';
       if (!formData.annualIncome.trim()) newErrors.annualIncome = 'Annual income is required';
     }
-    
     if (step === 3) {
       if (!formData.state.trim()) newErrors.state = 'State is required';
       if (!formData.city.trim()) newErrors.city = 'City is required';
@@ -128,32 +129,46 @@ const ModernRegister = () => {
       if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
       if (!formData.termsAccepted) newErrors.termsAccepted = 'You must accept terms & conditions';
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => prev + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    if (validateStep(currentStep)) setCurrentStep(prev => prev + 1);
   };
+  const handlePrev = () => setCurrentStep(prev => prev - 1);
 
-  const handlePrev = () => {
-    setCurrentStep(prev => prev - 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
+  // ✅ Updated handleSubmit with backend API call
   const handleSubmit = async () => {
     if (!validateStep(3)) return;
 
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setIsSuccess(true);
+      const formPayload = new FormData();
+      for (const key in formData) {
+        if (key === 'profilePhoto' && formData.profilePhoto) {
+          formPayload.append('profilePhoto', formData.profilePhoto);
+        } else if (key === 'termsAccepted') {
+          formPayload.append(key, formData.termsAccepted ? 'true' : 'false');
+        } else {
+          formPayload.append(key, (formData as any)[key]);
+        }
+      }
+
+      const res = await fetch('http://localhost:5000/api/register/register', {
+        method: 'POST',
+        body: formPayload
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setErrors({ submit: data.message || 'Registration failed' });
+      } else {
+        setIsSuccess(true);
+      }
     } catch (error) {
-      setErrors({ submit: 'Registration failed. Please try again.' });
+      console.error(error);
+      setErrors({ submit: 'Something went wrong. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -194,9 +209,13 @@ const ModernRegister = () => {
               A verification link has been sent to <span className="font-semibold text-rose-600">{formData.email}</span>
             </p>
           </div>
-          <button className="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-rose-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
-            Go to Login
-          </button>
+         <button
+  onClick={() => navigate('/login')}
+  className="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-rose-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105"
+>
+  Go to Login
+</button>
+
         </div>
       </div>
     );
