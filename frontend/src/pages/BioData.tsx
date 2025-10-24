@@ -109,7 +109,7 @@ const BioData: React.FC = () => {
                 <p className="text-gray-700">{profile.name}, {profile.age}</p>
                 <p className="text-gray-700">{profile.job}</p>
                 <p className="text-gray-700">{profile.division}</p>
-                <button onClick={() => navigate(`/profile/${profile.id}`)} className="mt-3 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors">
+                <button onClick={() => navigate(`/profiledetails/${profile.id}`)} className="mt-3 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors">
                   View Details
                 </button>
               </div>
