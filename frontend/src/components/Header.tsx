@@ -8,8 +8,16 @@ import {
   Globe2,
   Search,
   LogIn,
+  Trophy
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+
+// Define the type for a navigation link
+interface NavLink {
+  name: string;
+  path: string;
+  icon?: React.ReactNode; // Optional icon element
+}
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,11 +35,15 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   }, [location]);
 
-  const navLinks = [
+  // Updated navLinks array with the Trophy icon for "SuccessStories"
+  const navLinks: NavLink[] = [
     { name: "Home", path: "/" },
     { name: "Brides/Grooms", path: "/biodata" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
+    // Here we define the link to show ONLY the icon on the desktop
+    { name: "SuccessStories", path: "/success-stories", icon: <Trophy size={20} /> },
+
   ];
 
   return (
@@ -69,9 +81,23 @@ const Header: React.FC = () => {
 
             <nav className="hidden md:flex items-center gap-6">
               {navLinks.map((item) => (
-                <Link key={item.name} to={item.path} className={`text-slate-700 hover:text-brand-600 transition-colors ${location.pathname === item.path ? 'font-semibold' : ''}`}>{item.name}</Link>
+                // Modification for desktop view: Check for an icon and display it if present.
+                <Link 
+                  key={item.name} 
+                  to={item.path} 
+                  className={`text-slate-700 hover:text-brand-600 transition-colors ${location.pathname === item.path ? 'font-semibold' : ''}`}
+                >
+                  {item.icon ? (
+                    // Display icon if it exists, centered and slightly larger
+                    <span className="flex items-center justify-center w-6 h-6">{item.icon}</span>
+                  ) : (
+                    // Otherwise, display the name
+                    item.name
+                  )}
+                </Link>
               ))}
             </nav>
+            
 
             <div className="hidden md:flex items-center gap-3">
               <Link to="/login" className={`text-brand-700 hover:text-brand-600 transition-colors`}><LogIn className="w-6 h-6" /></Link>
@@ -93,7 +119,18 @@ const Header: React.FC = () => {
               <input className="outline-none text-sm bg-transparent placeholder-slate-400 w-full" placeholder="Search profiles" />
             </div>
             {navLinks.map((item) => (
-              <Link key={item.name} to={item.path} className={`block text-gray-700 hover:text-brand-600 transition-colors ${location.pathname === item.path ? 'font-semibold' : ''}`}>{item.name}</Link>
+              // Mobile view remains the same (showing text for clarity)
+              <Link 
+                key={item.name} 
+                to={item.path} 
+                className={`block text-gray-700 hover:text-brand-600 transition-colors ${location.pathname === item.path ? 'font-semibold' : ''}`}
+              >
+                {/* For mobile, we'll show both the icon and the name for better user experience */}
+                <span className="flex items-center gap-2">
+                  {item.icon && <span className="w-4 h-4 flex items-center justify-center">{item.icon}</span>}
+                  {item.name}
+                </span>
+              </Link>
             ))}
             <div className="flex items-center justify-between">
               <Link to="/login" className="text-brand-700 hover:text-brand-600 transition-colors"><LogIn className="w-5 h-5" /></Link>
