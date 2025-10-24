@@ -15,6 +15,90 @@ body {
   color: #111827; /* Optional: default text color */
 }
 
+/* Component-level utility classes for consistent accessible colors on white bg */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300;
+  }
+  .text-heading { @apply text-slate-900; }
+  .text-body { @apply text-slate-700; }
+  .text-muted { @apply text-slate-600; }
+  .link { @apply text-indigo-600 hover:text-indigo-700 underline-offset-2 hover:underline; }
+  .icon-default { @apply text-slate-700; }
+  .card { @apply bg-white border border-slate-200 shadow-sm; }
+  .chip { @apply bg-gray-50 text-slate-700; }
+}
+
+/* Gradient alias used in code */
+.bg-gradient-primary { @apply bg-gradient-to-r from-indigo-600 to-pink-500; }
+.text-text-primary { @apply text-slate-900; }
+.text-text-subtle { @apply text-slate-700; }
+.text-text-muted { @apply text-slate-600; }
+.bg-pink-400-white { @apply bg-indigo-600 text-white hover:bg-indigo-700; }
+
+/* Enhanced UI helpers */
+.section-grid-bg {
+  background-image: linear-gradient(to bottom right, rgba(99,102,241,0.06), rgba(236,72,153,0.06));
+}
+.section-soft-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+.radial-fade {
+  background: radial-gradient(1200px 600px at 50% -10%, rgba(99,102,241,0.15), rgba(255,255,255,0));
+}
+.icon-ring {
+  @apply inline-flex items-center justify-center rounded-xl bg-gray-50 ring-1 ring-inset ring-slate-200;
+}
+.card-hover {
+  @apply transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-xl;
+}
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6366F1, #EC4899);
+}
+.gradient-border > * { position: relative; z-index: 1; }
+.ribbon {
+  position: absolute;
+  top: 12px; left: -8px;
+  background: linear-gradient(90deg,#F59E0B,#F97316);
+  color: #fff; padding: 4px 10px; font-weight: 700; font-size: 12px;
+  border-top-right-radius: 6px; border-bottom-right-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.badge {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700;
+}
+.divider {
+  @apply h-px bg-slate-200 w-full;
+}
+.section-eyebrow {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold;
+}
+.metric {
+  @apply text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700;
+}
+.like-btn {
+  @apply absolute top-3 left-3 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 border border-slate-200 shadow hover:bg-white;
+}
+.overlay-soft {
+  @apply absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-5 transition-opacity duration-300;
+  background: linear-gradient(180deg, rgba(99,102,241,0.15), rgba(236,72,153,0.15));
+}
+
 :root {
   --font-base: 'Cormorant Upright', serif;
   --font-alt: 'Open Sans', sans-serif;

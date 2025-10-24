@@ -7,10 +7,12 @@ module.exports = {
   theme: {
     extend: {
       spacing: (() => {
-        const customSpacing = {};
+       
+ const customSpacing = {};
         for (let i = 0; i <= 200; i++) {
-          customSpacing[i] = `${i * 0.25}rem`; // i × 4px (default Tailwind scale)
+          customSpacing[i] = `${i * 0.25}rem`;
         }
+
         return customSpacing;
       })(),
 
@@ -29,64 +31,39 @@ module.exports = {
       },
 
       colors: {
-        primary: {
-          golden: "#DCCA87",
-          black: "#0C0C0C",
-          gray: "#545454",
-          crimson: "#F5EFDB",
-          gray2: "#AAAAAA",
-          white: "#FFFFFF",
+        white: '#ffffff',
+        charcoal: '#0f172a',
+        'charcoal-light': '#111827',
+        text: {
+          primary: '#1a202c',
+          subtle: '#4a5568',
+          muted: '#718096',
+          strong: '#0f172a',
+        },
+        coral: {
+          DEFAULT: '#ff6b6b',
+          dark: '#ff4d4d',
+        },
+        bg: {
+          white: '#ffffff',
+          gray: '#f7fafc',
+        },
+        purple: '#9B59B6',
+        lavender: {
+          DEFAULT: '#a78bfa',
+          dark: '#7c5cf5',
+        },
+        backgroundImage: {
+          'gradient-primary': 'linear-gradient(135deg, #FF6B6B 0%, #9B59B6 100%)',
         },
       },
 
-      transitionTimingFunction: {
-        'slideBottomCubic': 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-        'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
-      },
-
-     keyframes: {
-        slideBottom: {
-          '0%': { transform: 'translateY(-25%)', opacity: '0' },
-          '100%': { transform: 'translateY(0%)', opacity: '1' },
-        },
-        slideIn: {
-          '0%': { transform: 'translateX(100%)', opacity: '0' },
-          '100%': { transform: 'translateX(0)', opacity: '1' },
-        },
-      },
-
- keyframes: {
-        slideBottom: {
-          '0%': { transform: 'translateY(-25%)', opacity: '0' },
-          '100%': { transform: 'translateY(0%)', opacity: '1' },
-        },
-        slideIn: {
-          '0%': { transform: 'translateX(100%)', opacity: '0' },
-          '100%': { transform: 'translateX(0)', opacity: '1' },
-        },
-      },
       fontFamily: {
         sans: ['Noto Sans', 'sans-serif'],
       },
 
       zIndex: {
-        '-1': -1,
-        '0': 0,
-        '1': 1,
-        '2': 2,
-        '3': 3,
-        '4': 4,
-        '5': 5,
-        '6': 6,
-        '7': 7,
-        '8': 8,
-        '9': 9,
-        '10': 10,
-        'nav': 999,
-      },
-
-      flex: {
-        'one': 1,
+        nav: 999,
       },
 
       height: {
@@ -99,16 +76,6 @@ module.exports = {
         '70vh': '70vh',
         '80vh': '80vh',
         '90vh': '90vh',
-
-        '10vwh': '10vw',
-        '20vwh': '20vw',
-        '30vwh': '30vw',
-        '40vwh': '40vw',
-        '50vwh': '50vw',
-        '60vwh': '60vw',
-        '70vwh': '70vw',
-        '80vwh': '80vw',
-        '90vwh': '90vw',
       },
 
       width: {
@@ -124,10 +91,38 @@ module.exports = {
       },
 
       screens: {
-        'mobile': '450px',
-        'big': '2000px',
+        mobile: '320px',
+        'iphone-12': '390px',
+        'iphone-13-pro': '428px',
+        big: '2000px',
+      },
+
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideInLeft: {
+          '0%': { opacity: '0', transform: 'translateX(-50px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        slideInRight: {
+          '0%': { opacity: '0', transform: 'translateX(50px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+
+      animation: {
+        'fade-in': 'fadeIn 1s ease-out both',
+        'slide-in-left': 'slideInLeft 1s ease-out both',
+        'slide-in-right': 'slideInRight 1s ease-out both',
+        'fade-in-up': 'fadeInUp 0.8s ease-out both',
       },
     },
   },
   plugins: [],
-}
+};
