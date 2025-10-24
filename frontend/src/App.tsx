@@ -4,6 +4,8 @@ import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import Login from "./components/assets/Login";
+import Register from "./components/assets/Register";
 import BioData from "./pages/BioData";
 import ProfileDetails from "./pages/ProfileDetails";
 
@@ -18,6 +20,8 @@ const App: React.FC = () => {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/biodata" element={<BioData />} />
             <Route path="/profiledetails/:id" element={<ProfileDetails />} />
             {/* Add more routes here later, like: */}
