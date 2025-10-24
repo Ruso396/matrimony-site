@@ -36,160 +36,68 @@ const Header: React.FC = () => {
 
   return (
     <header className="fixed top-0 w-full z-50">
-      {/* Top info bar */}
-      <div className="hidden md:block bg-amber-900 text-white text-sm">
+      <style>{`
+        @keyframes slideDown { 0%{ opacity:0; transform: translateY(-8px);} 100%{ opacity:1; transform:none;} }
+        .animate-slideDown { animation: slideDown .25s ease-out both }
+      `}</style>
+      <div className="hidden md:block bg-[linear-gradient(90deg,rgba(92,115,255,1),rgba(127,148,255,1))] text-white text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
           <div className="flex items-center gap-6">
-            <span className="inline-flex items-center gap-2">
-              <ClockIcon /> Monday - Friday, 8:00am - 5:00 pm
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Mail className="w-4 h-4" /> Matrimony@support.com
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Phone className="w-4 h-4" /> +8801842535364
-            </span>
+            <span className="inline-flex items-center gap-2"><ClockIcon /> Monday - Friday, 8:00am - 5:00 pm</span>
+            <span className="inline-flex items-center gap-2"><Mail className="w-4 h-4" /> Matrimony@support.com</span>
+            <span className="inline-flex items-center gap-2"><Phone className="w-4 h-4" /> +8801842535364</span>
           </div>
-
-          <div className="flex items-center gap-4">
-            {/* Only Language button (Light/Dark removed) */}
-           
-          </div>
+          <div className="flex items-center gap-4" />
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <div
-        className={`transition-all duration-300 ${
-          scrollY > 50 ? "bg-white shadow-md" : "bg-amber-900"
-        }`}
-      >
+  {/* Always show the scrolled/sticky header style */}
+  <div className={`transition-all duration-300 bg-white/90 backdrop-blur-md shadow-md`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            {/* Logo */}
-            <Link
-              to="/"
-              className="flex items-center space-x-2 hover:scale-105 transition-transform"
-            >
-              <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
-                <Heart
-                  className={`w-5 h-5 ${
-                    scrollY > 50 ? "text-amber-700" : "text-amber-600"
-                  }`}
-                  fill="currentColor"
-                />
+          <div className="flex justify-between items-center py-3 xs:py-4">
+            <Link to="/" className="flex items-center space-x-2 hover:scale-105 transition-transform">
+              <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow">
+                <Heart className="w-5 h-5 text-brand-600" fill="currentColor" />
               </div>
-              <span
-                className={`text-xl font-bold ${
-                  scrollY > 50 ? "text-amber-700" : "text-white"
-                }`}
-              >
-                Matrimony
-              </span>
+              <span className="text-lg xs:text-xl font-bold text-brand-700">Matrimony</span>
             </Link>
 
-            {/* Search (desktop only) */}
             <div className="hidden md:flex items-center gap-2 bg-white/95 rounded-full px-3 py-1.5 ring-1 ring-slate-200 shadow-sm">
               <Search className="w-4 h-4 text-slate-500" />
-              <input
-                className="outline-none text-sm bg-transparent placeholder-slate-400 w-64"
-                placeholder="Search profiles"
-              />
+              <input className="outline-none text-sm bg-transparent placeholder-slate-400 w-52 lg:w-64" placeholder="Search profiles" />
             </div>
 
-            {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-6">
               {navLinks.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`${
-                    scrollY > 50
-                      ? "text-slate-700 hover:text-amber-600"
-                      : "text-white hover:text-amber-200"
-                  } transition-colors ${
-                    location.pathname === item.path ? "font-semibold" : ""
-                  }`}
-                >
-                  {item.name}
-                </Link>
+                <Link key={item.name} to={item.path} className={`text-slate-700 hover:text-brand-600 transition-colors ${location.pathname === item.path ? 'font-semibold' : ''}`}>{item.name}</Link>
               ))}
             </nav>
 
-            {/* Right side — Login icon + Get Premium button */}
             <div className="hidden md:flex items-center gap-3">
-              <Link
-                to="/login"
-                className={`${
-                  scrollY > 50 ? "text-amber-700" : "text-white"
-                } hover:text-amber-600 transition-colors`}
-              >
-                <LogIn className="w-6 h-6" />
-              </Link>
-
-              <Link
-                to="/register"
-                className="rounded-full px-5 py-2 bg-amber-700 text-white font-semibold hover:bg-amber-800 transition-colors"
-              >
-                Get Premium
-              </Link>
+              <Link to="/login" className={`text-brand-700 hover:text-brand-600 transition-colors`}><LogIn className="w-6 h-6" /></Link>
+              <Link to="/register" className="rounded-full px-5 py-2 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-semibold hover:shadow-glow transition-all">Get Premium</Link>
             </div>
 
-            {/* Mobile Menu Button */}
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden">
-              {isMenuOpen ? (
-                <X
-                  className={`${
-                    scrollY > 50 ? "text-slate-700" : "text-white"
-                  } w-6 h-6`}
-                />
-              ) : (
-                <Menu
-                  className={`${
-                    scrollY > 50 ? "text-slate-700" : "text-white"
-                  } w-6 h-6`}
-                />
-              )}
+              {isMenuOpen ? (<X className={`text-slate-700 w-6 h-6`} />) : (<Menu className={`text-slate-700 w-6 h-6`} />)}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow-lg animate-slideDown">
           <div className="px-4 py-6 space-y-4">
             <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2 ring-1 ring-slate-200">
               <Search className="w-4 h-4 text-slate-500" />
-              <input
-                className="outline-none text-sm bg-transparent placeholder-slate-400 w-full"
-                placeholder="Search profiles"
-              />
+              <input className="outline-none text-sm bg-transparent placeholder-slate-400 w-full" placeholder="Search profiles" />
             </div>
             {navLinks.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`block text-gray-700 hover:text-amber-600 transition-colors ${
-                  location.pathname === item.path ? "font-semibold" : ""
-                }`}
-              >
-                {item.name}
-              </Link>
+              <Link key={item.name} to={item.path} className={`block text-gray-700 hover:text-brand-600 transition-colors ${location.pathname === item.path ? 'font-semibold' : ''}`}>{item.name}</Link>
             ))}
             <div className="flex items-center justify-between">
-              <Link
-                to="/login"
-                className="text-amber-700 hover:text-amber-600 transition-colors"
-              >
-                <LogIn className="w-5 h-5" />
-              </Link>
-              <Link
-                to="/register"
-                className="rounded-full px-5 py-2 bg-amber-700 text-white font-semibold hover:bg-amber-800 transition-colors"
-              >
-                Get Premium
-              </Link>
+              <Link to="/login" className="text-brand-700 hover:text-brand-600 transition-colors"><LogIn className="w-5 h-5" /></Link>
+              <Link to="/register" className="rounded-full px-5 py-2 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-semibold hover:shadow-glow transition-all">Get Premium</Link>
             </div>
           </div>
         </div>

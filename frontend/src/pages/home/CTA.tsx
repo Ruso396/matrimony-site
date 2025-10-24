@@ -29,64 +29,39 @@ const rangoliImageUrl = "https://png.pngtree.com/png-vector/20220608/ourmid/pngt
 
 const CTA: React.FC = () => {
   return (
-    // முக்கிய கண்டெய்னர் (Container) - படத்தில் உள்ள மென்மையான background நிறத்துடன்
-    <div className="relative flex flex-col items-center w-full py-16 bg-[#FFFBF5] overflow-hidden">
-      
-      {/* --- இடதுபுற ரங்கோலி டிசைன் --- */}
-      <img
-        src={left}
-        alt="Decorative Corner Design"
-        className="absolute top-0 left-0 w-48 h-auto opacity-70 z-0"
-      />
-      
-      {/* --- வலதுபுற ரங்கோலி டிசைன் (இடதுபுற படத்தை திருப்பிப் பயன்படுத்துகிறோம்) --- */}
-      <img
-        src={right}
-        alt="Decorative Corner Design"
-        className="absolute top-0 right-0 w-48 h-auto opacity-70 z-0 transform scale-x-[-1]"
-      />
+    <div className="relative flex flex-col items-center w-full py-14 xs:py-16 bg-[radial-gradient(circle_at_0%_0%,rgba(92,115,255,.08),transparent_35%),radial-gradient(circle_at_100%_0%,rgba(255,92,38,.08),transparent_35%)] overflow-hidden">
+      <style>{`
+        @keyframes blob { 0%{ transform: translate(0,0) scale(1);} 33%{ transform: translate(10px,-10px) scale(1.04);} 66%{ transform: translate(-8px,10px) scale(.96);} 100%{ transform: translate(0,0) scale(1);} }
+        @keyframes shimmer { 0%{ background-position:0% 50%; } 100%{ background-position:100% 50%; } }
+        .animate-blob { animation: blob 12s ease-in-out infinite; }
+        .animate-shimmer { background-size:200% 200%; animation: shimmer 3s linear infinite; }
+      `}</style>
 
-      {/* --- தலைப்பு --- */}
-      <h2 className="text-4xl font-serif italic text-amber-900 mb-12 relative z-10">
+      <img src={left} alt="Decorative Corner Design" className="absolute top-0 left-0 w-40 xs:w-48 h-auto opacity-70 z-0" />
+      <img src={right} alt="Decorative Corner Design" className="absolute top-0 right-0 w-40 xs:w-48 h-auto opacity-70 z-0 -scale-x-100" />
+
+      <h2 className="text-3xl xs:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-brand-400 to-accent-500 bg-clip-text text-transparent mb-10 relative z-10">
         How it works?
       </h2>
 
-      {/* --- 3 கார்டுகளின் கண்டெய்னர் --- */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl px-4">
-        
+      <div className="pointer-events-none absolute -left-20 top-20 w-56 h-56 bg-brand-200/50 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob" />
+      <div className="pointer-events-none absolute -right-20 bottom-10 w-64 h-64 bg-accent-200/50 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob" />
+
+      <div className="relative z-10 grid grid-cols-1 xs5:grid-cols-3 gap-4 xs:gap-6 max-w-6xl px-4">
         {cardData.map((card, index) => (
-          <div 
-            key={index} 
-            className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col text-center"
-          >
-            {/* கார்டு படம் */}
-            <img 
-              src={card.imageSrc} 
-              alt={card.title} 
-              className="w-full h-48 object-cover" 
-            />
-            
-            {/* கார்டு உள்ளடக்கம் (Text) */}
-            <div className="p-6 flex flex-col flex-grow">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {card.title}
-              </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                {card.description}
-              </p>
+          <div key={index} className="bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col text-center">
+            <img src={card.imageSrc} alt={card.title} className="w-full h-44 xs:h-48 object-cover" />
+            <div className="p-5 xs:p-6 flex flex-col flex-grow">
+              <h3 className="text-lg xs:text-xl font-semibold text-text-strong mb-2">{card.title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{card.description}</p>
             </div>
           </div>
         ))}
-
       </div>
 
-      {/* --- சிவப்பு பட்டன் --- */}
-      <button 
-        className="relative z-10 mt-12 bg-amber-800 text-white font-bold text-lg py-3 px-10 rounded-full shadow-lg hover:bg-red-700 transition-colors duration-300"
-      >
+      <button className="relative z-10 mt-10 xs:mt-12 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-semibold text-base xs:text-lg py-3 px-8 xs:px-10 rounded-full shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105">
         Interested in Elite Service?
       </button>
-
     </div>
   );
 };

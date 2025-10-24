@@ -53,6 +53,30 @@ module.exports = {
           DEFAULT: '#a78bfa',
           dark: '#7c5cf5',
         },
+        brand: {
+          50: '#f5f8ff',
+          100: '#e9efff',
+          200: '#cdd9ff',
+          300: '#a9bbff',
+          400: '#7f94ff',
+          500: '#5c73ff',
+          600: '#3f54f0',
+          700: '#2f40ca',
+          800: '#2836a1',
+          900: '#212d80',
+        },
+        accent: {
+          50: '#fff7f5',
+          100: '#ffe9e2',
+          200: '#ffcdbf',
+          300: '#ffac93',
+          400: '#ff8661',
+          500: '#ff5c26',
+          600: '#e44b19',
+          700: '#b83a13',
+          800: '#8f2e10',
+          900: '#6f250c',
+        },
         backgroundImage: {
           'gradient-primary': 'linear-gradient(135deg, #FF6B6B 0%, #9B59B6 100%)',
         },
@@ -91,6 +115,11 @@ module.exports = {
       },
 
       screens: {
+        xs: '320px',
+        xs2: '375px',
+        xs3: '420px',
+        xs4: '425px',
+        xs5: '475px',
         mobile: '320px',
         'iphone-12': '390px',
         'iphone-13-pro': '428px',
@@ -114,6 +143,24 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateY(30px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' }
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '100% 50%' }
+        },
+        pulseSoft: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '.65' }
+        },
+        blob: {
+          '0%': { transform: 'translate(0px, 0px) scale(1)' },
+          '33%': { transform: 'translate(10px, -20px) scale(1.05)' },
+          '66%': { transform: 'translate(-10px, 10px) scale(0.95)' },
+          '100%': { transform: 'translate(0px, 0px) scale(1)' }
+        }
       },
 
       animation: {
@@ -121,6 +168,10 @@ module.exports = {
         'slide-in-left': 'slideInLeft 1s ease-out both',
         'slide-in-right': 'slideInRight 1s ease-out both',
         'fade-in-up': 'fadeInUp 0.8s ease-out both',
+        'float': 'float 5s ease-in-out infinite',
+        'shimmer': 'shimmer 3s linear infinite',
+        'pulse-soft': 'pulseSoft 2.6s ease-in-out infinite',
+        'blob': 'blob 12s ease-in-out infinite'
       },
     },
   },
