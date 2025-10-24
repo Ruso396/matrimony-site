@@ -18,6 +18,7 @@ const ScrollToTop: React.FC = () => {
 
   return null;
 };
+import MatrimonyContact from "./pages/contact";
 
 const App: React.FC = () => {
   return (
@@ -37,6 +38,11 @@ const App: React.FC = () => {
             <Route path="/biodata" element={<BioData />} />
             <Route path="/profiledetails/:id" element={<ProfileDetails />} />
             {/* Add more routes later */}
+            <Route path="/contact" element={<MatrimonyContact />} />
+
+            {/* Add more routes here later, like: */}
+            {/* <Route path="/about" element={<About />} /> */}
+            {/* <Route path="/contact" element={<Contact />} /> */}
           </Routes>
         </main>
 

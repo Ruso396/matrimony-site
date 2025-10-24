@@ -1,7 +1,6 @@
 import React from 'react';
 import Hero from './home/Hero';
 import Features from './home/Features';
-import Stats from './home/Stats';
 import Testimonials from './home/Testimonials';
 import CTA from './home/CTA';
 
@@ -11,7 +10,7 @@ const Home: React.FC = () => {
       <Hero />
       <Features />
       <Testimonials />
-      <Stats />
+      
       <CTA />
 
     </main>

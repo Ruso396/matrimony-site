@@ -8,8 +8,8 @@ const Hero: React.FC = () => {
   
   const headings = ['Life Partner', 'Perfect Match', 'Soulmate', 'True Love'];
   const heroImages = [
-    'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=1000&crop=entropy&cs=tinysrgb&fit=crop',
-    'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=1000&crop=entropy&cs=tinysrgb&fit=crop'
+    'https://i.ibb.co/M5PgnYc/hero-img-1.png',
+    'https://i.ibb.co/ccNznGB/hero-img-2.png'
   ];
 
   useEffect(() => {
@@ -33,140 +33,95 @@ const Hero: React.FC = () => {
   return (
     <>
       <style>{`
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-        .animate-slideInLeft {
-          animation: slideInLeft 1s ease-out;
-        }
-        .animate-slideInRight {
-          animation: slideInRight 1s ease-out;
-        }
-        .animate-pulse {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px);} to { opacity: 1; transform: translateX(0);} }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px);} to { opacity: 1; transform: translateX(0);} }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+        @keyframes glow { 0% { box-shadow: 0 0 0 rgba(92,115,255,0);} 100% { box-shadow: 0 10px 30px rgba(92,115,255,.35);} }
+        @keyframes blob { 0%{ transform: translate(0,0) scale(1);} 33%{ transform: translate(12px,-18px) scale(1.05);} 66%{ transform: translate(-10px,10px) scale(.96);} 100%{ transform: translate(0,0) scale(1);} }
+        .animate-slideInLeft { animation: slideInLeft 1s ease-out; }
+        .animate-slideInRight { animation: slideInRight 1s ease-out; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-glow { animation: glow .8s ease-in-out both; }
+        .animate-blob { animation: blob 12s ease-in-out infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
       `}</style>
 
-      <section className="relative min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-amber-50/30 to-pink-50/30">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -left-32 -top-32 w-64 h-64 bg-amber-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
-          <div className="absolute -right-32 -bottom-32 w-64 h-64 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+      <section className="relative min-h-[80vh] xs:min-h-[85vh] md:min-h-screen pt-28 xs:pt-32 pb-16 xs:pb-20 px-4 sm:px-6 lg:px-8 bg-[radial-gradient(circle_at_20%_10%,rgba(92,115,255,.08),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(255,92,38,.08),transparent_40%)]">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-24 -top-24 w-56 h-56 bg-amber-200/50 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob" />
+          <div className="absolute -right-16 -bottom-24 w-60 h-60 bg-pink-200/60 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob animation-delay-2000" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-indigo-200/50 rounded-full mix-blend-multiply blur-3xl opacity-40 animate-blob animation-delay-4000" />
         </div>
 
         <div className="max-w-7xl mx-auto relative">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-8 animate-slideInLeft">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-amber-100 shadow-sm">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="space-y-6 xs:space-y-7 animate-slideInLeft">
+              <div className="inline-flex items-center gap-2 px-3 xs:px-4 py-1.5 xs:py-2 bg-white/80 backdrop-blur-sm rounded-full border border-amber-100 shadow-sm animate-glow">
                 <CheckCircle className="w-4 h-4 text-amber-600" />
-                <span className="text-sm text-gray-600 font-medium">Trusted Matrimony Platform</span>
+                <span className="text-xs xs:text-sm text-gray-700 font-medium">Trusted Matrimony Platform</span>
               </div>
-              
-              <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Discover Your <br />
-                  <span className="bg-gradient-to-r from-amber-900 to-amber-500 bg-clip-text text-transparent">
+
+              <div className="space-y-3">
+                <h1 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-gray-900">
+                  Discover Your <br/>
+                  <span className="bg-gradient-to-r from-brand-600 via-brand-400 to-accent-500 bg-clip-text text-transparent">
                     {displayText}
                     <span className="animate-pulse ml-1">|</span>
                   </span>
                 </h1>
               </div>
-              
-              <p className="text-lg text-gray-600 leading-relaxed max-w-xl">
+
+              <p className="text-base xs:text-lg text-gray-600 leading-relaxed max-w-xl">
                 Join Matrimony and find your ideal partner. Connect with people who share your values and interests. Start your journey to lasting happiness today.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-700 text-white rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+              <div className="flex flex-col xs5:flex-row gap-3 xs:gap-4">
+                <button className="px-7 xs:px-8 py-3 xs:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
                   Register Now
                   <Heart className="w-5 h-5" />
                 </button>
-                <button className="px-8 py-4 bg-white text-gray-700 rounded-full font-semibold border border-gray-200 hover:border-amber-200 hover:bg-amber-50/50 transition-all duration-300">
+                <button className="px-7 xs:px-8 py-3 xs:py-4 bg-white text-gray-800 rounded-full font-semibold border border-gray-200 hover:border-brand-200 hover:bg-brand-50/60 transition-all duration-300">
                   Browse Profiles
                 </button>
               </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <div className="flex items-center gap-3">
-                  <span className="section-eyebrow">Trusted by 10k+ members</span>
-                  <span className="hidden sm:inline-block badge">Secure & Verified</span>
+                  <span className="text-xs xs:text-sm text-gray-700 font-medium">Trusted by 10k+ members</span>
+                  <span className="hidden sm:inline-block text-xs px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Secure & Verified</span>
                 </div>
-                
-                
-                
               </div>
-              
-              {/* Social Proof */}
-              <div className="flex items-center gap-3 pt-4">
+
+              <div className="flex items-center gap-3 pt-2">
                 <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden shadow-sm">
-                      <img 
-                        src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 20}.jpg`} 
-                        alt="User" 
-                        className="w-full h-full object-cover"
-                      />
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-9 h-9 xs:w-10 xs:h-10 rounded-full border-2 border-white overflow-hidden shadow-sm animate-float">
+                      <img src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 20}.jpg`} alt="User" className="w-full h-full object-cover" />
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-text-muted">
-                  <span className="font-semibold text-text-subtle">500+ users</span> joined recently
-                </p>
+                <p className="text-xs xs:text-sm text-text-muted"><span className="font-semibold text-text-subtle">500+ users</span> joined recently</p>
               </div>
             </div>
 
-            {/* Right Content - Hero Images */}
             <div className="relative animate-slideInRight">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div className="relative rounded-3xl overflow-hidden h-64 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
-                    <img 
-                      src="https://www.wedinspire.com/wp-content/uploads/2020/07/outdoor-wedding-venues.jpg"
-                      alt="Happy Couple" 
-                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              <div className="grid grid-cols-2 gap-3 xs:gap-4">
+                <div className="space-y-3 xs:space-y-4">
+                  {/* Plain image (no rounded card, border or shadow) so full PNG is visible */}
+                  <div className="relative h-72 xs:h-80">
+                    <img src={heroImages[0]} alt="Happy Couple" className="object-contain w-full h-full transition-transform duration-500" />
                   </div>
                 </div>
-                <div className="space-y-4 pt-8">
-                  <div className="relative rounded-3xl overflow-hidden h-72 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
-                    <img 
-                      src="https://www.oxfordtownhall.co.uk/wp-content/uploads/2021/04/oth-your-wedding-scaled.jpg" 
-                      alt="Wedding" 
-                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="space-y-3 xs:space-y-4 pt-6 xs:pt-8">
+                  {/* Plain image (no rounded card, border or shadow) so full PNG is visible */}
+                  <div className="relative h-80 xs:h-96">
+                    <img src={heroImages[1]} alt="Wedding" className="object-contain w-full h-full transition-transform duration-500" />
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
