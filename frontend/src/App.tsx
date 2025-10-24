@@ -4,6 +4,7 @@ import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import BioData from "./pages/BioData";
 
 const App: React.FC = () => {
   return (
@@ -16,9 +17,11 @@ const App: React.FC = () => {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/biodata" element={<BioData />} />
             {/* Add more routes here later, like: */}
             {/* <Route path="/about" element={<About />} /> */}
             {/* <Route path="/contact" element={<Contact />} /> */}
+
           </Routes>
         </main>
 
