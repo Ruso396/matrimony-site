@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./components/assets/Login";
 import Register from "./components/assets/Register";
+import BioData from "./pages/BioData";
 
 const App: React.FC = () => {
   return (
@@ -20,9 +21,11 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/biodata" element={<BioData />} />
             {/* Add more routes here later, like: */}
             {/* <Route path="/about" element={<About />} /> */}
             {/* <Route path="/contact" element={<Contact />} /> */}
+
           </Routes>
         </main>
 
