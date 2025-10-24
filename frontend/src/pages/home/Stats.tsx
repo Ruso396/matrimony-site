@@ -1,5 +1,5 @@
 import React from 'react';
-import {  CheckCircle2, MessageCircleMore, ShieldCheck, Award } from 'lucide-react';
+import { CheckCircle2, MessageCircleMore, ShieldCheck, Award, Play } from 'lucide-react';
 
 /*
   Replaces previous stats grid with an "About Us" section matching the provided screenshot:
@@ -30,7 +30,17 @@ const Stats: React.FC = () => {
               className="w-full h-full object-cover"
             />
           </div>
-         
+
+          {/* Centered play button overlay */}
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-auto">
+            <button
+              aria-label="Play about video"
+              onClick={() => window.open('#', '_blank')}
+              className="w-16 h-16 rounded-full bg-amber-600 text-white flex items-center justify-center shadow-lg hover:bg-amber-500 transform hover:scale-105 transition-all"
+            >
+              <Play className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Right: text and features */}
@@ -47,7 +57,7 @@ const Stats: React.FC = () => {
             <AboutFeature icon={Award} title="Trusted Matrimonial agency in the world" />
           </div>
 
-          <button className="inline-flex items-center justify-center rounded-full bg-amber-900 text-white px-6 py-3 font-semibold shadow hover:bg-amber-800 transition-colors">
+          <button className="inline-flex items-center justify-center rounded-full bg-amber-600 text-white px-6 py-3 font-semibold shadow hover:bg-amber-500 transition-colors">
             See More
           </button>
         </div>
