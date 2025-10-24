@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -7,10 +7,23 @@ import Home from "./pages/Home";
 import Login from "./components/assets/Login";
 import Register from "./components/assets/Register";
 import BioData from "./pages/BioData";
+import ProfileDetails from "./pages/ProfileDetails";
+
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+};
 
 const App: React.FC = () => {
   return (
     <Router>
+      <ScrollToTop />
+
       <div className="App flex flex-col min-h-screen">
         {/* Common Header */}
         <Header />
@@ -22,10 +35,8 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/biodata" element={<BioData />} />
-            {/* Add more routes here later, like: */}
-            {/* <Route path="/about" element={<About />} /> */}
-            {/* <Route path="/contact" element={<Contact />} /> */}
-
+            <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+            {/* Add more routes later */}
           </Routes>
         </main>
 
