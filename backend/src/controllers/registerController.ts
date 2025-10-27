@@ -3,6 +3,8 @@ import { RegisterUser } from '../models/registerUser';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
+import { Op } from 'sequelize';
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -103,5 +105,97 @@ export const getUsers = async (req: Request, res: Response) => {
   } catch (err) {
     console.error('Error fetching users:', err);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ✅ Get single user by ID
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // 🧩 Find user by primary key
+    const user = await RegisterUser.findByPk(id, {
+      attributes: [
+        'id',
+        'profileFor',
+        'fullName',
+        'gender',
+        'dob',
+        'age',
+        'religion',
+        'motherTongue',
+        'maritalStatus',
+        'caste',
+        'height',
+        'education',
+        'occupation',
+        'annualIncome',
+        'country',
+        'state',
+        'city',
+        'email',
+        'mobile',
+        'profilePhoto',
+        'createdAt'
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // ✅ Build full image URL (same as in getUsers)
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+    const formattedUser = {
+      ...user.dataValues,
+      profilePhoto: user.profilePhoto
+        ? `${baseUrl}${user.profilePhoto}`
+        : null
+    };
+
+    return res.status(200).json({
+      message: 'User fetched successfully',
+      user: formattedUser
+    });
+
+  } catch (err) {
+    console.error('Error fetching user by ID:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+// ✅ Get related profiles (same country or religion)
+export const getRelatedProfiles = async (req: Request, res: Response) => {
+  try {
+    const { country, id } = req.params;
+
+    // Exclude the current profile id & match by country
+    const related = await RegisterUser.findAll({
+      where: {
+        country,
+        id: { [Op.ne]: id } // Exclude the current profile
+      },
+      attributes: [
+        'id',
+        'fullName',
+        'age',
+        'city',
+        'profilePhoto'
+      ],
+      limit: 6
+    });
+
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+    const formatted = related.map((user: any) => ({
+      id: user.id,
+      name: user.fullName,
+      age: user.age,
+      city: user.city,
+      image: user.profilePhoto ? `${baseUrl}${user.profilePhoto}` : null
+    }));
+
+    res.status(200).json({ relatedProfiles: formatted });
+  } catch (err) {
+    console.error('Error fetching related profiles:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
