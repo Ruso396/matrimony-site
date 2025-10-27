@@ -1,69 +1,233 @@
-// Filename: CTA.tsx
+import React from "react";
+import { Sparkles, Heart, Users, Award, ArrowRight } from "lucide-react";
+import left from "../../components/assets/whyelite-left.svg";
+import right from "../../components/assets/whyelite-left.svg";
 
-import React from 'react';
-import  left from '../../components/assets/whyelite-left.svg';
-import  right from '../../components/assets/whyelite-left.svg';
-
-// கார்டுகளில் உள்ள தகவல்களை இங்கே வரையறுக்கலாம்
 const cardData = [
   {
-    imageSrc: "https://brookshire.biz/wp-content/uploads/2025/04/featured-amandaeloise-500x383.jpg",
+    imageSrc:
+      "https://www.shaadidukaan.com/vogue/wp-content/uploads/2020/03/Candid-photography.jpg",
     title: "Understanding Your Preferences",
-    description: "A dedicated Relationship Manager from your region will thoroughly understand your preferences, lifestyle and cultural nuances that will help in finding the best possible matches for you."
+    description:
+      "Your personal Relationship Manager will deeply understand your lifestyle, preferences, and cultural nuances to find your ideal match.",
+    icon: Heart,
+    color: "from-rose-500 to-pink-500"
   },
   {
-    imageSrc: "https://images.squarespace-cdn.com/content/v1/581b5c19e3df28f244eaf150/750b0750-21bc-4a8c-b842-674a172a3666/W146561%2C+W146559%2C+W146557%2C+W146556.jpg",
+    imageSrc:
+      "https://media.glamour.com/photos/5c031b9852bd185ffa1a47ed/master/pass/45389948_209635203284257_6766680322904051719_n.jpg",
     title: "Recommending Matches",
-    description: "Your Relationship Manager will recommend matches by consistently searching and shortlisting profiles based on your preferences."
+    description:
+      "We handpick and recommend the most compatible matches that fit your preferences, saving you valuable time.",
+    icon: Sparkles,
+    color: "from-rose-700 to-pink-600"
   },
   {
-    imageSrc: "https://pros.weddingpro.com/wp-content/uploads/2020/10/How-to-Close-a-Sale_Sultan-Shah_shutterstock.com_.png",
+    imageSrc:
+      "https://pros.weddingpro.com/wp-content/uploads/2020/10/How-to-Close-a-Sale_Sultan-Shah_shutterstock.com_.png",
     title: "Connecting with Prospects",
-    description: "After exploring mutual interests, your Relationship Manager will schedule meetings with your matches and families, saving your time and helping you find the right partner."
-  }
+    description:
+      "Once mutual interest is confirmed, we schedule smooth and respectful meetings for you and your families.",
+    icon: Users,
+    color: "from-rose-500 to-pink-500"
+  },
 ];
 
-// ரங்கோலி டிசைன் (Placeholder - உங்களுக்கு சரியான படம் இருந்தால் மாற்றவும்)
-const rangoliImageUrl = "https://png.pngtree.com/png-vector/20220608/ourmid/pngtree-golden-floral-corner-frame-border-design-png-image_4901309.png";
-
-
-const CTA: React.FC = () => {
+const CTA = () => {
   return (
-    <div className="relative flex flex-col items-center w-full py-14 xs:py-16 bg-[radial-gradient(circle_at_0%_0%,rgba(92,115,255,.08),transparent_35%),radial-gradient(circle_at_100%_0%,rgba(255,92,38,.08),transparent_35%)] overflow-hidden">
+    <div className="relative flex flex-col items-center w-full py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
+      {/* ---------- Enhanced Animations ---------- */}
       <style>{`
-        @keyframes blob { 0%{ transform: translate(0,0) scale(1);} 33%{ transform: translate(10px,-10px) scale(1.04);} 66%{ transform: translate(-8px,10px) scale(.96);} 100%{ transform: translate(0,0) scale(1);} }
-        @keyframes shimmer { 0%{ background-position:0% 50%; } 100%{ background-position:100% 50%; } }
-        .animate-blob { animation: blob 12s ease-in-out infinite; }
-        .animate-shimmer { background-size:200% 200%; animation: shimmer 3s linear infinite; }
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+          25% { transform: translate(30px, -30px) scale(1.1) rotate(90deg); }
+          50% { transform: translate(-20px, 20px) scale(0.9) rotate(180deg); }
+          75% { transform: translate(20px, 30px) scale(1.05) rotate(270deg); }
+        }
+        @keyframes blobAlt {
+          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+          33% { transform: translate(-25px, 25px) scale(1.08) rotate(120deg); }
+          66% { transform: translate(25px, -20px) scale(0.92) rotate(240deg); }
+        }
+        @keyframes cardFloat {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-12px) rotate(1deg); }
+        }
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInLeft {
+          0% { opacity: 0; transform: translateX(-60px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+          0% { opacity: 0; transform: translateX(60px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+          0% { opacity: 0; transform: scale(0.8); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+        @keyframes iconSpin {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.1); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
+        @keyframes decorFloat {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          33% { transform: translateY(-15px) rotate(5deg); }
+          66% { transform: translateY(5px) rotate(-5deg); }
+        }
+        @keyframes decorFloatAlt {
+          0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+          50% { transform: translateY(-10px) rotate(-3deg) scale(1.05); }
+        }
+        .animate-blob { animation: blob 15s ease-in-out infinite; }
+        .animate-blobAlt { animation: blobAlt 18s ease-in-out infinite; }
+        .animate-cardFloat { animation: cardFloat 5s ease-in-out infinite; }
+        .animate-fadeInUp { animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.4, 1) both; }
+        .animate-slideInLeft { animation: slideInLeft 0.9s cubic-bezier(0.2, 0.8, 0.4, 1) both; }
+        .animate-slideInRight { animation: slideInRight 0.9s cubic-bezier(0.2, 0.8, 0.4, 1) both; }
+        .animate-scaleIn { animation: scaleIn 0.7s cubic-bezier(0.2, 0.8, 0.4, 1) both; }
+        .animate-shimmer { animation: shimmer 3s linear infinite; background-size: 200% 100%; }
+        .animate-pulse-custom { animation: pulse 3s ease-in-out infinite; }
+        .animate-bounce-custom { animation: bounce 2s ease-in-out infinite; }
+        .animate-iconSpin { animation: iconSpin 3s ease-in-out infinite; }
+        .animate-decorFloat { animation: decorFloat 6s ease-in-out infinite; }
+        .animate-decorFloatAlt { animation: decorFloatAlt 7s ease-in-out infinite; }
       `}</style>
 
-      <img src={left} alt="Decorative Corner Design" className="absolute top-0 left-0 w-40 xs:w-48 h-auto opacity-70 z-0" />
-      <img src={right} alt="Decorative Corner Design" className="absolute top-0 right-0 w-40 xs:w-48 h-auto opacity-70 z-0 -scale-x-100" />
+      {/* ---------- Left & Right SVG Decorations - Mobile Optimized ---------- */}
+      <img
+  src={left}
+  alt="Decor Left"
+  className="absolute -left-4 top-0 w-20 h-20 xs:w-24 xs:h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 opacity-60 z-[5] pointer-events-none"
+/>
+<img
+  src={right}
+  alt="Decor Right"
+  className="absolute -right-4 top-0 w-20 h-20 xs:w-24 xs:h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 opacity-60 z-[5] -scale-x-100 pointer-events-none"
+/>
 
-      <h2 className="text-3xl xs:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-brand-400 to-accent-500 bg-clip-text text-transparent mb-10 relative z-10">
-        How it works?
-      </h2>
 
-      <div className="pointer-events-none absolute -left-20 top-20 w-56 h-56 bg-brand-200/50 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob" />
-      <div className="pointer-events-none absolute -right-20 bottom-10 w-64 h-64 bg-accent-200/50 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob" />
+      {/* Animated Blob Backgrounds */}
+      <div className="pointer-events-none absolute -left-10 sm:-left-16 md:-left-20 top-12 sm:top-16 md:top-24 w-32 h-32 sm:w-48 sm:h-48 md:w-60 md:h-60 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full mix-blend-multiply blur-2xl sm:blur-3xl opacity-60 animate-blob" />
+      <div className="pointer-events-none absolute -right-10 sm:-right-16 md:-right-20 bottom-12 sm:bottom-16 md:bottom-20 w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 bg-gradient-to-br from-blue-300/30 to-cyan-300/30 rounded-full mix-blend-multiply blur-2xl sm:blur-3xl opacity-60 animate-blobAlt" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full mix-blend-multiply blur-3xl opacity-40 animate-blob" style={{ animationDelay: '2s' }} />
 
-      <div className="relative z-10 grid grid-cols-1 xs5:grid-cols-3 gap-4 xs:gap-6 max-w-6xl px-4">
-        {cardData.map((card, index) => (
-          <div key={index} className="bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col text-center">
-            <img src={card.imageSrc} alt={card.title} className="w-full h-44 xs:h-48 object-cover" />
-            <div className="p-5 xs:p-6 flex flex-col flex-grow">
-              <h3 className="text-lg xs:text-xl font-semibold text-text-strong mb-2">{card.title}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{card.description}</p>
-            </div>
-          </div>
-        ))}
+      {/* ---------- Heading with Enhanced Styling - Mobile Optimized ---------- */}
+      <div className="relative z-10 text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12 px-4 xs:px-5 sm:px-6 animate-fadeInUp mt-8 xs:mt-10 sm:mt-12 md:mt-4">
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-purple-100 to-pink-100 px-2.5 py-1 xs:px-3 xs:py-1.5 sm:px-4 sm:py-2 rounded-full mb-2 xs:mb-3 sm:mb-4 animate-scaleIn">
+          <Award className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 text-purple-600 animate-iconSpin" />
+          <span className="text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-semibold text-purple-700 uppercase tracking-wide">Premium Service</span>
+        </div>
+        
+        <h2 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight mb-1.5 xs:mb-2 sm:mb-3 animate-shimmer bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent leading-tight px-2">
+          How Our Elite Service Works
+        </h2>
+        
+        <p className="text-[10px] xs:text-[11px] sm:text-xs md:text-sm lg:text-base text-gray-600 max-w-xs xs:max-w-sm sm:max-w-xl md:max-w-2xl mx-auto animate-fadeInUp px-2" style={{ animationDelay: '0.2s' }}>
+          Experience matchmaking redefined with personalized care
+        </p>
       </div>
 
-      <button className="relative z-10 mt-10 xs:mt-12 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-semibold text-base xs:text-lg py-3 px-8 xs:px-10 rounded-full shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105">
-        Interested in Elite Service?
-      </button>
+      {/* ---------- Cards with Enhanced Mobile Design ---------- */}
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 md:gap-6 max-w-7xl px-3 xs:px-4 sm:px-5 md:px-8 w-full">
+        {cardData.map((card, index) => {
+          const Icon = card.icon;
+          return (
+            <div
+              key={index}
+              className="group bg-white/80 backdrop-blur-xl rounded-xl xs:rounded-2xl sm:rounded-3xl border-2 border-white shadow-lg hover:shadow-2xl hover:-translate-y-2 sm:hover:-translate-y-3 transition-all duration-500 flex flex-col overflow-hidden animate-fadeInUp"
+              style={{ animationDelay: `${index * 0.15}s` }}
+            >
+              {/* Image Container with Overlay */}
+              <div className="relative overflow-hidden">
+                <img
+                  src={card.imageSrc}
+                  alt={card.title}
+                  className="w-full h-32 xs:h-36 sm:h-40 md:h-44 lg:h-48 object-cover transform transition-transform duration-700 group-hover:scale-110 animate-cardFloat"
+                  style={{ animationDelay: `${index * 0.3}s` }}
+                />
+                
+                {/* Dark overlay on hover (subtle) - slightly stronger for Recommending Matches */}
+                <div className={`absolute inset-0 bg-black opacity-0 transition-opacity duration-300 ${card.title === 'Recommending Matches' ? 'group-hover:opacity-30' : 'group-hover:opacity-20'}`}></div>
+                
+                {/* Icon Badge (uniform gradient badge + white icon for all cards) */}
+                <div className={`absolute top-1.5 right-1.5 xs:top-2 xs:right-2 sm:top-3 sm:right-3 w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br ${card.color} flex items-center justify-center shadow-lg transform transition-all duration-500 opacity-90 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-100`}>
+                  <Icon className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 text-white" />
+                </div>
+
+                {/* Step Number */}
+                <div className={`absolute bottom-1.5 left-1.5 xs:bottom-2 xs:left-2 sm:bottom-3 sm:left-3 w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-md transition-all duration-300 group-hover:bg-gradient-to-br ${card.color} group-hover:text-white`}>
+                  <span className="text-[10px] xs:text-xs sm:text-sm font-bold text-gray-800 transition-colors duration-300 group-hover:text-white">
+                    {index + 1}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-2.5 xs:p-3 sm:p-4 md:p-5 lg:p-6 flex flex-col flex-grow">
+                {/* Title: special hover styles per card */}
+                {card.title === 'Connecting with Prospects' ? (
+                  <h3 className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-800 mb-1.5 xs:mb-2 sm:mb-2.5 md:mb-3 transition-all duration-300 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-rose-500 group-hover:to-pink-500 group-hover:bg-clip-text">
+                    {card.title}
+                  </h3>
+                ) : card.title === 'Understanding Your Preferences' ? (
+                  <h3 className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-800 mb-1.5 xs:mb-2 sm:mb-2.5 md:mb-3 transition-all duration-300 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-rose-500 group-hover:to-pink-500 group-hover:bg-clip-text">
+                    {card.title}
+                  </h3>
+                ) : card.title === 'Recommending Matches' ? (
+                  <h3 className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-800 mb-1.5 xs:mb-2 sm:mb-2.5 md:mb-3 transition-all duration-300 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-rose-500 group-hover:to-pink-500 group-hover:bg-clip-text">
+                    {card.title}
+                  </h3>
+                ) : (
+                  <h3 className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-800 mb-1.5 xs:mb-2 sm:mb-2.5 md:mb-3 transition-colors duration-300 leading-tight group-hover:text-white">
+                    {card.title}
+                  </h3>
+                )}
+                <p className="text-[10px] xs:text-[11px] sm:text-xs md:text-sm lg:text-base text-gray-600 leading-relaxed flex-grow">
+                  {card.description}
+                </p>
+
+                {/* Decorative Line */}
+                <div className={`mt-2 xs:mt-2.5 sm:mt-3 md:mt-4 h-0.5 w-0 group-hover:w-full bg-gradient-to-r ${card.color} transition-all duration-500 rounded-full`}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ---------- Enhanced CTA Button ---------- */}
+      <div className="relative z-10 mt-5 xs:mt-6 sm:mt-8 md:mt-10 lg:mt-12 animate-fadeInUp px-3" style={{ animationDelay: '0.6s' }}>
+        <button className="group relative bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white font-bold text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg py-2 px-5 xs:py-2.5 xs:px-6 sm:py-3 sm:px-8 md:py-3.5 md:px-10 lg:py-4 lg:px-12 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 overflow-hidden">
+          <span className="relative flex items-center gap-1.5 xs:gap-2">
+            Upgrade to Elite Matchmaking
+            <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
+          </span>
+        </button>
+      </div>
+
+      {/* Floating Particles */}
+      <div className="absolute top-40 right-20 w-1.5 h-1.5 xs:w-2 xs:h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full bg-purple-400 animate-bounce-custom opacity-60" style={{ animationDelay: '0.5s' }}></div>
+      <div className="absolute bottom-32 left-1/4 w-1 h-1 xs:w-1.5 xs:h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-400 animate-bounce-custom opacity-60" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute bottom-20 right-1/3 w-1.5 h-1.5 xs:w-2 xs:h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full bg-cyan-400 animate-bounce-custom opacity-60" style={{ animationDelay: '1.5s' }}></div>
     </div>
   );
 };
 
 export default CTA;
+

@@ -1,67 +1,159 @@
-import React from 'react';
-import { Star, Quote } from 'lucide-react';
+import React from "react";
+import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: 'Aarav & Diya',
+    name: "Aarav & Diya",
     quote:
-      'We matched through curated recommendations and instantly connected over our shared interests. The team made the entire process effortless and truly personal.',
+      "We matched through curated recommendations and instantly connected over our shared interests. The team made the process effortless and personal.",
     image:
-      'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop',
+      "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop",
   },
   {
-    name: 'Rahul & Isha',
+    name: "Rahul & Isha",
     quote:
-      'From the first meeting to our engagement, everything felt just right. The privacy and professionalism stood out for us.',
+      "From the first meeting to our engagement, everything felt perfect. The privacy and professionalism truly stood out for us.",
     image:
-      'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop',
+      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    name: "Karan & Meera",
+    quote:
+      "Personalized matches and respectful family coordination — we felt supported at every step.",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    name: "Vikram & Sanya",
+    quote:
+      "Verified profiles, caring approach, and a matchmaker who really understood our culture and priorities.",
+    image:
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    name: "Rohan & Priya",
+    quote:
+      "We found each other within weeks! The modern yet traditional approach made it feel natural and meant to be.",
+    image:
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    name: "Dev & Kavya",
+    quote:
+      "Their genuine verification system and premium support helped us find trust in online matchmaking again.",
+    image:
+      "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?q=80&w=800&auto=format&fit=crop",
   },
 ];
 
-const TestimonialCard: React.FC<{ name: string; quote: string; image: string; i: number }> = ({ name, quote, image, i }) => (
-  <div className={`relative overflow-hidden rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 stagger-${(i % 4) + 1}`}>
-    <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent-200/50 rounded-full blur-3xl" />
-    <div className="flex items-start gap-4">
-      <div className="w-14 h-14 rounded-xl overflow-hidden shadow">
-        <img src={image} alt={name} className="w-full h-full object-cover" />
-      </div>
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          {[...Array(5)].map((_, idx) => (
-            <Star key={idx} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-          ))}
-        </div>
-        <p className="mt-3 text-text-subtle leading-relaxed">{quote}</p>
-        <div className="mt-3 font-semibold text-text-strong">{name}</div>
-      </div>
-      <div className="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center">
-        <Quote className="w-5 h-5 text-brand-600" />
-      </div>
-    </div>
-  </div>
-);
-
 const Testimonials: React.FC = () => {
   return (
-    <section className="py-14 xs:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-white">
+    <section className="relative py-16 sm:py-20 px-3 xs:px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden">
+      {/* Inline Animations */}
       <style>{`
-        @keyframes staggerFade { 0%{opacity:0; transform: translateY(8px);} 100%{opacity:1; transform:none;} }
-        .stagger-1 { animation: staggerFade .6s ease-out .05s both }
-        .stagger-2 { animation: staggerFade .6s ease-out .15s both }
-        .stagger-3 { animation: staggerFade .6s ease-out .25s both }
-        .stagger-4 { animation: staggerFade .6s ease-out .35s both }
+        @keyframes fadeUp {
+          0% { opacity: 0; transform: translateY(30px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+          0%,100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
+        @keyframes glow {
+          0%,100% { box-shadow: 0 0 0 rgba(255,120,180,0); }
+          50% { box-shadow: 0 0 15px rgba(255,120,180,.3); }
+        }
+        @keyframes slideIn {
+          0% { opacity:0; transform:translateX(-40px); }
+          100% { opacity:1; transform:translateX(0); }
+        }
+        .animate-fadeUp { animation: fadeUp 1s ease-out both; }
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        .animate-glow { animation: glow 2s ease-in-out infinite; }
+        .animate-slideIn { animation: slideIn 1.2s cubic-bezier(.3,.8,.3,1) both; }
       `}</style>
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold shadow-sm">Testimonials</div>
-          <h2 className="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-brand-400 to-accent-500 bg-clip-text text-transparent">Loved by thousands of couples</h2>
-          <p className="mt-3 max-w-2xl mx-auto text-gray-600 text-sm md:text-base leading-relaxed">Real stories from members who found meaningful connections through our curated matches.</p>
+
+      {/* Decorative Blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-24 top-0 w-64 h-64 bg-pink-200/40 rounded-full blur-3xl opacity-60 animate-float" />
+        <div className="absolute right-0 bottom-0 w-80 h-80 bg-indigo-200/40 rounded-full blur-3xl opacity-60 animate-float" />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Heading */}
+        <div className="text-center animate-fadeUp">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs sm:text-sm font-semibold shadow-sm animate-glow">
+            Hear from Couples
+          </div>
+          <h2 className="mt-4 text-[1.8rem] xs:text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-brand-400 to-accent-500 bg-clip-text text-transparent">
+            Real Stories — Real Matches
+          </h2>
+          <p className="mt-3 max-w-2xl mx-auto text-gray-600 text-sm xs:text-base leading-relaxed">
+            Our verified members have shared these beautiful stories that began
+            on our platform. Each one is proof that the right match is just a
+            click away.
+          </p>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5 xs:gap-6">
+        {/* Cards */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-8">
           {testimonials.map((t, i) => (
-            <TestimonialCard key={i} name={t.name} quote={t.quote} image={t.image} i={i} />
+            <div
+              key={i}
+              className={`relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border border-slate-100 p-5 sm:p-6 shadow-md hover:shadow-2xl transform transition-all duration-500 hover:-translate-y-2 animate-fadeUp`}
+              style={{ animationDelay: `${i * 0.15}s` }}
+            >
+              <div className="absolute -top-12 -right-12 w-36 h-36 bg-accent-200/30 rounded-full blur-3xl" />
+
+              <div className="flex items-start gap-3 xs:gap-4">
+                {/* Profile Image */}
+                <div className="w-14 h-14 xs:w-16 xs:h-16 rounded-xl overflow-hidden shadow-md flex-shrink-0 animate-slideIn">
+                  <img
+                    src={t.image}
+                    alt={t.name}
+                    className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
+                  />
+                </div>
+
+                {/* Text */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-1.5">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star
+                        key={idx}
+                        className="w-3.5 h-3.5 text-yellow-400 animate-float"
+                        style={{ animationDelay: `${idx * 0.2}s` }}
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-2 text-gray-600 text-sm leading-relaxed">
+                    {t.quote}
+                  </p>
+                  <div className="mt-2 font-semibold text-gray-900 text-sm">
+                    {t.name}
+                  </div>
+                </div>
+
+                {/* Quote Icon */}
+                <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-full bg-brand-50 flex items-center justify-center">
+                  <Quote className="w-4 h-4 text-brand-600" />
+                </div>
+              </div>
+            </div>
           ))}
+        </div>
+
+        {/* Bottom Call-to-Action */}
+        <div className="mt-12 text-center animate-fadeUp">
+          <div className="inline-flex items-center gap-3 bg-white/90 px-4 py-2.5 rounded-full shadow-sm text-sm sm:text-base">
+            <div className="text-gray-600">Trusted by</div>
+            <div className="font-bold text-brand-600">50,000+</div>
+            <div className="text-gray-600">verified members</div>
+          </div>
+
+          <button className="mt-6 px-5 xs:px-6 py-2.5 xs:py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm sm:text-base shadow-md hover:shadow-2xl transition-all hover:scale-105 animate-float">
+            Share Your Story
+          </button>
         </div>
       </div>
     </section>
