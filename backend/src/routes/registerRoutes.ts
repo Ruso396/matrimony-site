@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { registerUser, loginUser } from '../controllers/registerController';
+import { registerUser, loginUser, getUsers } from '../controllers/registerController';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 
@@ -20,5 +20,6 @@ const upload = multer({ storage });
 // Routes
 router.post('/register', upload.single('profilePhoto'), registerUser);
 router.post('/login', loginUser);
+router.get('/users', getUsers); 
 
 export default router;

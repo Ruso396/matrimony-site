@@ -8,6 +8,7 @@ export class RegisterUser extends Model {
   public fullName!: string;
   public gender!: string;
   public dob!: string;
+    public age!: number;  
   public religion!: string;
   public motherTongue!: string;
   public maritalStatus!: string;
@@ -32,6 +33,7 @@ RegisterUser.init({
   fullName: DataTypes.STRING,
   gender: DataTypes.STRING,
   dob: DataTypes.STRING,
+  age: DataTypes.INTEGER,   
   religion: DataTypes.STRING,
   motherTongue: DataTypes.STRING,
   maritalStatus: DataTypes.STRING,

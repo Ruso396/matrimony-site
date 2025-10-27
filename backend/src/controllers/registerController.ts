@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const {
-      profileFor, fullName, gender, dob, religion, motherTongue, maritalStatus,
+      profileFor, fullName, gender, dob,age, religion, motherTongue, maritalStatus,
       caste, height, education, occupation, annualIncome, country, state, city,
       email, mobile, password
     } = req.body;
@@ -23,7 +23,7 @@ export const registerUser = async (req: Request, res: Response) => {
     if (req.file) profilePhoto = req.file.filename;
 
     const user = await RegisterUser.create({
-      profileFor, fullName, gender, dob, religion, motherTongue, maritalStatus,
+      profileFor, fullName, gender, dob,age, religion, motherTongue, maritalStatus,
       caste, height, education, occupation, annualIncome, country, state, city,
       email, mobile, password, profilePhoto
     });
@@ -55,3 +55,53 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+
+// ✅ Get all registered users
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await RegisterUser.findAll({
+      attributes: [
+        'id',
+        'profileFor',
+        'fullName',
+        'gender',
+        'dob',
+        'age',
+        'religion',
+        'motherTongue',
+        'maritalStatus',
+        'caste',
+        'height',
+        'education',
+        'occupation',
+        'annualIncome',
+        'country',
+        'state',
+        'city',
+        'email',
+        'mobile',
+        'profilePhoto',
+        'createdAt'
+      ]
+    });
+
+    // ✅ Build base URL dynamically (so it works on any host)
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+
+    // ✅ Format each user’s profilePhoto to include the full path
+    const formattedUsers = users.map((user: any) => ({
+      ...user.dataValues,
+      profilePhoto: user.profilePhoto
+        ? `${baseUrl}${user.profilePhoto}`
+        : null
+    }));
+
+    return res.status(200).json({
+      message: 'Users fetched successfully',
+      users: formattedUsers
+    });
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
