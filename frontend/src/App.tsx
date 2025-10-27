@@ -9,6 +9,7 @@ import Register from "./components/assets/Register";
 import BioData from "./pages/BioData";
 import ProfileDetails from "./pages/ProfileDetails";
 import MatrimonyContact from "./pages/contact";
+import SuccessStory from "./pages/Success Story";
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -46,6 +47,7 @@ const App: React.FC = () => {
             <Route path="/contact" element={<MatrimonyContact />} />
 
             <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+            <Route path="/success-stories" element={<SuccessStory />} />
             {/* Add more routes later */}
           </Routes>
         </main>
