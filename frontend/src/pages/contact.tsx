@@ -1,250 +1,174 @@
-import React, { useState } from 'react';
-import { Heart, Mail, Phone, MapPin, Clock, Building2, Users, Award, Headphones, Star, ArrowRight } from 'lucide-react';
+import React from "react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  MessageCircle,
+  Headphones,
+  ArrowRight,
+} from "lucide-react";
 
 export default function MatrimonyContact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    inquiry: '',
-    message: ''
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = () => {
-    if (formData.name && formData.email && formData.phone && formData.message) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setFormData({ name: '', email: '', phone: '', inquiry: '', message: '' });
-      }, 3000);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const contactCards = [
-    {
-      icon: Phone,
-      title: 'Call Us',
-      info: '+91 98765 43210',
-      subtext: 'Mon-Sat, 9AM-7PM',
-      gradient: 'from-emerald-500 to-teal-600',
-      iconBg: 'bg-emerald-100',
-      iconColor: 'text-emerald-600'
-    },
-    {
-      icon: Mail,
-      title: 'Email Us',
-      info: 'hello@soulmatch.com',
-      subtext: 'We reply in 2-4 hours',
-      gradient: 'from-blue-500 to-indigo-600',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600'
-    },
-    {
-      icon: MapPin,
-      title: 'Visit Us',
-      info: 'New York, USA',
-      subtext: '123, Manhattan Street',
-      gradient: 'from-red-500 to-rose-600',
-      iconBg: 'bg-red-100',
-      iconColor: 'text-red-600'
-    },
-    {
-      icon: Clock,
-      title: 'Working Hours',
-      info: 'Mon-Sat: 9AM-7PM',
-      subtext: 'Sun: 10AM-4PM',
-      gradient: 'from-purple-500 to-pink-600',
-      iconBg: 'bg-purple-100',
-      iconColor: 'text-purple-600'
-    }
-  ];
-
-  const stats = [
-    { icon: Users, value: '50K+', label: 'Happy Couples', color: 'from-rose-500 to-pink-600' },
-    { icon: Award, value: '100%', label: 'Verified Profiles', color: 'from-blue-500 to-cyan-600' },
-    { icon: Headphones, value: '24/7', label: 'Support', color: 'from-emerald-500 to-teal-600' },
-    { icon: Star, value: '4.9', label: 'User Rating', color: 'from-amber-500 to-yellow-600' }
-  ];
-
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section with Background Image */}
-  {/* Hero Section with Background Image */}
-<div className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
-  {/* Background Image with Dark Overlay */}
-  <div className="absolute inset-0">
-    <img 
-      src="https://media.istockphoto.com/id/866987706/photo/indian-wedding-hands.jpg?s=612x612&w=0&k=20&c=6L-u9qhFPv9MjDnF4UK4AqjVbDKM4_8Xad72IHhwPZE=" 
-      alt="Couple Background"
-      className="w-full h-full object-cover object-center brightness-75"  // 🔹 darken image slightly
-    />
-    {/* Dark romantic overlay for clarity */}
-    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
-  </div>
-
-  {/* Content on top of image */}
-  <div className="relative max-w-7xl mx-auto px-4 pt-40 pb-24 text-center text-white">
-    {/* Badge */}
-    <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full mb-8 border border-white/30 shadow-lg animate-[fadeInDown_1s_ease-out]">
-      <Heart className="text-pink-400 animate-pulse" size={20} />
-      <span className="font-semibold text-pink-300">Connect With Us</span>
-    </div>
-    
-    {/* Heading */}
-    <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight drop-shadow-[0_3px_8px_rgba(0,0,0,0.7)]">
-      <span className="inline-block bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-500 bg-clip-text text-transparent animate-[slideInLeft_1s_ease-out_0.3s_both]">
-        Let's Start Your
-      </span>
-      <br />
-      <span className="inline-block bg-gradient-to-r from-fuchsia-500 via-rose-500 to-pink-400 bg-clip-text text-transparent animate-[slideInRight_1s_ease-out_0.6s_both]">
-        Journey Together
-      </span>
-    </h1>
-
-    {/* Paragraph */}
-    <p className="text-xl text-gray-100 max-w-3xl mx-auto mb-12 leading-relaxed font-medium animate-[fadeIn_1s_ease-out_0.9s_both] drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
-      Have questions? Need help? Want to share feedback? 
-      We're just a message away from making your dream come true!
-    </p>
-  </div>
-</div>
-
-
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Contact Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-20 mb-16">
-          {contactCards.map((card, idx) => (
-            <div
-              key={idx}
-              className="relative overflow-hidden bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-gray-100 group"
-            >
-              <div className={`w-20 h-20 ${card.iconBg} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                <card.icon className={card.iconColor} size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{card.title}</h3>
-              <p className="text-gray-800 font-semibold mb-1 text-lg">{card.info}</p>
-              <p className="text-sm text-gray-600">{card.subtext}</p>
-              <div className={`absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r ${card.gradient}`}></div>
-            </div>
-          ))}
+    <div className="min-h-screen bg-white text-gray-900 font-sans">
+      {/* ===== HERO SECTION ===== */}
+      <div className="relative overflow-hidden min-h-screen flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-10">
+        <div className="absolute inset-0">
+          <img
+            src="https://media.istockphoto.com/id/866987706/photo/indian-wedding-hands.jpg?s=612x612&w=0&k=20&c=6L-u9qhFPv9MjDnF4UK4AqjVbDKM4_8Xad72IHhwPZE="
+            alt="Couple Background"
+            className="w-full h-full object-cover brightness-75"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60"></div>
         </div>
 
-        {/* Map Section */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-100">
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            <div className="p-12 flex flex-col justify-center bg-white">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full text-blue-700 font-bold mb-8 w-fit shadow-md border-2 border-blue-200">
-                <Building2 size={22} />
-                <span className="text-lg">Visit Our Office</span>
-              </div>
-              
-              <h3 className="text-5xl font-bold bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-6">Come Meet Us!</h3>
-              <p className="text-gray-600 text-xl mb-10 leading-relaxed">
-                Drop by our New York office for a friendly consultation. We'd love to help you find your perfect match!
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-md border-2 border-blue-100">
-                  <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                    <MapPin className="text-white" size={24} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-900 mb-2 text-lg">Office Address</p>
-                    <p className="text-gray-600 text-lg">123, Manhattan Street<br />New York, NY 10001, USA</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-md border-2 border-blue-100">
-                  <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                    <Clock className="text-white" size={24} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-900 mb-2 text-lg">Office Hours</p>
-                    <p className="text-gray-600 text-lg">Mon - Sat: 9:00 AM - 7:00 PM<br />Sunday: 10:00 AM - 4:00 PM</p>
-                  </div>
-                </div>
-              </div>
-              
-              <button className="mt-10 px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl font-bold text-lg hover:shadow-2xl transition-all inline-flex items-center gap-3 w-fit group">
-                <MapPin size={22} />
-                <span>Get Directions</span>
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-            
-            <div className="h-96 lg:h-auto relative">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30596073366!2d-74.25986548248684!3d40.69714941932609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full"
-              ></iframe>
-            </div>
+        <div className="relative z-10 text-white mt-24 sm:mt-40">
+          <div className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 shadow-lg animate-[fadeInDown_1s_ease-out]">
+            <MessageCircle className="text-white animate-pulse" size={18} />
+            <span className="font-semibold text-sm sm:text-base">Connect With Us</span>
           </div>
+
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mt-6 mb-4 leading-tight drop-shadow-[0_3px_8px_rgba(0,0,0,0.7)]">
+            <span className="inline-block bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent animate-[slideInLeft_1s_ease-out]">
+              Let's Start Your
+            </span>
+            <br />
+            <span className="inline-block bg-gradient-to-r from-gray-200 via-gray-100 to-white bg-clip-text text-transparent animate-[slideInRight_1s_ease-out]">
+              Journey Together
+            </span>
+          </h1>
+
+          <p className="text-sm sm:text-lg max-w-md sm:max-w-2xl mx-auto mb-8 leading-relaxed font-medium animate-[fadeIn_1s_ease-out_0.8s_both] text-gray-100">
+            Have questions? Need help? We're just a message away from making your dream come true!
+          </p>
         </div>
       </div>
 
+      {/* ===== CONTACT SECTION ===== */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        {/* LEFT DETAILS */}
+        <div className="space-y-5 sm:space-y-6 animate-[fadeIn_1s_ease-out]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Contact Us</h2>
+          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+            Our team is here to assist you in finding your perfect partner.
+          </p>
+          <div>
+            <h3 className="font-semibold text-base sm:text-lg text-gray-800 mb-2">Address</h3>
+            <p className="text-sm sm:text-base text-gray-600">
+              Corporate Office <br />
+              Royal Deligt Matrimony <br />
+              4nd Floor, Square Building <br />
+              Metro Train, <br />
+              MG Road, Tamil Nadu, India. <br />
+              Pin Code: 682016
+            </p>
+          </div>
+
+          <div className="space-y-4 text-sm sm:text-base">
+            <div className="flex items-center gap-3">
+              <Phone className="text-pink-500" size={20} />
+              <p>+91 7000066670, +91 9000018833</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Mail className="text-pink-500" size={20} />
+              <p>info@royaldelight matrimony.com</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <MapPin className="text-pink-500" size={20} />
+              <p>Tamilnadu</p>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT IMAGE + CARDS */}
+        <div className="relative animate-[slideImage_1s_ease-out]">
+          <img
+            src="https://staticlearn.shine.com/l/m/images/blog/mobile/roles_and_responsibilities_of_customer_support_executive.webp"
+            alt="Support Staff"
+            className="w-full rounded-2xl shadow-xl"
+          />
+
+          {/* Floating Cards - Responsive Row, smaller on mobile, over image */}
+          <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3 justify-center w-full max-w-[340px] sm:max-w-[480px]">
+            {/* WhatsApp */}
+            <div
+              className="bg-white p-1.5 sm:p-3 rounded-lg shadow-md flex items-center gap-1.5 sm:gap-2 hover:shadow-lg transition-all animate-[slideFromRight_0.7s_ease-out] flex-1 max-w-[90px] sm:max-w-[160px]"
+              style={{ animationDelay: "0.1s" }}
+            >
+              <MessageCircle className="text-green-500 shrink-0" size={15} />
+              <div>
+                <p className="font-semibold text-gray-800 text-[10px] sm:text-sm truncate">Chat</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 flex items-center gap-1 truncate">
+                  WhatsApp <ArrowRight size={10} />
+                </p>
+              </div>
+            </div>
+
+            {/* Call */}
+            <div
+              className="bg-white p-1.5 sm:p-3 rounded-lg shadow-md flex items-center gap-1.5 sm:gap-2 hover:shadow-lg transition-all animate-[slideFromRight_0.7s_ease-out] flex-1 max-w-[90px] sm:max-w-[160px]"
+              style={{ animationDelay: "0.3s" }}
+            >
+              <Phone className="text-blue-500 shrink-0" size={15} />
+              <div>
+                <p className="font-semibold text-gray-800 text-[10px] sm:text-sm truncate">Call</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 truncate">7034776667</p>
+              </div>
+            </div>
+
+            {/* Support */}
+            <div
+              className="bg-white p-1.5 sm:p-3 rounded-lg shadow-md flex items-center gap-1.5 sm:gap-2 hover:shadow-lg transition-all animate-[slideFromRight_0.7s_ease-out] flex-1 max-w-[90px] sm:max-w-[160px]"
+              style={{ animationDelay: "0.5s" }}
+            >
+              <Headphones className="text-pink-500 shrink-0" size={15} />
+              <div>
+                <p className="font-semibold text-gray-800 text-[10px] sm:text-sm truncate">Support</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 truncate">Write</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== GOOGLE MAP ===== */}
+      <div className="w-full h-[300px] sm:h-[400px] mt-10 rounded-none overflow-hidden">
+        <iframe
+          title="Nest Matrimony Location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.4086582574685!2d76.28291517485859!3d9.981635190122671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d4d67172ea3%3A0x75e15d6f6cfbf5e3!2sNest%20Matrimony!5e0!3m2!1sen!2sin!4v1697451203845!5m2!1sen!2sin"
+          width="100%"
+          height="100%"
+          allowFullScreen
+          loading="lazy"
+          className="border-0"
+        ></iframe>
+      </div>
+
+      {/* ===== ANIMATIONS ===== */}
       <style>{`
         @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-30px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-100px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
+          from { opacity: 0; transform: translateX(-100px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(100px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
+          from { opacity: 0; transform: translateX(100px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes slideFromRight {
+          0% {opacity:0; transform:translateX(100px);}
+          100% {opacity:1; transform:translateX(0);}
+        }
+        @keyframes slideImage {
+          0% {opacity:0; transform:translateX(80px);}
+          100% {opacity:1; transform:translateX(0);}
         }
       `}</style>
     </div>

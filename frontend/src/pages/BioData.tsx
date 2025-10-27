@@ -1,207 +1,273 @@
-import React, { useState } from 'react';
-import { Heart, Search, User, Mail, Phone, Clock } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Heart, Filter, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-interface BiodataProfile {
+interface UserProfile {
   id: number;
-  name: string;
+  fullName: string;
+  gender: string;
   age: number;
-  gender: 'Male' | 'Female';
-  biodataId: string;
-  job: string;
-  division: string;
-  image: string;
+  occupation: string;
+  state: string;
+  profilePhoto: string;
 }
 
 const BioData: React.FC = () => {
   const navigate = useNavigate();
+  const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
-  const [biodataType, setBiodataType] = useState<string>('All');
-  const [division, setDivision] = useState<string>('All');
+  const [biodataType, setBiodataType] = useState<string>("All");
+  const [division, setDivision] = useState<string>("All");
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const profiles: BiodataProfile[] = [
-    { id: 1, name: 'Profile', age: 31, gender: 'Female', biodataId: 'Id: 1', job: 'Software Engineer', division: 'Dhaka', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop' },
-    { id: 2, name: 'Profile', age: 32, gender: 'Female', biodataId: 'Id: 6', job: 'Architect', division: 'Barisal', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop' },
-    { id: 3, name: 'Profile', age: 31, gender: 'Female', biodataId: 'Id: 2', job: 'Marketing Manager', division: 'Khulna', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop' },
-    { id: 4, name: 'Profile', age: 29, gender: 'Female', biodataId: 'Id: 4', job: 'Graphic Designer', division: 'Rajshahi', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop' },
-    { id: 5, name: 'Profile', age: 35, gender: 'Female', biodataId: 'Id: 5', job: 'Doctor', division: 'Sylhet', image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop' },
-    { id: 6, name: 'Profile', age: 34, gender: 'Female', biodataId: 'Id: 8', job: 'Doctor', division: 'Sylhet', image: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&h=400&fit=crop' },
-    { id: 7, name: 'Profile', age: 31, gender: 'Female', biodataId: 'Id: 10', job: 'Graphic Designer', division: 'Rajshahi', image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop' },
-    { id: 8, name: 'Profile', age: 35, gender: 'Male', biodataId: 'Id: 15', job: 'Lawyer', division: 'Dhaka', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop' },
-    { id: 9, name: 'Profile', age: 33, gender: 'Male', biodataId: 'Id: 19', job: 'Data Scientist', division: 'Mymensingh', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop' },
-    { id: 10, name: 'Profile', age: 35, gender: 'Female', biodataId: 'Id: 24', job: 'Web Developer', division: 'Chittagong', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop' },
-    { id: 11, name: 'Profile', age: 36, gender: 'Male', biodataId: 'Id: 33', job: 'Software Engineer', division: 'Sylhet', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
-    { id: 12, name: 'Profile', age: 30, gender: 'Female', biodataId: 'Id: 36', job: 'Nurse', division: 'Barisal', image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=400&fit=crop' },
-  ];
+  // ✅ Fetch from API
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/register/users");
+        const result = Array.isArray(res.data)
+          ? res.data
+          : res.data.users || res.data.data || [];
+        setProfiles(result);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching profiles:", error);
+        setLoading(false);
+      }
+    };
+    fetchProfiles();
+  }, []);
 
   const toggleFavorite = (id: number) => {
     const newFavorites = new Set(favorites);
-    if (newFavorites.has(id)) {
-      newFavorites.delete(id);
-    } else {
-      newFavorites.add(id);
-    }
+    if (newFavorites.has(id)) newFavorites.delete(id);
+    else newFavorites.add(id);
     setFavorites(newFavorites);
   };
 
+  const filtered = profiles.filter((p) => {
+    if (p.age < ageRange[0] || p.age > ageRange[1]) return false;
+    if (biodataType === "Brides" && p.gender !== "Female") return false;
+    if (biodataType === "Grooms" && p.gender !== "Male") return false;
+    if (division !== "All" && p.state !== division) return false;
+    return true;
+  });
+
+  const handleViewDetails = (id: number) => {
+    console.log(`Viewing profile ${id}`);
+  };
+
+  // ✅ Loading screen
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-gray-500">
+        Loading profiles...
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
-
-      <div className="container mx-auto px-3 py-30">
-        {/* Horizontal Filters */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Filter Options</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">Age Range</label>
-              <div className="space-y-2">
-                <input
-                  type="range"
-                  min="18"
-                  max="60"
-                  value={ageRange[1]}
-                  onChange={(e) => setAgeRange([ageRange[0], parseInt(e.target.value)])}
-                  className="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
-                />
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>{ageRange[0]}</span>
-                  <span>{ageRange[1]}</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Biodata Type</label>
-              <select
-                value={biodataType}
-                onChange={(e) => setBiodataType(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              >
-                <option>All</option>
-                <option>Brides</option>
-                <option>Grooms</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Division</label>
-              <select
-                value={division}
-                onChange={(e) => setDivision(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              >
-                <option>All</option>
-                <option>Alabama</option>
-                <option>Alaska</option>
-                <option>Arizona</option>
-                <option>Arkansas</option>
-                <option>California</option>
-                <option>Colorado</option>
-                <option>Connecticut</option>
-                <option>Delaware</option>
-                <option>Florida</option>
-                <option>Georgia</option>
-                <option>Hawaii</option>
-                <option>Idaho</option>
-                <option>Illinois</option>
-                <option>Indiana</option>
-                <option>Iowa</option>
-                <option>Kansas</option>
-                <option>Kentucky</option>
-                <option>Louisiana</option>
-                <option>Maine</option>
-                <option>Maryland</option>
-                <option>Massachusetts</option>
-                <option>Michigan</option>
-                <option>Minnesota</option>
-                <option>Mississippi</option>
-                <option>Missouri</option>
-                <option>Montana</option>
-                <option>Nebraska</option>
-                <option>Nevada</option>
-                <option>New Hampshire</option>
-                <option>New Jersey</option>
-                <option>New Mexico</option>
-                <option>New York</option>
-                <option>North Carolina</option>
-                <option>North Dakota</option>
-                <option>Ohio</option>
-                <option>Oklahoma</option>
-                <option>Oregon</option>
-                <option>Pennsylvania</option>
-                <option>Rhode Island</option>
-                <option>South Carolina</option>
-                <option>South Dakota</option>
-                <option>Tennessee</option>
-                <option>Texas</option>
-                <option>Utah</option>
-                <option>Vermont</option>
-                <option>Virginia</option>
-                <option>Washington</option>
-                <option>West Virginia</option>
-                <option>Wisconsin</option>
-                <option>Wyoming</option>
-              </select>
-            </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 text-gray-800 mt-20 py-10">
+      {/* ===== HEADER ===== */}
+      <div className="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-3 py-3 flex items-center justify-between">
+          <div>
+            <h1 className="text-lg sm:text-xl font-bold">All Biodatas</h1>
+            <p className="text-xs text-gray-500">
+              {filtered.length} profiles available
+            </p>
           </div>
-        </div>
-
-        <div className="flex flex-col gap-6">
-
-          {/* Profiles Grid */}
-          <main className="flex-1">
-            <div className="mb-6">
-              <h2 className="text-3xl font-bold text-gray-800">All Biodatas</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {profiles.map((profile) => (
-                <div key={profile.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className="relative h-64 bg-gradient-to-br from-orange-100 to-amber-100">
-                    <img
-                      src={profile.image}
-                      alt={profile.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-bold text-gray-800">{profile.gender}</h3>
-                        <p className="text-sm text-gray-600">Biodata {profile.biodataId}</p>
-                      </div>
-                      <span className="text-sm font-semibold text-gray-700">Age: {profile.age}</span>
-                    </div>
-                    <p className="text-sm text-gray-700 mb-1">Job: {profile.job}</p>
-                    <p className="text-sm text-gray-700 mb-4">Division: {profile.division}</p>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => navigate(`/profiledetails/${profile.id}`)}
-                        className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-4 py-2 rounded-lg font-semibold transition"
-                      >
-                        View Details
-                      </button>
-
-                      <button
-                        onClick={() => toggleFavorite(profile.id)}
-                        className={`p-2 rounded-lg border-2 transition ${favorites.has(profile.id)
-                          ? 'bg-red-50 border-red-500 text-red-500'
-                          : 'border-gray-300 text-gray-400 hover:border-red-500 hover:text-red-500'
-                          }`}
-                      >
-                        <Heart className="w-5 h-5" fill={favorites.has(profile.id) ? 'currentColor' : 'none'} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </main>
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full text-xs font-semibold hover:shadow-md transition"
+          >
+            <Filter size={14} />
+            <span className="hidden sm:inline">Filters</span>
+          </button>
         </div>
       </div>
+
+      {/* ===== FILTER MODAL ===== */}
+      {filtersOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/30"
+            onClick={() => setFiltersOpen(false)}
+          />
+          <div className="relative w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-xl shadow-xl animate-slide-up max-h-[85vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between">
+              <h2 className="text-base font-bold">Filter Profiles</h2>
+              <button
+                onClick={() => setFiltersOpen(false)}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4 text-sm">
+              {/* Age Range */}
+              <div>
+                <label className="block text-xs font-medium mb-2">
+                  Age Range: {ageRange[0]} - {ageRange[1]}
+                </label>
+                <input
+                  type="range"
+                  min={18}
+                  max={60}
+                  value={ageRange[1]}
+                  onChange={(e) =>
+                    setAgeRange([ageRange[0], parseInt(e.target.value)])
+                  }
+                  className="w-full accent-orange-500"
+                />
+              </div>
+
+              {/* Biodata Type */}
+              <div>
+                <label className="block text-xs font-medium mb-2">
+                  Biodata Type
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {["All", "Brides", "Grooms"].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setBiodataType(type)}
+                      className={`py-2 text-xs rounded font-semibold transition ${
+                        biodataType === type
+                          ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Division */}
+              <div>
+                <label className="block text-xs font-medium mb-2">
+                  Division (State)
+                </label>
+                <select
+                  value={division}
+                  onChange={(e) => setDivision(e.target.value)}
+                  className="w-full px-3 py-2 border text-xs rounded focus:ring-1 focus:ring-orange-500"
+                >
+                  {[
+                    "All",
+                    "Alabama",
+                    "Alaska",
+                    "Arizona",
+                    "California",
+                    "Florida",
+                    "Texas",
+                    "New York",
+                    "Illinois",
+                    "Ohio",
+                    "Washington",
+                    "Virginia",
+                  ].map((div) => (
+                    <option key={div}>{div}</option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                onClick={() => setFiltersOpen(false)}
+                className="w-full py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded font-semibold hover:shadow-md transition"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== PROFILES GRID ===== */}
+      <main className="max-w-7xl mx-auto px-3 py-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4">
+          {filtered.map((profile) => (
+            <div
+              key={profile.id}
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition flex flex-col overflow-hidden group"
+            >
+              <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-square overflow-hidden">
+                <img
+                  src={
+                    profile.profilePhoto ||
+                    "https://via.placeholder.com/400x400?text=No+Image"
+                  }
+                  alt={profile.fullName}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+                <button
+                  onClick={() => toggleFavorite(profile.id)}
+                  className={`absolute top-2 right-2 p-1.5 lg:p-2 rounded-full transition ${
+                    favorites.has(profile.id)
+                      ? "bg-red-500 text-white"
+                      : "bg-white/90 text-red-400 hover:bg-white"
+                  }`}
+                >
+                  <Heart
+                    size={14}
+                    className="lg:w-4 lg:h-4"
+                    fill={favorites.has(profile.id) ? "white" : "none"}
+                  />
+                </button>
+              </div>
+
+              <div className="p-2 lg:p-3 text-[11px] lg:text-sm flex flex-col gap-1 lg:gap-2 flex-grow">
+                <h3 className="font-bold text-gray-800 lg:text-base">
+                  {profile.fullName}
+                </h3>
+                <p className="text-gray-500 text-[10px] lg:text-xs">
+                  ID: {profile.id}
+                </p>
+                <p className="text-gray-600 text-[10px] lg:text-xs">
+                  {profile.occupation}, {profile.state}
+                </p>
+                <p className="text-orange-600 font-semibold text-[10px] lg:text-xs">
+                  Age: {profile.age}
+                </p>
+
+                <button
+                 onClick={() => navigate(`/profiledetails/${profile.id}`)}
+                  className="mt-auto w-full py-1.5 lg:py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] lg:text-sm font-semibold rounded hover:shadow-md transition lg:w-4/5 lg:mx-auto"
+                >
+                  View Profile
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-sm text-gray-500">No profiles found</p>
+          </div>
+        )}
+      </main>
+
+      <style>{`
+        @keyframes slide-up {
+          from { transform: translateY(100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up { animation: slide-up 0.3s ease-out; }
+        @media (max-width: 475px) {
+          h1 { font-size: 1rem; }
+          .text-xs { font-size: 0.65rem; }
+          .text-[10px] { font-size: 0.6rem; }
+          .text-[11px] { font-size: 0.68rem; }
+          .py-1, .py-1\\.5 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+          .p-2 { padding: 0.4rem; }
+        }
+      `}</style>
     </div>
   );
 };

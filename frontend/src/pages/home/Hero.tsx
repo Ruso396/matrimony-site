@@ -47,7 +47,7 @@ const Hero: React.FC = () => {
         .animation-delay-4000 { animation-delay: 4s; }
       `}</style>
 
-      <section className="relative min-h-[80vh] xs:min-h-[85vh] md:min-h-screen pt-28 xs:pt-32 pb-16 xs:pb-20 px-4 sm:px-6 lg:px-8 bg-[radial-gradient(circle_at_20%_10%,rgba(92,115,255,.08),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(255,92,38,.08),transparent_40%)]">
+      <section className="relative min-h-[75vh] xs:min-h-[85vh] md:min-h-screen pt-20 xs:pt-32 pb-8 xs:pb-20 px-4 sm:px-6 lg:px-8 bg-[radial-gradient(circle_at_20%_10%,rgba(92,115,255,.08),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(255,92,38,.08),transparent_40%)]">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-24 -top-24 w-56 h-56 bg-amber-200/50 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob" />
           <div className="absolute -right-16 -bottom-24 w-60 h-60 bg-pink-200/60 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob animation-delay-2000" />
@@ -76,12 +76,12 @@ const Hero: React.FC = () => {
                 Join Matrimony and find your ideal partner. Connect with people who share your values and interests. Start your journey to lasting happiness today.
               </p>
 
-              <div className="flex flex-col xs5:flex-row gap-3 xs:gap-4">
-                <button className="px-7 xs:px-8 py-3 xs:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+              <div className="flex flex-col xs5:flex-row gap-3 xs:gap-4 lg:gap-2">
+                <button className="w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm xs:text-base lg:text-lg shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 lg:mx-0">
                   Register Now
-                  <Heart className="w-5 h-5" />
+                  <Heart className="w-4 h-4 xs:w-5 xs:h-5" />
                 </button>
-                <button className="px-7 xs:px-8 py-3 xs:py-4 bg-white text-gray-800 rounded-full font-semibold border border-gray-200 hover:border-brand-200 hover:bg-brand-50/60 transition-all duration-300">
+                <button className="w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-white text-gray-800 rounded-full font-semibold text-sm xs:text-base lg:text-lg border border-gray-200 hover:border-brand-200 hover:bg-brand-50/60 transition-all duration-300 lg:mx-0">
                   Browse Profiles
                 </button>
               </div>
@@ -93,10 +93,10 @@ const Hero: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3">
                 <div className="flex -space-x-3">
                   {[1,2,3,4].map(i => (
-                    <div key={i} className="w-9 h-9 xs:w-10 xs:h-10 rounded-full border-2 border-white overflow-hidden shadow-sm animate-float">
+                    <div key={i} className="w-8 h-8 xs:w-10 xs:h-10 rounded-full border-2 border-white overflow-hidden shadow-sm animate-float">
                       <img src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 20}.jpg`} alt="User" className="w-full h-full object-cover" />
                     </div>
                   ))}
@@ -105,17 +105,17 @@ const Hero: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative animate-slideInRight">
-              <div className="grid grid-cols-2 gap-3 xs:gap-4">
-                <div className="space-y-3 xs:space-y-4">
+            <div className="relative animate-slideInRight -mb-8">
+              <div className="grid grid-cols-2 gap-2 xs:gap-4">
+                <div className="space-y-2 xs:space-y-4">
                   {/* Plain image (no rounded card, border or shadow) so full PNG is visible */}
-                  <div className="relative h-72 xs:h-80">
+                  <div className="relative h-60 xs:h-80">
                     <img src={heroImages[0]} alt="Happy Couple" className="object-contain w-full h-full transition-transform duration-500" />
                   </div>
                 </div>
-                <div className="space-y-3 xs:space-y-4 pt-6 xs:pt-8">
+                <div className="space-y-2 xs:space-y-4 pt-4 xs:pt-8">
                   {/* Plain image (no rounded card, border or shadow) so full PNG is visible */}
-                  <div className="relative h-80 xs:h-96">
+                  <div className="relative h-64 xs:h-96">
                     <img src={heroImages[1]} alt="Wedding" className="object-contain w-full h-full transition-transform duration-500" />
                   </div>
                 </div>
