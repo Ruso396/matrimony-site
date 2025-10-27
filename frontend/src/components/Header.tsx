@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Search, LogIn } from "lucide-react";
+import { Menu, X, LogIn, Trophy } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../components/assets/logo.png";
 
@@ -8,14 +8,11 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  // Pages where header should start transparent
+  // Pages where header starts transparent
   const transparentPages = ["/", "/contact"];
   const isTransparentPage = transparentPages.includes(location.pathname);
 
   useEffect(() => {
-    // Reset scroll state when route changes
-    setIsScrolled(false);
-
     const handleScroll = () => {
       if (isTransparentPage) {
         setIsScrolled(window.scrollY > 80);
@@ -25,7 +22,6 @@ const Header: React.FC = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    // Trigger once to ensure correct state
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
@@ -38,7 +34,6 @@ const Header: React.FC = () => {
     { name: "FAQ", path: "/faq" },
   ];
 
-  // Determine header color styles
   const headerStyle = isTransparentPage
     ? isScrolled
       ? "bg-white shadow-md text-gray-800"
@@ -50,18 +45,21 @@ const Header: React.FC = () => {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${headerStyle}`}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="Royal Delight" className="w-9 h-9" />
-          <span className="font-bold text-lg tracking-tight">Royal Delight</span>
+          <span className="font-bold text-lg tracking-tight">
+            Royal Delight
+          </span>
         </Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
-              key={link.name}
+              key={link.path}
               to={link.path}
-              className={`transition ${
+              className={`flex items-center gap-1 transition ${
                 isTransparentPage && !isScrolled
                   ? "hover:text-yellow-400"
                   : "hover:text-pink-600"
@@ -72,9 +70,24 @@ const Header: React.FC = () => {
           ))}
         </nav>
 
-        {/* Right Side Buttons */}
-        <div className="hidden md:flex items-center gap-4">
-         
+        {/* Right Side - Trophy + Login */}
+        <div className="hidden md:flex items-center gap-5">
+          {/* Trophy Icon for Success Story */}
+          <Link
+            to="/success-stories"
+            className="flex items-center justify-center"
+          >
+            <Trophy
+              size={22}
+              className={`${
+                isTransparentPage && !isScrolled
+                  ? "text-white hover:text-yellow-400"
+                  : "text-gray-700 hover:text-yellow-500"
+              } transition-transform duration-200 hover:scale-110`}
+            />
+          </Link>
+
+          {/* Login Button */}
           <Link
             to="/login"
             className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${
@@ -91,7 +104,6 @@ const Header: React.FC = () => {
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden focus:outline-none p-1"
-          data-no-gradient
         >
           {isMenuOpen ? (
             <X
@@ -120,7 +132,7 @@ const Header: React.FC = () => {
         >
           {navLinks.map((link) => (
             <Link
-              key={link.name}
+              key={link.path}
               to={link.path}
               onClick={() => setIsMenuOpen(false)}
               className="block w-full py-2"
@@ -128,6 +140,20 @@ const Header: React.FC = () => {
               {link.name}
             </Link>
           ))}
+          <Link
+            to="/success-story"
+            onClick={() => setIsMenuOpen(false)}
+            className="block w-full py-2 flex items-center gap-2"
+          >
+            <Trophy className="w-5 h-5" /> Success Story
+          </Link>
+          <Link
+            to="/login"
+            onClick={() => setIsMenuOpen(false)}
+            className="block w-full py-2"
+          >
+            Login
+          </Link>
         </div>
       )}
     </header>
