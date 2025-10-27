@@ -22,6 +22,6 @@ router.post('/register', upload.single('profilePhoto'), registerUser);
 router.post('/login', loginUser);
 router.get('/users', getUsers); 
 router.get('/users/:id', getUserById);
-router.get('/related/:country/:id', getRelatedProfiles);
+router.get('/related/:id', getRelatedProfiles);
 
 export default router;

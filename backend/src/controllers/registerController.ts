@@ -163,39 +163,44 @@ export const getUserById = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
-// ✅ Get related profiles (same country or religion)
+
+// ✅ Get related profiles from backend (same country, same gender)
 export const getRelatedProfiles = async (req: Request, res: Response) => {
   try {
-    const { country, id } = req.params;
+    const { id } = req.params;
+    const currentUser = await RegisterUser.findByPk(id);
 
-    // Exclude the current profile id & match by country
-    const related = await RegisterUser.findAll({
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const relatedUsers = await RegisterUser.findAll({
       where: {
-        country,
-        id: { [Op.ne]: id } // Exclude the current profile
+        country: currentUser.country,
+        gender: currentUser.gender,
+        id: { [Op.ne]: id },
       },
-      attributes: [
-        'id',
-        'fullName',
-        'age',
-        'city',
-        'profilePhoto'
-      ],
-      limit: 6
+      order: [['createdAt', 'DESC']],
     });
 
-    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
-    const formatted = related.map((user: any) => ({
-      id: user.id,
-      name: user.fullName,
-      age: user.age,
-      city: user.city,
-      image: user.profilePhoto ? `${baseUrl}${user.profilePhoto}` : null
+    // ✅ Add full image URL
+    const formattedProfiles = relatedUsers.map((user: any) => ({
+      ...user.dataValues,
+      profilePhoto: user.profilePhoto
+        ? `http://localhost:5000/uploads/${user.profilePhoto}` // 👈 Full URL
+        : null,
     }));
 
-    res.status(200).json({ relatedProfiles: formatted });
-  } catch (err) {
-    console.error('Error fetching related profiles:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(200).json({
+      success: true,
+      relatedProfiles: formattedProfiles,
+    });
+  } catch (error) {
+    console.error('Error fetching related profiles:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching related profiles',
+    });
   }
 };
+
