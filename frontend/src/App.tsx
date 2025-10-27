@@ -4,11 +4,12 @@ import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import Login from "./components/assets/Login";
-import Register from "./components/assets/Register";
+import Login from "./components/Login";
+import BioData from "./pages/BioData";
 import ProfileDetails from "./pages/ProfileDetails";
 import MatrimonyContact from "./pages/contact";
-import BioData from "./pages/BioData";
+import SuccessStory from "./pages/Success Story";
+import ModernRegister from "./components/Register";
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -34,13 +35,19 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
-            
+            <Route path="/register" element={<ModernRegister />} />
+            <Route path="/biodata" element={<BioData />} />
+            <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+            {/* Add more routes later */}
             <Route path="/contact" element={<MatrimonyContact />} />
+
+            {/* Add more routes here later, like: */}
+            {/* <Route path="/about" element={<About />} /> */}
+            {/* <Route path="/contact" element={<Contact />} /> */}
             <Route path="/biodata" element={<BioData />} />
 
             <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+            <Route path="/success-stories" element={<SuccessStory />} />
             {/* Add more routes later */}
           </Routes>
         </main>
