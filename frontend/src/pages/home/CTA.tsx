@@ -1,5 +1,6 @@
 import React from "react";
 import { Sparkles, Heart, Users, Award, ArrowRight } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 import left from "../../components/assets/whyelite-left.svg";
 import right from "../../components/assets/whyelite-left.svg";
 
@@ -34,6 +35,7 @@ const cardData = [
 ];
 
 const CTA = () => {
+  const navigate = useNavigate();
   return (
     <div className="relative flex flex-col items-center w-full py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
       {/* ---------- Enhanced Animations ---------- */}
@@ -213,10 +215,13 @@ const CTA = () => {
 
       {/* ---------- Enhanced CTA Button ---------- */}
       <div className="relative z-10 mt-5 xs:mt-6 sm:mt-8 md:mt-10 lg:mt-12 animate-fadeInUp px-3" style={{ animationDelay: '0.6s' }}>
-        <button className="group relative bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white font-bold text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg py-2 px-5 xs:py-2.5 xs:px-6 sm:py-3 sm:px-8 md:py-3.5 md:px-10 lg:py-4 lg:px-12 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 overflow-hidden">
+        <button
+          onClick={() => navigate('/register')}
+          className="group relative bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white font-bold text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg py-2 px-5 xs:py-2.5 xs:px-6 sm:py-3 sm:px-8 md:py-3.5 md:px-10 lg:py-4 lg:px-12 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+        >
           <span className="relative flex items-center gap-1.5 xs:gap-2">
-            Upgrade to Elite Matchmaking
-            <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 transform rotate-180" />
+            <span>Upgrade to Elite Matchmaking</span>
           </span>
         </button>
       </div>
