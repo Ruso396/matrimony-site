@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, LogIn, User, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "../components/assets/logo.png";
+import logoWhite from "../components/assets/logowhite.png";
+import logoBlack from "../components/assets/logoblack.png";
 import { useAuth } from "../context/AuthContext";
 
 const Header: React.FC = () => {
@@ -90,11 +91,25 @@ const Header: React.FC = () => {
       `}</style>
 
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Royal Delight" className="w-9 h-9" />
-          <span className="font-bold text-lg tracking-tight">Royal Delight</span>
-        </Link>
+<Link to="/" className="flex items-center">
+  <img
+    src={
+      isTransparentPage && !isScrolled
+        ? logoWhite   // white logo for transparent header
+        : logoBlack   // black logo for white header
+    }
+    alt="Royal Delight"
+    className="
+      h-8 w-auto object-contain transition-all duration-300
+      sm:h-9
+      md:h-10
+      lg:h-11
+      xl:h-12
+    "
+  />
+</Link>
+
+
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">

@@ -213,12 +213,7 @@ const ProfileDetails: React.FC = () => {
                                 >
                                     <Heart className="w-5 h-5" fill={isFavorite ? 'white' : 'none'} color="white" />
                                 </button>
-                                <button
-                                    onClick={() => setShowContactInfo(true)}
-                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-semibold text-sm transition-colors shadow-lg"
-                                >
-                                    View Contact
-                                </button>
+                              
                             </div>
                         </div>
 

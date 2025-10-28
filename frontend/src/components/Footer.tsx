@@ -10,7 +10,7 @@ import {
   Youtube,
   ChevronRight,
 } from "lucide-react";
-import logo from "../components/assets/logo.png";
+import logo from "../components/assets/logowhite.png";
 
 const Footer: React.FC = () => {
   // Define social media links and their corresponding icons
@@ -42,10 +42,11 @@ const Footer: React.FC = () => {
           {/* ===== Brand Section - Span 2 columns on small screens for prominence ===== */}
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center space-x-3">
-              <img src={logo} alt="Royal Delight" className="w-12 h-12 rounded-full shadow-lg" />
-              <span className="text-3xl font-extrabold tracking-wider text-pink-400">
-                Royal Delight
-              </span>
+                <img
+    src={logo}
+    alt="Royal Delight"
+    className="h-10 w-auto object-contain"
+  />
             </div>
             <p className="text-gray-400 leading-relaxed text-sm pr-4">
               Your Journey to Love Starts with Royal Delight. We connect hearts with traditional values and modern technology.
