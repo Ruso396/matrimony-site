@@ -138,7 +138,6 @@ const Header: React.FC = () => {
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
                 className="flex items-center gap-2 px-4 py-2 border rounded-full text-pink-600 border-pink-600 bg-pink-50 cursor-pointer hover:bg-pink-100 transition"
-                data-no-gradient
               >
                 <span className="font-semibold">{userName}</span>
               </button>
@@ -159,7 +158,6 @@ const Header: React.FC = () => {
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition text-left"
-                    data-no-gradient
                   >
                     <LogOut className="w-4 h-4 text-pink-600" /> Logout
                   </button>
@@ -184,7 +182,6 @@ const Header: React.FC = () => {
         <button
           onClick={toggleMenu}
           className="md:hidden focus:outline-none p-1"
-          data-no-gradient
         >
           {isMenuOpen ? (
             <X
@@ -220,7 +217,6 @@ const Header: React.FC = () => {
                 onClick={toggleMenu}
                 className="p-2 rounded-md focus:outline-none"
                 aria-label="Close menu"
-                data-no-gradient
               >
                 <X className="w-6 h-6 text-gray-800" />
               </button>
@@ -260,7 +256,6 @@ const Header: React.FC = () => {
                       closeMenuWithAnimation();
                     }}
                     className="mt-3 block w-full py-3 text-center border border-pink-600 rounded-full text-pink-600 hover:bg-pink-600 hover:text-white transition"
-                    data-no-gradient
                   >
                     Logout
                   </button>

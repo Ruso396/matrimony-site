@@ -184,7 +184,7 @@ const BioData: React.FC = () => {
               <button
                 onClick={() => setFiltersOpen(false)}
                 className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
-                data-no-gradient
+                 
               >
                 <X className="w-4 h-4" />
               </button>
@@ -217,6 +217,7 @@ const BioData: React.FC = () => {
                   {["All", "Brides", "Grooms"].map((type) => (
                     <button
                       key={type}
+                       
                       onClick={() => setBiodataType(type)}
                       className={`py-2 text-xs rounded font-semibold transition ${biodataType === type
                           ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white"
@@ -287,8 +288,9 @@ const BioData: React.FC = () => {
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <button
-                  onClick={() => toggleFavorite(profile.id)}
-                  className={`absolute top-2 right-2 p-1.5 lg:p-2 rounded-full transition ${favorites.has(profile.id)
+                  onClick={() => toggleFavorite(profile.id)}  
+                  className={`absolute top-2 right-2 p-1.5 lg:p-2 rounded-full transition ${
+                    favorites.has(profile.id)
                       ? "bg-red-500 text-white"
                       : "bg-white/90 text-red-400 hover:bg-white"
                     }`}

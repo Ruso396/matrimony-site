@@ -131,17 +131,6 @@ const ProfileDetails: React.FC = () => {
                                 <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
                                     <span className="text-teal-700 font-bold text-sm">✓ Verified Profile</span>
                                 </div>
-                                <button
-                                    onClick={() => setIsFavorite(!isFavorite)}
-                                    className="bg-white/95 p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
-                                >
-                                    <Heart
-                                        className="w-6 h-6"
-                                        fill={isFavorite ? '#ef4444' : 'none'}
-                                        stroke={isFavorite ? '#ef4444' : '#0f766e'}
-                                        strokeWidth={2}
-                                    />
-                                </button>
                             </div>
 
                             <div className="relative mx-auto mb-6">
