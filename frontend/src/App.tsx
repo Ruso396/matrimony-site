@@ -10,6 +10,7 @@ import BioData from "./pages/BioData";
 import ProfileDetails from "./pages/ProfileDetails";
 import MatrimonyContact from "./pages/contact";
 import ModernRegister from "./components/Register";
+import FaqPage from "./pages/home/FAQ";
 import PremiumPayment from "./pages/PremiumPayment";
 
 const ScrollToTop: React.FC = () => {
@@ -45,7 +46,12 @@ const App: React.FC = () => {
 
               {/* Add more routes here later, like: */}
               {/* <Route path="/about" element={<About />} /> */}
-              {/* <Route path="/contact" element={<Contact />} /> */}
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="/biodata" element={<BioData />} />
+              <Route path="/premiumpayment" element={<PremiumPayment />} />
+
+
+              <Route path="/profiledetails/:id" element={<ProfileDetails />} />
               {/* Add more routes later */}
             </Routes>
           </main>
