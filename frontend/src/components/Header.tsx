@@ -59,11 +59,10 @@ const Header: React.FC = () => {
             <Link
               key={link.path}
               to={link.path}
-              className={`flex items-center gap-1 transition ${
-                isTransparentPage && !isScrolled
+              className={`flex items-center gap-1 transition ${isTransparentPage && !isScrolled
                   ? "hover:text-yellow-400"
                   : "hover:text-pink-600"
-              }`}
+                }`}
             >
               {link.name}
             </Link>
@@ -72,16 +71,15 @@ const Header: React.FC = () => {
 
         {/* Right Side - Trophy + Login */}
         <div className="hidden md:flex items-center gap-5">
-         
+
 
           {/* Login Button */}
           <Link
             to="/login"
-            className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${
-              isTransparentPage && !isScrolled
+            className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
                 ? "border-white text-white hover:bg-white hover:text-pink-700"
                 : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
-            }`}
+              }`}
           >
             <LogIn className="w-4 h-4" /> Login
           </Link>
@@ -91,18 +89,17 @@ const Header: React.FC = () => {
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden focus:outline-none p-1"
+          data-no-gradient
         >
           {isMenuOpen ? (
             <X
-              className={`w-6 h-6 ${
-                isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
-              }`}
+              className={`w-6 h-6 ${isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
+                }`}
             />
           ) : (
             <Menu
-              className={`w-6 h-6 ${
-                isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
-              }`}
+              className={`w-6 h-6 ${isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
+                }`}
             />
           )}
         </button>
@@ -111,11 +108,10 @@ const Header: React.FC = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div
-          className={`md:hidden px-6 py-4 space-y-3 transition ${
-            isTransparentPage && !isScrolled
+          className={`md:hidden px-6 py-4 space-y-3 transition ${isTransparentPage && !isScrolled
               ? "bg-black/70 text-white"
               : "bg-white text-gray-800"
-          }`}
+            }`}
         >
           {navLinks.map((link) => (
             <Link
@@ -127,7 +123,7 @@ const Header: React.FC = () => {
               {link.name}
             </Link>
           ))}
-         
+
           <Link
             to="/login"
             onClick={() => setIsMenuOpen(false)}

@@ -192,16 +192,19 @@ button:not([data-no-gradient]):hover {
   background-position: 100% 0 !important;
 }
 
-button:not([data-no-gradient]):focus {
-  outline: none !important;
-  box-shadow: 0 0 0 4px rgba(37,83,255,0.12) !important;
+button:not([data-no-gradient]) {
+  background-image: linear-gradient(to right, rgba(37,83,255,1), rgba(255,92,38,1)) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.3s ease-in-out !important;
 }
 
-button:not([data-no-gradient])[disabled] {
-  opacity: .6 !important;
-  transform: none !important;
-  pointer-events: none !important;
+button:not([data-no-gradient]):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Optional helper classes */
 .btn-primary { background-image: linear-gradient(to right, rgba(37,83,255,1), rgba(255,92,38,1)) !important; color:#fff !important }
