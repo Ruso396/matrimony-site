@@ -32,4 +32,5 @@ router.get('/users/:id', getUserById);
 router.get('/related/:id', getRelatedProfiles);
 router.put('/update/:id', upload.single('profilePhoto'), updateUserProfile);
 
+
 export default router;
