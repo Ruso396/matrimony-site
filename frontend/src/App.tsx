@@ -41,6 +41,7 @@ const App: React.FC = () => {
               <Route path="/profiledetails/:id" element={<ProfileDetails />} />
               {/* Add more routes later */}
               <Route path="/contact" element={<MatrimonyContact />} />
+              <Route path="/premiumpayment" element={<PremiumPayment />} />
 
               {/* Add more routes here later, like: */}
               {/* <Route path="/about" element={<About />} /> */}

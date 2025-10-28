@@ -28,7 +28,7 @@ const upload = multer({ storage });
 router.post('/register', upload.single('profilePhoto'), registerUser);
 router.post('/login', loginUser);
 router.get('/users', getUsers);
-router.get('/user/:id', getUserById);
+router.get('/users/:id', getUserById);
 router.get('/related/:id', getRelatedProfiles);
 router.put('/update/:id', upload.single('profilePhoto'), updateUserProfile);
 

@@ -49,13 +49,6 @@ const ProfileDetails: React.FC = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [showContactInfo, setShowContactInfo] = useState(false);
 
-    // ✅ Related sample profiles (you can fetch from backend later)
-    //   const relatedProfiles: RelatedProfile[] = [
-    //     { id: 1, name: 'Olivia Martinez', age: 32, state: 'Barisal', profilePhoto: 'https://profilePhotos.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop' },
-    //     { id: 2, name: 'Jane Smith', age: 31, state: 'Khulna', profilePhoto: 'https://profilePhotos.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop' },
-    //     { id: 3, name: 'Emily Davis', age: 29, state: 'Rajshahi', profilePhoto: 'https://profilePhotos.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop' },
-    //     { id: 4, name: 'Sophia Brown', age: 35, state: 'Sylhet', profilePhoto: 'https://profilePhotos.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop' },
-    //   ];
     const [relatedProfiles, setRelatedProfiles] = useState<RelatedProfile[]>([]);
 
     useEffect(() => {
