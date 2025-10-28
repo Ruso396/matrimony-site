@@ -49,9 +49,6 @@ const Banner: React.FC = () => {
           <div className="w-full md:w-[420px] lg:w-[480px] text-center md:text-right space-y-3 sm:space-y-4 md:space-y-5 animate-fadeInUp md:mr-6 lg:mr-12 md:mt-16">
             
             {/* Main Heading */}
-            <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-serif text-amber-100 leading-tight animate-fadeInUp delay-100 md:ml-auto whitespace-nowrap" style={{ fontFamily: 'Playfair Display, Georgia, serif', letterSpacing: '0.02em' }}>
-              Royal <span className="inline-block animate-shimmer bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 bg-clip-text text-transparent">Delight</span>
-            </h1>
             
             {/* Subheading */}
             <p className="text-xs sm:text-sm md:text-base text-amber-100/90 tracking-widest uppercase animate-fadeInUp delay-200 md:ml-auto" style={{ letterSpacing: '0.15em' }}>
