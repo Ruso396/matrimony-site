@@ -21,9 +21,7 @@ const Footer: React.FC = () => {
             <p className="text-gray-300">
               Your Journey to Love Starts with Royal Delight.
             </p>
-            <button className="bg-gradient-to-r from-pink-500 to-rose-400 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105">
-              Register Now
-            </button>
+           
           </div>
 
           {/* ===== Contact Info ===== */}

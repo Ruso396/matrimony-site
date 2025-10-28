@@ -140,13 +140,7 @@ const Header: React.FC = () => {
               {link.name}
             </Link>
           ))}
-          <Link
-            to="/success-story"
-            onClick={() => setIsMenuOpen(false)}
-            className="block w-full py-2 flex items-center gap-2"
-          >
-            <Trophy className="w-5 h-5" /> Success Story
-          </Link>
+         
           <Link
             to="/login"
             onClick={() => setIsMenuOpen(false)}
