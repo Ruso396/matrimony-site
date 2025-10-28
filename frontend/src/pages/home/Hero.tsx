@@ -81,7 +81,7 @@ const Hero: React.FC = () => {
               <div className="flex flex-col xs5:flex-row gap-3 xs:gap-4 lg:gap-2">
                 <button
                   onClick={() => navigate('/register')}
-                  className="w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm xs:text-base lg:text-lg shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 lg:mx-0"
+                  className="gradient-btn w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm xs:text-base lg:text-lg shadow-glow hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 lg:mx-0"
                 >
                   <Heart className="w-4 h-4 xs:w-5 xs:h-5" />
                   <span>Register Now</span>
@@ -89,7 +89,7 @@ const Hero: React.FC = () => {
 
                 <button
                   onClick={() => navigate('/biodata')}
-                  className="w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm xs:text-base lg:text-lg hover:opacity-90 transition-all duration-300 lg:mx-0 flex items-center justify-center gap-2"
+                  className="gradient-btn w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm xs:text-base lg:text-lg hover:opacity-90 transition-all duration-300 lg:mx-0 flex items-center justify-center gap-2"
                 >
                   <Users className="w-4 h-4 xs:w-5 xs:h-5 text-white" />
                   <span>Browse Profiles</span>

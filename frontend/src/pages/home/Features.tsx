@@ -129,13 +129,7 @@ const Features: React.FC = () => {
               ))}
             </div>
 
-            <button
-              onClick={() => navigate('/services')}
-              className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base px-6 sm:px-8 py-3 rounded-full font-semibold shadow-md transition-all hover:scale-105 flex items-center gap-2"
-            >
-              <span>Know More</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+        
           </div>
 
           {/* Right Image */}
@@ -204,9 +198,7 @@ const Features: React.FC = () => {
               ))}
             </div>
 
-            <button className="mt-8 bg-[#E53E30] hover:bg-[#c53026] text-white font-semibold text-sm sm:text-base px-6 sm:px-8 py-3 rounded-full shadow-md transition-all hover:scale-105">
-              Know More →
-            </button>
+          
           </div>
         </div>
       </div>

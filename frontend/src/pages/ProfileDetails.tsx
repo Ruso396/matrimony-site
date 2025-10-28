@@ -131,17 +131,6 @@ const ProfileDetails: React.FC = () => {
                                 <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
                                     <span className="text-teal-700 font-bold text-sm">✓ Verified Profile</span>
                                 </div>
-                                <button
-                                    onClick={() => setIsFavorite(!isFavorite)}
-                                    className="bg-white/95 p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
-                                >
-                                    <Heart
-                                        className="w-6 h-6"
-                                        fill={isFavorite ? '#ef4444' : 'none'}
-                                        stroke={isFavorite ? '#ef4444' : '#0f766e'}
-                                        strokeWidth={2}
-                                    />
-                                </button>
                             </div>
 
                             <div className="relative mx-auto mb-6">
@@ -157,9 +146,31 @@ const ProfileDetails: React.FC = () => {
                             </div>
 
                             <div className="flex gap-3">
-                                <button className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition">
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const loggedInUserId = localStorage.getItem("userId"); // or however you store it
+                                            if (!loggedInUserId) {
+                                                alert("Please log in to send a request.");
+                                                return;
+                                            }
+
+                                            const response = await axios.post("http://localhost:5000/api/request/send", {
+                                                senderId: Number(loggedInUserId),
+                                                receiverId: user.id,
+                                            });
+
+                                            alert(response.data.message || "Request sent successfully!");
+                                        } catch (err: any) {
+                                            console.error(err);
+                                            alert("Failed to send request email");
+                                        }
+                                    }}
+                                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition"
+                                >
                                     Send Request
                                 </button>
+
                                 <button className="flex-1 bg-white text-teal-700 py-4 rounded-xl font-semibold hover:bg-gray-50 border-2 border-white hover:scale-105 transition">
                                     Add Favourite
                                 </button>

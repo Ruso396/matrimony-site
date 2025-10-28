@@ -168,11 +168,8 @@ a {
 
 
 
-/* ------------------------------------------------------------------ */
-/* Global primary button gradient (applies to all <button> by default) */
-/* Add data-no-gradient on a <button> to opt out (keeps original styles) */
-/* ------------------------------------------------------------------ */
-button:not([data-no-gradient]) {
+/* 🔹 Only buttons with .gradient-btn class will have gradient */
+.gradient-btn {
   background-image: linear-gradient(to right, rgba(37,83,255,1), rgba(255,92,38,1)) !important;
   background-size: 200% 100% !important;
   color: #ffffff !important;
@@ -186,28 +183,8 @@ button:not([data-no-gradient]) {
   cursor: pointer !important;
 }
 
-button:not([data-no-gradient]):hover {
+.gradient-btn:hover {
   transform: translateY(-3px) !important;
   box-shadow: 0 18px 45px rgba(37,83,255,0.18) !important;
   background-position: 100% 0 !important;
 }
-
-button:not([data-no-gradient]) {
-  background-image: linear-gradient(to right, rgba(37,83,255,1), rgba(255,92,38,1)) !important;
-  color: white !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-  transition: all 0.3s ease-in-out !important;
-}
-
-button:not([data-no-gradient]):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-
-/* Optional helper classes */
-.btn-primary { background-image: linear-gradient(to right, rgba(37,83,255,1), rgba(255,92,38,1)) !important; color:#fff !important }
-.btn-ghost { background: transparent !important; color: inherit !important; box-shadow: none !important }
-
-
