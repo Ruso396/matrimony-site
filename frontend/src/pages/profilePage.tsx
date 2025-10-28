@@ -71,6 +71,14 @@ const ProfilePage = () => {
     }
   }, [userId]);
 
+  const getPhotoUrl = (photo: string | null | undefined): string | undefined => {
+    if (!photo) return undefined;
+    // If backend already returned full URL, use it
+    if (photo.startsWith('http://') || photo.startsWith('https://')) return `${photo}?t=${Date.now()}`;
+    // Otherwise assume it's a filename and prepend uploads path
+    return `http://localhost:5000/uploads/${photo}?t=${Date.now()}`;
+  };
+
   const handleEditClick = () => setIsEditing(true);
   const handleCancel = () => {
     setTempProfile(profile);
@@ -148,9 +156,7 @@ const ProfilePage = () => {
                 src={
                   selectedFile
                     ? URL.createObjectURL(selectedFile)
-                    : profile.profilePhoto
-                    ? `http://localhost:5000/uploads/${profile.profilePhoto}?t=${Date.now()}`
-                    : "https://via.placeholder.com/150"
+                    : getPhotoUrl(profile.profilePhoto) ?? "https://via.placeholder.com/150"
                 }
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
