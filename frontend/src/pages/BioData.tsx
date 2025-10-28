@@ -157,13 +157,13 @@ const BioData: React.FC = () => {
         <div className="max-w-7xl mx-auto px-3 py-3 flex items-center justify-between">
           <div>
             <h1 className="text-lg sm:text-xl font-bold">All Profiles</h1>
-            <p className="text-xs text-gray-500">
+            {/* <p className="text-xs text-gray-500">
               {filtered.length} profiles available
-            </p>
+            </p> */}
           </div>
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
-            className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full text-xs font-semibold hover:shadow-md transition"
+            className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full text-xs font-semibold hover:shadow-md transition"
           >
             <Filter size={14} />
             <span className="hidden sm:inline">Filters</span>
@@ -308,6 +308,9 @@ const BioData: React.FC = () => {
                 <h3 className="font-bold text-gray-800 lg:text-base">
                   {profile.fullName}
                 </h3>
+                {/* <p className="text-gray-500 text-[10px] lg:text-xs">
+                  ID: {profile.id}
+                </p> */}
                 <p className="text-gray-600 text-[10px] lg:text-xs">
                   {profile.occupation}, {profile.state}
                 </p>
