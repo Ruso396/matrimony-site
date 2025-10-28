@@ -115,6 +115,7 @@ const ProfileDetails: React.FC = () => {
         <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white py-20">
             <div className="max-w-6xl mx-auto px-4">
                 <button
+                 
                     onClick={() => navigate(-1)}
                     className="mb-6 px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
                 >
@@ -132,6 +133,7 @@ const ProfileDetails: React.FC = () => {
                                     <span className="text-teal-700 font-bold text-sm">✓ Verified Profile</span>
                                 </div>
                                 <button
+                                 
                                     onClick={() => setIsFavorite(!isFavorite)}
                                     className="bg-white/95 p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
                                 >
@@ -157,10 +159,14 @@ const ProfileDetails: React.FC = () => {
                             </div>
 
                             <div className="flex gap-3">
-                                <button className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition">
+                                <button
+                                 
+                                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition">
                                     Send Request
                                 </button>
-                                <button className="flex-1 bg-white text-teal-700 py-4 rounded-xl font-semibold hover:bg-gray-50 border-2 border-white hover:scale-105 transition">
+                                <button 
+                                 
+                                className="flex-1 bg-white text-teal-700 py-4 rounded-xl font-semibold hover:bg-gray-50 border-2 border-white hover:scale-105 transition">
                                     Add Favourite
                                 </button>
                             </div>
@@ -232,6 +238,8 @@ const ProfileDetails: React.FC = () => {
                                             <span className="text-sm">Phone : ********</span>
                                         </div>
                                         <button
+
+                                         
                                             onClick={() => setShowContactInfo(true)}
                                             className="text-orange-600 text-xs font-semibold hover:underline"
                                         >
@@ -254,7 +262,9 @@ const ProfileDetails: React.FC = () => {
                 <div className="mt-12">
                     <h2 className="text-3xl font-bold text-teal-900 mb-8">Related Profiles</h2>
                     <div className="relative">
-                        <button onClick={prevSlide} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-teal-600 text-white rounded-full flex items-center justify-center hover:bg-teal-700 transition shadow-lg">
+                        <button
+                         
+                         onClick={prevSlide} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-teal-600 text-white rounded-full flex items-center justify-center hover:bg-teal-700 transition shadow-lg">
                             <ChevronLeft className="w-6 h-6" />
                         </button>
                         <div className="overflow-hidden">
@@ -277,7 +287,9 @@ const ProfileDetails: React.FC = () => {
                                 ))}
                             </div>
                         </div>
-                        <button onClick={nextSlide} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-teal-600 text-white rounded-full flex items-center justify-center hover:bg-teal-700 transition shadow-lg">
+                        <button 
+                         
+                        onClick={nextSlide} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-teal-600 text-white rounded-full flex items-center justify-center hover:bg-teal-700 transition shadow-lg">
                             <ChevronRight className="w-6 h-6" />
                         </button>
                     </div>

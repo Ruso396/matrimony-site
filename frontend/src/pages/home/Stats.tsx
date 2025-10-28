@@ -120,13 +120,7 @@ const Banner: React.FC = () => {
 
             {/* CTA Button */}
             <div className="flex justify-center md:justify-end">
-                          <button
-                            onClick={() => navigate('/services')}
-                            className="w-[200px] sm:w-auto mt-4 sm:mt-6 px-4 sm:px-8 md:px-10 py-2 sm:py-3 md:py-3.5 rounded-full bg-white text-gray-900 text-xs sm:text-base md:text-lg font-semibold shadow-2xl hover:scale-105 hover:shadow-amber-300/30 transition-all duration-300 animate-fadeInUp delay-700 animate-pulse-slow flex items-center gap-2 justify-center"
-                          >
-                            <span>Know More</span>
-                            <ArrowRight className="w-4 h-4 text-white" />
-                          </button>
+                         
             </div>
           </div>
         </div>

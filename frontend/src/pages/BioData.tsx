@@ -137,7 +137,7 @@ const handleViewDetails = async (id: number) => {
               <button
                 onClick={() => setFiltersOpen(false)}
                 className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
-                data-no-gradient
+                 
               >
                 <X className="w-4 h-4" />
               </button>
@@ -170,6 +170,7 @@ const handleViewDetails = async (id: number) => {
                   {["All", "Brides", "Grooms"].map((type) => (
                     <button
                       key={type}
+                       
                       onClick={() => setBiodataType(type)}
                       className={`py-2 text-xs rounded font-semibold transition ${
                         biodataType === type
@@ -241,7 +242,7 @@ const handleViewDetails = async (id: number) => {
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <button
-                  onClick={() => toggleFavorite(profile.id)}
+                  onClick={() => toggleFavorite(profile.id)}  
                   className={`absolute top-2 right-2 p-1.5 lg:p-2 rounded-full transition ${
                     favorites.has(profile.id)
                       ? "bg-red-500 text-white"
