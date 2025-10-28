@@ -16,7 +16,8 @@ const router = express.Router();
 // 📸 Multer config (store files in /uploads)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads')); // ✅ go one level up (since routes folder is inside src)
+    // Save uploads into the `src/uploads` folder so it matches server static path
+    cb(null, path.join(__dirname, '../uploads'));
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);

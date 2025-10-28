@@ -29,8 +29,8 @@ import { getStories, submitStory } from '../controllers/storyController';
 
 const router = Router();
 
-// ✅ Make sure uploads folder exists
-const uploadPath = path.join(__dirname, '../../uploads');
+// ✅ Make sure uploads folder exists (use src/uploads so it matches server static path)
+const uploadPath = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
   console.log('✅ Upload folder created:', uploadPath);

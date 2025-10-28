@@ -249,7 +249,8 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     if (req.file) {
       // delete old photo (optional)
       if (user.profilePhoto) {
-        const oldPath = path.join(__dirname, '../../uploads', user.profilePhoto);
+        // uploads folder is under src/uploads
+        const oldPath = path.join(__dirname, '../uploads', user.profilePhoto);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
       profilePhoto = req.file.filename;
@@ -309,7 +310,7 @@ export const deleteUserProfile = async (req: Request, res: Response) => {
 
     // 🖼️ Delete profile photo from uploads folder (if exists)
     if (user.profilePhoto) {
-      const photoPath = path.join(__dirname, '../../uploads', user.profilePhoto);
+      const photoPath = path.join(__dirname, '../uploads', user.profilePhoto);
       if (fs.existsSync(photoPath)) {
         fs.unlinkSync(photoPath);
       }
