@@ -1,5 +1,6 @@
 import React from "react";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, Share2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const testimonials = [
   {
@@ -47,6 +48,7 @@ const testimonials = [
 ];
 
 const Testimonials: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative py-16 sm:py-20 px-3 xs:px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden">
       {/* Inline Animations */}
@@ -151,8 +153,12 @@ const Testimonials: React.FC = () => {
             <div className="text-gray-600">verified members</div>
           </div>
 
-          <button className="mt-6 px-5 xs:px-6 py-2.5 xs:py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm sm:text-base shadow-md hover:shadow-2xl transition-all hover:scale-105 animate-float">
-            Share Your Story
+          <button
+            onClick={() => navigate('/contact')}
+            className="mt-6 px-5 xs:px-6 py-2.5 xs:py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm sm:text-base shadow-md hover:shadow-2xl transition-all hover:scale-105 animate-float flex items-center gap-2 justify-center"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>Share Your Story</span>
           </button>
         </div>
       </div>

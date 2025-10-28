@@ -10,7 +10,9 @@ import {
   MessageCircle,
   Clock4,
   Crown,
+  ArrowRight,
 } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 import rightIMG from "../../components/assets/Gemini_Generated_Image_c5nswvc5nswvc5ns (1).png";
 import couple from "../../components/assets/generated-image.png";
 
@@ -52,6 +54,7 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
 };
 
 const Features: React.FC = () => {
+  const navigate = useNavigate();
   const advantages = useMemo(
     () => [
       { icon: Shield, title: "Top Consultants", subtitle: "Will manage your profile." },
@@ -126,8 +129,12 @@ const Features: React.FC = () => {
               ))}
             </div>
 
-            <button className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base px-6 sm:px-8 py-3 rounded-full font-semibold shadow-md transition-all hover:scale-105">
-              Know More →
+            <button
+              onClick={() => navigate('/services')}
+              className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base px-6 sm:px-8 py-3 rounded-full font-semibold shadow-md transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <span>Know More</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 

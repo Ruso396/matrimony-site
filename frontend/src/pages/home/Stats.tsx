@@ -1,8 +1,10 @@
 import React from "react";
-import { MessageCircle, UserCircle, Heart, Crown } from "lucide-react";
+import { MessageCircle, UserCircle, Heart, Crown, ArrowRight } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 import bannerImg from "../../components/assets/generated-image2.png";
 
 const Banner: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <section
       className="relative min-h-[90vh] sm:min-h-[85vh] md:min-h-[90vh] flex items-center justify-end md:justify-center bg-cover bg-center overflow-hidden"
@@ -118,9 +120,13 @@ const Banner: React.FC = () => {
 
             {/* CTA Button */}
             <div className="flex justify-center md:justify-end">
-                          <button className="w-[200px] sm:w-auto mt-4 sm:mt-6 px-4 sm:px-8 md:px-10 py-2 sm:py-3 md:py-3.5 rounded-full bg-white text-gray-900 text-xs sm:text-base md:text-lg font-semibold shadow-2xl hover:scale-105 hover:shadow-amber-300/30 transition-all duration-300 animate-fadeInUp delay-700 animate-pulse-slow">
-              Know More
-            </button>
+                          <button
+                            onClick={() => navigate('/services')}
+                            className="w-[200px] sm:w-auto mt-4 sm:mt-6 px-4 sm:px-8 md:px-10 py-2 sm:py-3 md:py-3.5 rounded-full bg-white text-gray-900 text-xs sm:text-base md:text-lg font-semibold shadow-2xl hover:scale-105 hover:shadow-amber-300/30 transition-all duration-300 animate-fadeInUp delay-700 animate-pulse-slow flex items-center gap-2 justify-center"
+                          >
+                            <span>Know More</span>
+                            <ArrowRight className="w-4 h-4 text-white" />
+                          </button>
             </div>
           </div>
         </div>

@@ -70,12 +70,12 @@ const BioData: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 text-gray-800 mt-20 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 text-gray-800 mt-13 py-10">
       {/* ===== HEADER ===== */}
-      <div className="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+      <div className="sticky top-0 z-30  ">
         <div className="max-w-7xl mx-auto px-3 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-lg sm:text-xl font-bold">All Biodatas</h1>
+            <h1 className="text-lg sm:text-xl font-bold">All Profiles</h1>
             <p className="text-xs text-gray-500">
               {filtered.length} profiles available
             </p>
@@ -102,9 +102,10 @@ const BioData: React.FC = () => {
               <h2 className="text-base font-bold">Filter Profiles</h2>
               <button
                 onClick={() => setFiltersOpen(false)}
-                className="p-1 hover:bg-gray-100 rounded-full"
+                className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                data-no-gradient
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -267,6 +268,7 @@ const BioData: React.FC = () => {
           .py-1, .py-1\\.5 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
           .p-2 { padding: 0.4rem; }
         }
+          
       `}</style>
     </div>
   );
