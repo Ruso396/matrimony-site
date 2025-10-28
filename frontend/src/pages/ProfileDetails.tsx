@@ -157,9 +157,31 @@ const ProfileDetails: React.FC = () => {
                             </div>
 
                             <div className="flex gap-3">
-                                <button className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition">
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const loggedInUserId = localStorage.getItem("userId"); // or however you store it
+                                            if (!loggedInUserId) {
+                                                alert("Please log in to send a request.");
+                                                return;
+                                            }
+
+                                            const response = await axios.post("http://localhost:5000/api/request/send", {
+                                                senderId: Number(loggedInUserId),
+                                                receiverId: user.id,
+                                            });
+
+                                            alert(response.data.message || "Request sent successfully!");
+                                        } catch (err: any) {
+                                            console.error(err);
+                                            alert("Failed to send request email");
+                                        }
+                                    }}
+                                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition"
+                                >
                                     Send Request
                                 </button>
+
                                 <button className="flex-1 bg-white text-teal-700 py-4 rounded-xl font-semibold hover:bg-gray-50 border-2 border-white hover:scale-105 transition">
                                     Add Favourite
                                 </button>

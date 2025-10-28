@@ -14,13 +14,14 @@ interface UserProfile {
   profilePhoto: string;
 }
 
+
 const BioData: React.FC = () => {
-   const location = useLocation();
+  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userIdFromUrl = queryParams.get('userId');
 
   const userId = userIdFromUrl || localStorage.getItem('userId');
-  
+
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
@@ -31,59 +32,105 @@ const BioData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // ✅ Fetch from API
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/register/users");
-        const result = Array.isArray(res.data)
-          ? res.data
-          : res.data.users || res.data.data || [];
-        setProfiles(result);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching profiles:", error);
-        setLoading(false);
-      }
-    };
-    fetchProfiles();
-  }, []);
-
-  const toggleFavorite = (id: number) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(id)) newFavorites.delete(id);
-    else newFavorites.add(id);
-    setFavorites(newFavorites);
-  };
-const handleViewDetails = async (id: number) => {
-  const token = localStorage.getItem('token');
-  const currentUserId = userIdFromUrl || userId;
-
-  if (!currentUserId || !token) {
-    alert("Please log in to view profile details.");
-    navigate('/login');
-    return;
-  }
-
-  try {
-    const response = await axios.get(
-      `http://localhost:5000/api/premiumpayment/status/${currentUserId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    const isPremium = response.data?.user?.isPremium || false;
-
-    if (isPremium) {
-      navigate(`/profiledetails/${id}?userId=${currentUserId}`);
-    } else {
-      alert("Only Premium members can view detailed profiles.");
-      navigate(`/premiumpayment?userId=${currentUserId}`);
+ useEffect(() => {
+  const fetchProfiles = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/register/users");
+      const result = Array.isArray(res.data)
+        ? res.data
+        : res.data.users || res.data.data || [];
+      setProfiles(result);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching profiles:", error);
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error verifying premium status:", error);
-    alert("Please complete your Premium payment to access profile details.");
-    navigate(`/premiumpayment?userId=${currentUserId}`);
+  };
+
+  const fetchFavorites = async () => {
+    try {
+      if (!userId) return;
+      const res = await axios.get(`http://localhost:5000/api/favorites/${userId}`);
+      const favs = res.data?.favorites || [];
+    const favSet = new Set<number>(favs.map((f: any) => Number(f.favoriteUserId)));
+
+      setFavorites(favSet);
+    } catch (err) {
+      console.error("Error fetching favorites:", err);
+    }
+  };
+
+  fetchProfiles();
+  fetchFavorites();
+}, [userId]);
+
+
+  const toggleFavorite = async (favoriteUserId: number) => {
+  try {
+    const loggedInUserId = Number(userId);
+    if (!loggedInUserId) {
+      alert('Please log in to add favorites.');
+      navigate('/login');
+      return;
+    }
+
+    const isFav = favorites.has(favoriteUserId);
+    if (isFav) {
+      await axios.post('http://localhost:5000/api/favorites/remove', {
+        userId: loggedInUserId,
+        favoriteUserId,
+      });
+      const updated = new Set(favorites);
+      updated.delete(favoriteUserId);
+      setFavorites(updated);
+      alert('Removed from favorites');
+    } else {
+      await axios.post('http://localhost:5000/api/favorites/add', {
+        userId: loggedInUserId,
+        favoriteUserId,
+      });
+      const updated = new Set(favorites);
+      updated.add(favoriteUserId);
+      setFavorites(updated);
+      alert('Added to favorites');
+    }
+  } catch (err: any) {
+    console.error(err);
+    alert(err.response?.data?.message || 'Error updating favorites');
   }
 };
+
+
+  const handleViewDetails = async (id: number) => {
+    const token = localStorage.getItem('token');
+    const currentUserId = userIdFromUrl || userId;
+
+    if (!currentUserId || !token) {
+      alert("Please log in to view profile details.");
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/premiumpayment/status/${currentUserId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const isPremium = response.data?.user?.isPremium || false;
+
+      if (isPremium) {
+        navigate(`/profiledetails/${id}?userId=${currentUserId}`);
+      } else {
+        alert("Only Premium members can view detailed profiles.");
+        navigate(`/premiumpayment?userId=${currentUserId}`);
+      }
+    } catch (error) {
+      console.error("Error verifying premium status:", error);
+      alert("Please complete your Premium payment to access profile details.");
+      navigate(`/premiumpayment?userId=${currentUserId}`);
+    }
+  };
 
 
   const filtered = profiles.filter((p) => {
@@ -171,11 +218,10 @@ const handleViewDetails = async (id: number) => {
                     <button
                       key={type}
                       onClick={() => setBiodataType(type)}
-                      className={`py-2 text-xs rounded font-semibold transition ${
-                        biodataType === type
+                      className={`py-2 text-xs rounded font-semibold transition ${biodataType === type
                           ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
+                        }`}
                     >
                       {type}
                     </button>
@@ -242,18 +288,18 @@ const handleViewDetails = async (id: number) => {
                 />
                 <button
                   onClick={() => toggleFavorite(profile.id)}
-                  className={`absolute top-2 right-2 p-1.5 lg:p-2 rounded-full transition ${
-                    favorites.has(profile.id)
+                  className={`absolute top-2 right-2 p-1.5 lg:p-2 rounded-full transition ${favorites.has(profile.id)
                       ? "bg-red-500 text-white"
                       : "bg-white/90 text-red-400 hover:bg-white"
-                  }`}
+                    }`}
                 >
-                  <Heart
-                    size={14}
-                    className="lg:w-4 lg:h-4"
-                    fill={favorites.has(profile.id) ? "white" : "none"}
-                  />
+                 <Heart
+  size={14}
+  fill={favorites.has(profile.id) ? "white" : "none"}
+/>
+
                 </button>
+
               </div>
 
               <div className="p-2 lg:p-3 text-[11px] lg:text-sm flex flex-col gap-1 lg:gap-2 flex-grow">
@@ -270,13 +316,13 @@ const handleViewDetails = async (id: number) => {
                   Age: {profile.age}
                 </p>
 
-               <button
-  onClick={() => handleViewDetails(profile.id)}
-  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
->
-  View Details
-</button>
-{/* 
+                <button
+                  onClick={() => handleViewDetails(profile.id)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                >
+                  View Details
+                </button>
+                {/* 
                 <button
                  onClick={() => navigate(`/profiledetails/${profile.id}`)}
                   className="mt-auto w-full py-1.5 lg:py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] lg:text-sm font-semibold rounded hover:shadow-md transition lg:w-4/5 lg:mx-auto"
