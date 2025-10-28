@@ -139,7 +139,7 @@ export default function FaqPage() {
               href="#"
               className="text-rose-600 font-semibold underline hover:text-rose-700 transition flex items-center ml-1"
             >
-              Profile Dashboard <ExternalLink className="ml-1 h-3 sm:h-4 w-3 sm:w-4" />
+              Find Your Partner <ExternalLink className="ml-1 h-3 sm:h-4 w-3 sm:w-4" />
             </a>
           </p>
         </div>
