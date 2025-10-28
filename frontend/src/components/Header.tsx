@@ -72,20 +72,7 @@ const Header: React.FC = () => {
 
         {/* Right Side - Trophy + Login */}
         <div className="hidden md:flex items-center gap-5">
-          {/* Trophy Icon for Success Story */}
-          <Link
-            to="/success-stories"
-            className="flex items-center justify-center"
-          >
-            <Trophy
-              size={22}
-              className={`${
-                isTransparentPage && !isScrolled
-                  ? "text-white hover:text-yellow-400"
-                  : "text-gray-700 hover:text-yellow-500"
-              } transition-transform duration-200 hover:scale-110`}
-            />
-          </Link>
+         
 
           {/* Login Button */}
           <Link
