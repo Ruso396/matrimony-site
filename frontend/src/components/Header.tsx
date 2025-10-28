@@ -140,7 +140,7 @@ const Header: React.FC = () => {
                   onMouseLeave={() => setShowDropdown(false)}
                 >
                   <Link
-                    to="/profile"
+                    to="/profilePage"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
                     onClick={() => setShowDropdown(false)}
                   >

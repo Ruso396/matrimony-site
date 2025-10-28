@@ -7,7 +7,8 @@ import {
   getUsers,
   getUserById,
   getRelatedProfiles,
-  updateUserProfile
+  updateUserProfile,
+  deleteUserProfile
 } from '../controllers/registerController';
 
 const router = express.Router();
@@ -31,6 +32,7 @@ router.get('/users', getUsers);
 router.get('/users/:id', getUserById);
 router.get('/related/:id', getRelatedProfiles);
 router.put('/update/:id', upload.single('profilePhoto'), updateUserProfile);
+router.delete('/users/:id', deleteUserProfile);
 
 
 export default router;

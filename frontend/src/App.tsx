@@ -12,6 +12,7 @@ import MatrimonyContact from "./pages/contact";
 import ModernRegister from "./components/Register";
 import FaqPage from "./pages/home/FAQ";
 import PremiumPayment from "./pages/PremiumPayment";
+import ProfilePage from "./pages/profilePage";
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -43,6 +44,7 @@ const App: React.FC = () => {
               {/* Add more routes later */}
               <Route path="/contact" element={<MatrimonyContact />} />
               <Route path="/premiumpayment" element={<PremiumPayment />} />
+              <Route path="/profilePage" element={<ProfilePage />} />
 
               {/* Add more routes here later, like: */}
               {/* <Route path="/about" element={<About />} /> */}
