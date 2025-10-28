@@ -230,21 +230,31 @@ const ModernRegister = () => {
   return (
     <div className="min-h-screen flex bg-white mt-20">
       {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-rose-50 to-pink-50">
-        <div className="absolute inset-0 flex items-center justify-center p-12">
-          <div className="text-center">
-            <img 
-              src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" 
-              alt="Wedding Couple" 
-              className="w-full max-w-lg rounded-2xl shadow-2xl"
-            />
-            <div className="mt-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">Start Your Journey</h2>
-              <p className="text-gray-600">Create your profile and find your perfect match</p>
-            </div>
-          </div>
-        </div>
+<div
+  className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center bg-no-repeat"
+  style={{
+    backgroundImage:
+      "url('https://www.eastwood-hall.co.uk/wp-content/uploads/2024/01/130-SaywellHQ-Picks-_-Lauren-Adam-_-09-10-2021-_-SaywellHQ.co_.uk-HQ300675_websize-2.jpg')", // 👈 Replace this with any image you like
+  }}
+>
+  {/* Optional: dark overlay for readability */}
+  <div className="absolute inset-0 bg-black/30"></div>
+
+  {/* Content */}
+  <div className="relative z-10 flex items-center justify-center w-full h-full p-12">
+    <div className="text-center text-white">
+     
+      <div className="mt-8">
+        <h2 className="text-3xl font-bold mb-2 drop-shadow-md">
+          Start Your Journey
+        </h2>
+        <p className="text-gray-100 drop-shadow-sm">
+          Create your profile and find your perfect match
+        </p>
       </div>
+    </div>
+  </div>
+</div>
 
       {/* Right Side - Register Form */}
       <div className="w-full lg:w-1/2 overflow-y-auto p-8">
