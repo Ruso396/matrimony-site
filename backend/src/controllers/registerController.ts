@@ -40,25 +40,37 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Step 1: find user
+    // Check user exist
     const user = await RegisterUser.findOne({ where: { email } });
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // Step 2: check password
+    // Check password
     const isValid = await user.validPassword(password);
     if (!isValid) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // Step 3: generate JWT token
+    // JWT token create
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
+
+    // ✅ Return user details also
 
     // ✅ Step 4: return token + user info
     return res.json({
+     
       message: 'Login successful',
+     
       token,
       userId: user.id,
       fullName: user.fullName,
       email: user.email,
+   
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        profilePhoto: user.profilePhoto ? `${req.protocol}://${req.get('host')}/uploads/${user.profilePhoto}` : null
+      }
     });
+
 
   } catch (err) {
     console.error(err);
@@ -213,4 +225,77 @@ export const getRelatedProfiles = async (req: Request, res: Response) => {
     });
   }
 };
+
+// ✅ Update user profile by ID
+export const updateUserProfile = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // 🧩 Check if user exists
+    const user = await RegisterUser.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 🧾 Get body fields
+    const {
+      profileFor, fullName, gender, dob, age, religion, motherTongue,
+      maritalStatus, caste, height, education, occupation, annualIncome,
+      country, state, city, email, mobile, password
+    } = req.body;
+
+    // 🖼️ Handle new profile photo
+    let profilePhoto = user.profilePhoto; // old photo
+    if (req.file) {
+      // delete old photo (optional)
+      if (user.profilePhoto) {
+        const oldPath = path.join(__dirname, '../../uploads', user.profilePhoto);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
+      profilePhoto = req.file.filename;
+    }
+
+    // 🧠 Update fields
+    await user.update({
+      profileFor,
+      fullName,
+      gender,
+      dob,
+      age,
+      religion,
+      motherTongue,
+      maritalStatus,
+      caste,
+      height,
+      education,
+      occupation,
+      annualIncome,
+      country,
+      state,
+      city,
+      email,
+      mobile,
+      password,
+      profilePhoto
+    });
+
+    // ✅ Build full URL for updated image
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+    const formattedUser = {
+      ...user.dataValues,
+      profilePhoto: user.profilePhoto ? `${baseUrl}${user.profilePhoto}` : null
+    };
+
+    return res.status(200).json({
+      message: 'Profile updated successfully',
+      user: formattedUser
+    });
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    return res.status(500).json({ message: 'Server error updating profile' });
+  }
+};
+
+
+
 

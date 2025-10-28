@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Heart, Eye, EyeOff, Loader2, Mail, Phone, Chrome, Facebook, Lock, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface FormErrors {
   loginId?: string;
@@ -17,6 +18,7 @@ const Login = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [statusMessage, setStatusMessage] = useState<string>('');
   const navigate = useNavigate();
+  const { setUserName } = useAuth();
 
   // Validation
   const validateForm = (): boolean => {
@@ -27,6 +29,7 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle Submit
 const handleSubmit = useCallback(async (e: React.FormEvent) => {
   e.preventDefault();
   setStatusMessage('');
@@ -47,11 +50,21 @@ const handleSubmit = useCallback(async (e: React.FormEvent) => {
       setStatusMessage(data.message);
 
       // ✅ Save token and userId to localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userId', data.userId);
-
       // ✅ Redirect to BioData page with userId in URL
+      // ✅ Always fetch user details from backend response
+      const userNameFromDB = data.user?.fullName || "User";
+
+      // ✅ Store in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userName', userNameFromDB);
+      localStorage.setItem('userId', data.user?.id);
+
+      // Update auth context
+      setUserName(userNameFromDB);
       setTimeout(() => navigate(`/biodata?userId=${data.userId}`), 1000);
+
+      // ✅ Redirect
+      setTimeout(() => navigate('/biodata'), 1000);
     } else {
       setErrors({ submit: data.message });
     }
@@ -62,6 +75,8 @@ const handleSubmit = useCallback(async (e: React.FormEvent) => {
     setIsLoading(false);
   }
 }, [loginId, password, navigate]);
+
+
 
   // Hearts animation
   const hearts = useMemo(() =>

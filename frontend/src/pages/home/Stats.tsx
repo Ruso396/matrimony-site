@@ -1,69 +1,138 @@
-import React from 'react';
-import { CheckCircle2, MessageCircleMore, ShieldCheck, Award, Play } from 'lucide-react';
+import React from "react";
+import { MessageCircle, UserCircle, Heart, Crown, ArrowRight } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import bannerImg from "../../components/assets/generated-image2.png";
 
-/*
-  Replaces previous stats grid with an "About Us" section matching the provided screenshot:
-  - Left: large circular image with a centered amber play button
-  - Right: heading, description paragraph, four feature rows with icons, and a amber CTA button
-  - Colors chosen to mirror screenshot (amber accent), while remaining accessible on white background
-*/
-
-const AboutFeature: React.FC<{ icon: React.ElementType; title: string; }> = ({ icon: Icon, title }) => (
-  <div className="flex items-center gap-3">
-    <div className="w-9 h-9 rounded-md bg-amber-100 flex items-center justify-center ring-1 ring-amber-200">
-      <Icon className="w-5 h-5 text-amber-900" />
-    </div>
-    <p className="text-text-primary font-semibold">{title}</p>
-  </div>
-);
-
-const Stats: React.FC = () => {
+const Banner: React.FC = () => {
+  const navigate = useNavigate();
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        {/* Left: circular image with play button */}
-        <div className="relative mx-auto w-full max-w-xl aspect-square">
-          <div className="absolute inset-0 rounded-full overflow-hidden shadow-xl">
-            <img
-              src="https://crm.siddhimatrimonials.com/storage/blogs/1231124063735_4617.jpg"
-              alt="About Us"
-              className="w-full h-full object-cover"
-            />
+    <section
+      className="relative min-h-[90vh] sm:min-h-[85vh] md:min-h-[90vh] flex items-center justify-end md:justify-center bg-cover bg-center overflow-hidden"
+      style={{ backgroundImage: `url(${bannerImg})` }}
+    >
+      <style>{`
+        @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(217, 179, 140, 0.3); } 50% { box-shadow: 0 0 40px rgba(217, 179, 140, 0.6); } }
+        @keyframes scaleIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes iconBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.1); } }
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-pulse-slow { animation: pulse 3s ease-in-out infinite; }
+        .animate-shimmer { animation: shimmer 3s linear infinite; background-size: 200% 100%; }
+        .animate-glow { animation: glow 2s ease-in-out infinite; }
+        .animate-scaleIn { animation: scaleIn 0.6s ease-out forwards; }
+        .animate-iconBounce { animation: iconBounce 2s ease-in-out infinite; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+      `}</style>
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/70"></div>
+      
+      {/* Animated Background Elements */}
+      <div className="absolute top-10 right-10 w-32 h-32 sm:w-40 sm:h-40 md:w-64 md:h-64 rounded-full bg-yellow-600/10 blur-3xl animate-float"></div>
+      <div className="absolute bottom-10 left-10 w-40 h-40 sm:w-48 sm:h-48 md:w-72 md:h-72 rounded-full bg-orange-600/10 blur-3xl animate-float delay-200" style={{ animationDelay: '1s' }}></div>
+
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-0">
+        <div className="flex flex-col items-center md:items-end justify-center md:justify-end gap-6 md:gap-12">
+          
+          {/* Right Side Content */}
+          <div className="w-full md:w-[420px] lg:w-[480px] text-center md:text-right space-y-3 sm:space-y-4 md:space-y-5 animate-fadeInUp md:mr-6 lg:mr-12 md:mt-16">
+            
+            {/* Main Heading */}
+            <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-serif text-amber-100 leading-tight animate-fadeInUp delay-100 md:ml-auto whitespace-nowrap" style={{ fontFamily: 'Playfair Display, Georgia, serif', letterSpacing: '0.02em' }}>
+              Royal <span className="inline-block animate-shimmer bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 bg-clip-text text-transparent">Delight</span>
+            </h1>
+            
+            {/* Subheading */}
+            <p className="text-xs sm:text-sm md:text-base text-amber-100/90 tracking-widest uppercase animate-fadeInUp delay-200 md:ml-auto" style={{ letterSpacing: '0.15em' }}>
+              Privileged Matrimony
+            </p>
+
+            {/* Feature Grid */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-3 mt-6 sm:mt-8 md:mt-8 max-w-[480px] md:ml-0 md:-mr-20 lg:-mr-32">
+              {/* Card 1 */}
+              <div className="bg-black/40 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-4 border border-amber-200/20 animate-scaleIn delay-300 hover:bg-black/50 transition-all duration-300 animate-glow">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-amber-600/20 flex items-center justify-center animate-iconBounce">
+                    <MessageCircle className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-amber-300" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white text-xs sm:text-sm md:text-base font-semibold">Dedicated</p>
+                    <p className="text-amber-200/80 text-[10px] sm:text-xs">personal advisor</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2 */}
+              <div className="bg-black/40 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-4 border border-amber-200/20 animate-scaleIn delay-400 hover:bg-black/50 transition-all duration-300 animate-glow" style={{ animationDelay: '0.5s' }}>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-amber-600/20 flex items-center justify-center animate-iconBounce delay-100">
+                    <UserCircle className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-amber-300" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white text-xs sm:text-sm md:text-base font-semibold">Highlighted</p>
+                    <p className="text-amber-200/80 text-[10px] sm:text-xs">profile in website</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3 */}
+              <div className="bg-black/40 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-4 border border-amber-200/20 animate-scaleIn delay-500 hover:bg-black/50 transition-all duration-300 animate-glow" style={{ animationDelay: '0.7s' }}>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-amber-600/20 flex items-center justify-center animate-iconBounce delay-200">
+                    <Heart className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-amber-300 fill-amber-300" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white text-xs sm:text-sm md:text-base font-semibold">Verified</p>
+                    <p className="text-amber-200/80 text-[10px] sm:text-xs">matching profiles</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 4 */}
+              <div className="bg-black/40 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-4 border border-amber-200/20 animate-scaleIn delay-600 hover:bg-black/50 transition-all duration-300 animate-glow" style={{ animationDelay: '0.9s' }}>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-amber-600/20 flex items-center justify-center animate-iconBounce delay-300">
+                    <Crown className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-amber-300" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white text-xs sm:text-sm md:text-base font-semibold">Premium</p>
+                    <p className="text-amber-200/80 text-[10px] sm:text-xs">profile listing in magazine</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Description Text */}
+            <p className="text-white/90 text-xs sm:text-sm md:text-base leading-relaxed animate-fadeInUp delay-700 mt-4 sm:mt-6 md:ml-auto">
+              We offer you premium services designed to make your<br className="hidden md:block" /> experience a privileged one.
+            </p>
+
+            {/* CTA Button */}
+            <div className="flex justify-center md:justify-end">
+                          <button
+                            onClick={() => navigate('/services')}
+                            className="w-[200px] sm:w-auto mt-4 sm:mt-6 px-4 sm:px-8 md:px-10 py-2 sm:py-3 md:py-3.5 rounded-full bg-white text-gray-900 text-xs sm:text-base md:text-lg font-semibold shadow-2xl hover:scale-105 hover:shadow-amber-300/30 transition-all duration-300 animate-fadeInUp delay-700 animate-pulse-slow flex items-center gap-2 justify-center"
+                          >
+                            <span>Know More</span>
+                            <ArrowRight className="w-4 h-4 text-white" />
+                          </button>
+            </div>
           </div>
-
-          {/* Centered play button overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-auto">
-            <button
-              aria-label="Play about video"
-              onClick={() => window.open('#', '_blank')}
-              className="w-16 h-16 rounded-full bg-amber-600 text-white flex items-center justify-center shadow-lg hover:bg-amber-500 transform hover:scale-105 transition-all"
-            >
-              <Play className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-
-        {/* Right: text and features */}
-        <div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-text-primary mb-4">About Us</h2>
-          <p className="text-text-subtle leading-relaxed mb-6">
-            Welcome to The International Matrimony. We are a premier matrimonial service located in Delhi. Our team consists of highly skilled professionals dedicated to helping you find your perfect match. Since our establishment, we have successfully matched countless couples from various backgrounds, including Muslim, Sikh, Christian, Hindu, and Jain. Our services include personalized matchmaking, background checks, and more. Our working hours are flexible and we are available to assist you at any time. Trust us to help you embark on your journey towards a happy and fulfilling marriage. Explore our services now.
-          </p>
-
-          <div className="grid sm:grid-cols-2 gap-5 mb-8">
-            <AboutFeature icon={CheckCircle2} title="Contact genuine profiles" />
-            <AboutFeature icon={MessageCircleMore} title="Find perfect match quite easily" />
-            <AboutFeature icon={ShieldCheck} title="100% security for data and Profile" />
-            <AboutFeature icon={Award} title="Trusted Matrimonial agency in the world" />
-          </div>
-
-          <button className="inline-flex items-center justify-center rounded-full bg-amber-600 text-white px-6 py-3 font-semibold shadow hover:bg-amber-500 transition-colors">
-            See More
-          </button>
         </div>
       </div>
     </section>
   );
 };
 
-export default Stats;
+export default Banner;
