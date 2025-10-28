@@ -17,34 +17,27 @@ import {
 const ProfilePage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [tempProfile, setTempProfile] = useState<any>({});
-  const [loading, setLoading] = useState(true);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [tempProfile, setTempProfile] = useState<any>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const userId = localStorage.getItem("userId");
 
-  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-  const userId = userData?.id;
-
-  // 🔹 Fetch user profile on mount
+  // ✅ Fetch user details on load
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/api/user/${userId}`);
-        setProfile(res.data);
-        setTempProfile(res.data);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-        setLoading(false);
-      }
-    };
-    fetchProfile();
+    if (userId) {
+      axios
+        .get(`http://localhost:5000/api/register/users/${userId}`)
+        .then((res) => {
+          setProfile(res.data.user);
+          setTempProfile(res.data.user);
+        })
+        .catch((err) => console.error("Error fetching profile:", err));
+    }
   }, [userId]);
 
   const handleEditClick = () => setIsEditing(true);
   const handleCancel = () => {
     setTempProfile(profile);
     setIsEditing(false);
-    setPhotoFile(null);
   };
 
   const handleChange = (e: any) => {
@@ -53,53 +46,37 @@ const ProfilePage = () => {
   };
 
   const handleFileChange = (e: any) => {
-    setPhotoFile(e.target.files[0]);
+    setSelectedFile(e.target.files[0]);
   };
 
-  // 🔹 Save changes to backend
   const handleSave = async () => {
     try {
       const formData = new FormData();
-      Object.entries(tempProfile).forEach(([key, value]) => {
-        formData.append(key, value as string);
-      });
-      if (photoFile) formData.append("profilePhoto", photoFile);
+      Object.entries(tempProfile).forEach(([key, value]) =>
+        formData.append(key, value as string)
+      );
+      if (selectedFile) formData.append("profilePhoto", selectedFile);
 
       const res = await axios.put(
-        `http://localhost:5000/api/user/update/${userId}`,
+        `http://localhost:5000/api/register/update/${userId}`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       setProfile(res.data.user);
       setIsEditing(false);
-      setPhotoFile(null);
-      alert("✅ Profile updated successfully!");
+      alert("Profile updated successfully!");
     } catch (err) {
-      console.error("Error updating profile:", err);
-      alert("❌ Error updating profile!");
+      console.error(err);
+      alert("Error updating profile.");
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-600">
-        Loading profile...
-      </div>
-    );
-
   if (!profile)
-    return (
-      <div className="text-center mt-20 text-red-500">
-        No profile data found 😢
-      </div>
-    );
+    return <div className="text-center mt-10">Loading profile...</div>;
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-6 py-30">
-      {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -110,20 +87,23 @@ const ProfilePage = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-rose-900/70 via-pink-800/60 to-purple-900/70" />
 
-      {/* Profile Card */}
-      <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-white/30 transition-all duration-300">
-        {/* Header Section */}
+      <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden border border-white/30">
+        {/* Header */}
         <div className="bg-gradient-to-r from-rose-500 to-pink-600 text-white p-6 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="relative">
               <img
-                src={photoFile ? URL.createObjectURL(photoFile) : profile.profilePhoto}
+                src={
+                  selectedFile
+                    ? URL.createObjectURL(selectedFile)
+                    : profile.profilePhoto
+                }
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
               />
               {isEditing && (
-                <label className="absolute bottom-2 right-2 bg-white/80 p-1 rounded-full cursor-pointer">
-                  <Camera className="w-5 h-5 text-rose-600" />
+                <label className="absolute bottom-2 right-2 bg-white/90 rounded-full p-1 cursor-pointer shadow">
+                  <Camera className="text-rose-600 w-5 h-5" />
                   <input
                     type="file"
                     accept="image/*"
@@ -147,12 +127,11 @@ const ProfilePage = () => {
               )}
               <p className="text-white/90">{profile.occupation}</p>
               <p className="text-white/80 text-sm mt-1">
-                {profile.city}, {profile.state}
+                {profile.city}, {profile.state}, {profile.country}
               </p>
             </div>
           </div>
 
-          {/* Buttons */}
           {isEditing ? (
             <div className="flex gap-3">
               <button
@@ -178,111 +157,33 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* Body Section */}
+        {/* Info */}
         <div className="p-8 grid md:grid-cols-2 gap-8">
-          {/* Personal Info */}
           <div className="space-y-4">
             <SectionTitle icon={<User />} title="Personal Info" />
-            <EditableField
-              label="Gender"
-              name="gender"
-              value={tempProfile.gender}
-              editing={isEditing}
-              onChange={handleChange}
-            />
-            <EditableField
-              label="Age"
-              name="age"
-              value={tempProfile.age}
-              editing={isEditing}
-              onChange={handleChange}
-            />
-            <EditableField
-              label="Date of Birth"
-              name="dob"
-              value={tempProfile.dob}
-              editing={isEditing}
-              onChange={handleChange}
-            />
-            <EditableField
-              label="Religion"
-              name="religion"
-              value={tempProfile.religion}
-              editing={isEditing}
-              onChange={handleChange}
-            />
-            <EditableField
-              label="Caste"
-              name="caste"
-              value={tempProfile.caste}
-              editing={isEditing}
-              onChange={handleChange}
-            />
+            <EditableField label="Profile For" name="profileFor" value={tempProfile.profileFor} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Gender" name="gender" value={tempProfile.gender} editing={isEditing} onChange={handleChange} />
+            <EditableField label="DOB" name="dob" value={tempProfile.dob} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Age" name="age" value={tempProfile.age} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Religion" name="religion" value={tempProfile.religion} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Mother Tongue" name="motherTongue" value={tempProfile.motherTongue} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Marital Status" name="maritalStatus" value={tempProfile.maritalStatus} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Caste" name="caste" value={tempProfile.caste} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Height" name="height" value={tempProfile.height} editing={isEditing} onChange={handleChange} />
           </div>
 
-          {/* Professional Info */}
           <div className="space-y-4">
             <SectionTitle icon={<Briefcase />} title="Professional & Contact" />
-            <EditableField
-              label="Education"
-              name="education"
-              value={tempProfile.education}
-              editing={isEditing}
-              onChange={handleChange}
-            />
-            <EditableField
-              label="Occupation"
-              name="occupation"
-              value={tempProfile.occupation}
-              editing={isEditing}
-              onChange={handleChange}
-            />
-            <EditableField
-              label="Email"
-              name="email"
-              value={tempProfile.email}
-              editing={isEditing}
-              onChange={handleChange}
-              icon={<Mail className="w-4 h-4" />}
-            />
-            <EditableField
-              label="Mobile"
-              name="mobile"
-              value={tempProfile.mobile}
-              editing={isEditing}
-              onChange={handleChange}
-              icon={<Phone className="w-4 h-4" />}
-            />
-            <EditableField
-              label="Location"
-              name="city"
-              value={`${tempProfile.city}, ${tempProfile.state}, ${tempProfile.country}`}
-              editing={false}
-              icon={<MapPin className="w-4 h-4" />}
-            />
+            <EditableField label="Education" name="education" value={tempProfile.education} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Occupation" name="occupation" value={tempProfile.occupation} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Annual Income" name="annualIncome" value={tempProfile.annualIncome} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Country" name="country" value={tempProfile.country} editing={isEditing} onChange={handleChange} />
+            <EditableField label="State" name="state" value={tempProfile.state} editing={isEditing} onChange={handleChange} />
+            <EditableField label="City" name="city" value={tempProfile.city} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Email" name="email" value={tempProfile.email} editing={isEditing} onChange={handleChange} icon={<Mail />} />
+            <EditableField label="Mobile" name="mobile" value={tempProfile.mobile} editing={isEditing} onChange={handleChange} icon={<Phone />} />
+            {/* <EditableField label="Password" name="password" value={tempProfile.password} editing={isEditing} onChange={handleChange} /> */}
           </div>
-        </div>
-
-        {/* About Me */}
-        <div className="px-8 pb-8">
-          <SectionTitle icon={<Heart />} title="About Me" />
-          {isEditing ? (
-            <textarea
-              name="aboutMe"
-              value={tempProfile.aboutMe}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2 text-gray-800"
-              rows={3}
-            />
-          ) : (
-            <p className="text-gray-700 leading-relaxed">{profile.aboutMe}</p>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="bg-gray-50 border-t p-4 text-center text-sm text-gray-600">
-          <Globe className="inline-block w-4 h-4 text-rose-500 mr-1" />
-          Member since 2025 | Matrimony Profile
         </div>
       </div>
     </div>
@@ -295,7 +196,7 @@ const SectionTitle = ({ icon, title }: any) => (
   </h2>
 );
 
-const EditableField = ({ label, value, name, editing, onChange, icon }: any) => (
+const EditableField = ({ label, name, value, editing, onChange, icon }: any) => (
   <div className="flex items-start justify-between border-b pb-2">
     <span className="text-gray-600 font-medium flex items-center gap-2">
       {icon} {label}
@@ -304,12 +205,12 @@ const EditableField = ({ label, value, name, editing, onChange, icon }: any) => 
       <input
         type="text"
         name={name}
-        value={value}
+        value={value || ""}
         onChange={onChange}
-        className="border rounded-md p-1 text-gray-800 w-40"
+        className="border rounded-md p-1 text-gray-800 w-44"
       />
     ) : (
-      <span className="text-gray-800 font-semibold text-right">{value}</span>
+      <span className="text-gray-800 font-semibold text-right">{value || "-"}</span>
     )}
   </div>
 );
