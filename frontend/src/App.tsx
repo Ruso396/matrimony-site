@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { AuthProvider } from './context/AuthContext';
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -24,37 +25,38 @@ const ScrollToTop: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <ScrollToTop />
+      <AuthProvider>
+        <ScrollToTop />
+        <div className="App flex flex-col min-h-screen">
+          {/* Common Header */}
+          <Header />
 
-      <div className="App flex flex-col min-h-screen">
-        {/* Common Header */}
-        <Header />
+          {/* Page Routes */}
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<ModernRegister />} />
+              <Route path="/biodata" element={<BioData />} />
+              <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+              {/* Add more routes later */}
+              <Route path="/contact" element={<MatrimonyContact />} />
 
-        {/* Page Routes */}
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<ModernRegister />} />
-            <Route path="/biodata" element={<BioData />} />
-            <Route path="/profiledetails/:id" element={<ProfileDetails />} />
-            {/* Add more routes later */}
-            <Route path="/contact" element={<MatrimonyContact />} />
+              {/* Add more routes here later, like: */}
+              {/* <Route path="/about" element={<About />} /> */}
+              {/* <Route path="/contact" element={<Contact />} /> */}
+              <Route path="/biodata" element={<BioData />} />
 
-            {/* Add more routes here later, like: */}
-            {/* <Route path="/about" element={<About />} /> */}
-            {/* <Route path="/contact" element={<Contact />} /> */}
-            <Route path="/biodata" element={<BioData />} />
+              <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+              <Route path="/success-stories" element={<SuccessStory />} />
+              {/* Add more routes later */}
+            </Routes>
+          </main>
 
-            <Route path="/profiledetails/:id" element={<ProfileDetails />} />
-            <Route path="/success-stories" element={<SuccessStory />} />
-            {/* Add more routes later */}
-          </Routes>
-        </main>
-
-        {/* Common Footer */}
-        <Footer />
-      </div>
+          {/* Common Footer */}
+          <Footer />
+        </div>
+      </AuthProvider>
     </Router>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Heart, Eye, EyeOff, Loader2, Mail, Phone, Chrome, Facebook, Lock, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface FormErrors {
   loginId?: string;
@@ -17,6 +18,7 @@ const Login = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [statusMessage, setStatusMessage] = useState<string>('');
   const navigate = useNavigate();
+  const { setUserName } = useAuth();
 
   // Validation
   const validateForm = (): boolean => {
@@ -28,38 +30,50 @@ const Login = () => {
   };
 
   // Handle Submit
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatusMessage('');
-    if (!validateForm()) return;
+const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  e.preventDefault();
+  setStatusMessage('');
+  if (!validateForm()) return;
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const response = await fetch('http://localhost:5000/api/register/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ email: loginId, password })
-      });
+  try {
+    const response = await fetch('http://localhost:5000/api/register/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: loginId, password }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok) {
-        setStatusMessage(data.message);
-        // Save token to localStorage if you want
-        localStorage.setItem('token', data.token);
-        // Redirect to dashboard or home
-setTimeout(() => navigate('/biodata'), 1000);
-      } else {
-        setErrors({ submit: data.message });
-      }
-    } catch (err) {
-      console.error(err);
-      setErrors({ submit: 'Network error. Try again later.' });
-    } finally {
-      setIsLoading(false);
+    if (response.ok) {
+      setStatusMessage(data.message);
+
+      // ✅ Always fetch user details from backend response
+      const userNameFromDB = data.user?.fullName || "User";
+
+      // ✅ Store in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userName', userNameFromDB);
+      localStorage.setItem('userId', data.user?.id);
+
+      // Update auth context
+      setUserName(userNameFromDB);
+
+      // ✅ Redirect
+      setTimeout(() => navigate('/biodata'), 1000);
+    } else {
+      setErrors({ submit: data.message });
     }
-  }, [loginId, password, navigate]);
+  } catch (err) {
+    console.error(err);
+    setErrors({ submit: 'Network error. Try again later.' });
+  } finally {
+    setIsLoading(false);
+  }
+}, [loginId, password, navigate]);
+
+
 
   // Hearts animation
   const hearts = useMemo(() =>
