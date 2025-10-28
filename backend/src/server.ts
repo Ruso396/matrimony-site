@@ -10,7 +10,6 @@ import premiumRoutes from './routes/PremiumPaymentRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
 import { connectDB, sequelize } from './config/db';
 import storyRoutes from './routes/storyRoute';
-import requestRoutes from "./routes/requestRoutes";
 
 dotenv.config();
 
@@ -34,7 +33,6 @@ app.use('/api/premiumpayment', premiumRoutes);
 app.use('/api/register', registerRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/favorites', favoriteRoutes);
-app.use("/api/request", requestRoutes);
 
 // ✅ Health check route
 app.get('/', (req, res) => res.send('Soulmate API is running!'));
