@@ -52,6 +52,7 @@ const App: React.FC = () => {
 
 
               <Route path="/profiledetails/:id" element={<ProfileDetails />} />
+              
               {/* Add more routes later */}
             </Routes>
           </main>
