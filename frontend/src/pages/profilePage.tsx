@@ -12,13 +12,50 @@ import {
   Check,
   X,
   Camera,
+  Trash2,
 } from "lucide-react";
+
+// 🔹 Small helper components
+const SectionTitle = ({ icon, title }: { icon: any; title: string }) => (
+  <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 flex items-center gap-2">
+    <span className="text-rose-500">{icon}</span> {title}
+  </h2>
+);
+
+const EditableField = ({
+  label,
+  name,
+  value,
+  editing,
+  onChange,
+  icon,
+}: any) => (
+  <div className="flex items-start justify-between border-b pb-2">
+    <span className="text-gray-600 font-medium flex items-center gap-2">
+      {icon} {label}
+    </span>
+    {editing ? (
+      <input
+        type="text"
+        name={name}
+        value={value || ""}
+        onChange={onChange}
+        className="border rounded-md p-1 text-gray-800 w-44"
+      />
+    ) : (
+      <span className="text-gray-800 font-semibold text-right">
+        {value || "-"}
+      </span>
+    )}
+  </div>
+);
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [tempProfile, setTempProfile] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const userId = localStorage.getItem("userId");
 
   // ✅ Fetch user details on load
@@ -65,10 +102,24 @@ const ProfilePage = () => {
 
       setProfile(res.data.user);
       setIsEditing(false);
+      setSelectedFile(null);
       alert("Profile updated successfully!");
     } catch (err) {
       console.error(err);
       alert("Error updating profile.");
+    }
+  };
+
+  // 🗑️ Delete profile handler
+  const handleDeleteAccount = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/register/users/${userId}`);
+      alert("Account deleted successfully!");
+      localStorage.clear();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("Failed to delete account.");
     }
   };
 
@@ -77,6 +128,7 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-6 py-30">
+      {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -97,6 +149,8 @@ const ProfilePage = () => {
                   selectedFile
                     ? URL.createObjectURL(selectedFile)
                     : profile.profilePhoto
+                    ? `http://localhost:5000/uploads/${profile.profilePhoto}?t=${Date.now()}`
+                    : "https://via.placeholder.com/150"
                 }
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
@@ -132,6 +186,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
+          {/* Right side buttons */}
           {isEditing ? (
             <div className="flex gap-3">
               <button
@@ -148,16 +203,24 @@ const ProfilePage = () => {
               </button>
             </div>
           ) : (
-            <button
-              onClick={handleEditClick}
-              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md text-white flex items-center gap-1"
-            >
-              <Pencil className="w-4 h-4" /> Edit
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={handleEditClick}
+                className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md text-white flex items-center gap-1"
+              >
+                <Pencil className="w-4 h-4" /> Edit
+              </button>
+              <button
+                onClick={() => setShowDeletePopup(true)}
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md text-white flex items-center gap-1"
+              >
+                <Trash2 className="w-4 h-4" /> Delete
+              </button>
+            </div>
           )}
         </div>
 
-        {/* Info */}
+        {/* Info section */}
         <div className="p-8 grid md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <SectionTitle icon={<User />} title="Personal Info" />
@@ -182,37 +245,42 @@ const ProfilePage = () => {
             <EditableField label="City" name="city" value={tempProfile.city} editing={isEditing} onChange={handleChange} />
             <EditableField label="Email" name="email" value={tempProfile.email} editing={isEditing} onChange={handleChange} icon={<Mail />} />
             <EditableField label="Mobile" name="mobile" value={tempProfile.mobile} editing={isEditing} onChange={handleChange} icon={<Phone />} />
-            {/* <EditableField label="Password" name="password" value={tempProfile.password} editing={isEditing} onChange={handleChange} /> */}
           </div>
         </div>
       </div>
+
+      {/* 🧨 Delete confirmation popup */}
+      {showDeletePopup && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+            <h2 className="text-lg font-semibold text-gray-800 mb-3">
+              Are you sure you want to delete your account?
+            </h2>
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                onClick={handleDeleteAccount}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setShowDeletePopup(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const SectionTitle = ({ icon, title }: any) => (
-  <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 flex items-center gap-2">
-    <span className="text-rose-500">{icon}</span> {title}
-  </h2>
-);
-
-const EditableField = ({ label, name, value, editing, onChange, icon }: any) => (
-  <div className="flex items-start justify-between border-b pb-2">
-    <span className="text-gray-600 font-medium flex items-center gap-2">
-      {icon} {label}
-    </span>
-    {editing ? (
-      <input
-        type="text"
-        name={name}
-        value={value || ""}
-        onChange={onChange}
-        className="border rounded-md p-1 text-gray-800 w-44"
-      />
-    ) : (
-      <span className="text-gray-800 font-semibold text-right">{value || "-"}</span>
-    )}
-  </div>
-);
-
 export default ProfilePage;
+
+
+
+
+
+

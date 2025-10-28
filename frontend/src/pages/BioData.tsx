@@ -308,9 +308,6 @@ const BioData: React.FC = () => {
                 <h3 className="font-bold text-gray-800 lg:text-base">
                   {profile.fullName}
                 </h3>
-                <p className="text-gray-500 text-[10px] lg:text-xs">
-                  ID: {profile.id}
-                </p>
                 <p className="text-gray-600 text-[10px] lg:text-xs">
                   {profile.occupation}, {profile.state}
                 </p>
