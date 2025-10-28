@@ -52,9 +52,17 @@ export const loginUser = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
 
     // ✅ Return user details also
+
+    // ✅ Step 4: return token + user info
     return res.json({
+     
       message: 'Login successful',
+     
       token,
+      userId: user.id,
+      fullName: user.fullName,
+      email: user.email,
+   
       user: {
         id: user.id,
         fullName: user.fullName,
@@ -62,6 +70,7 @@ export const loginUser = async (req: Request, res: Response) => {
         profilePhoto: user.profilePhoto ? `${req.protocol}://${req.get('host')}/uploads/${user.profilePhoto}` : null
       }
     });
+
 
   } catch (err) {
     console.error(err);

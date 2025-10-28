@@ -49,6 +49,8 @@ const handleSubmit = useCallback(async (e: React.FormEvent) => {
     if (response.ok) {
       setStatusMessage(data.message);
 
+      // ✅ Save token and userId to localStorage
+      // ✅ Redirect to BioData page with userId in URL
       // ✅ Always fetch user details from backend response
       const userNameFromDB = data.user?.fullName || "User";
 
@@ -59,6 +61,7 @@ const handleSubmit = useCallback(async (e: React.FormEvent) => {
 
       // Update auth context
       setUserName(userNameFromDB);
+      setTimeout(() => navigate(`/biodata?userId=${data.userId}`), 1000);
 
       // ✅ Redirect
       setTimeout(() => navigate('/biodata'), 1000);

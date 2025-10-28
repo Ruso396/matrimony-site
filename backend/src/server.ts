@@ -6,8 +6,10 @@ import fs from 'fs';
 
 // Routes
 import registerRoutes from './routes/registerRoutes';
+import premiumRoutes from './routes/PremiumPaymentRoutes';
+
+import { connectDB, sequelize } from './config/db';
 import storyRoutes from './routes/storyRoute';
-import { sequelize } from './config/db';
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ if (!fs.existsSync(uploadDir)) {
 // ✅ Serve uploaded images
 app.use('/uploads', express.static(uploadDir));
 
+app.use('/api/register', registerRoutes); // <- registration endpoints
+app.use('/api/premiumpayment', premiumRoutes);
 // ✅ API routes
 app.use('/api/register', registerRoutes);
 app.use('/api/stories', storyRoutes);

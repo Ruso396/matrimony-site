@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Heart, Filter, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Heart, MapPin, Briefcase, User, Sparkles } from 'lucide-react';
+import { useNavigate, useLocation } from "react-router-dom";
+import { Filter, X } from "lucide-react";
 
 interface UserProfile {
   id: number;
@@ -14,6 +15,12 @@ interface UserProfile {
 }
 
 const BioData: React.FC = () => {
+   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userIdFromUrl = queryParams.get('userId');
+
+  const userId = userIdFromUrl || localStorage.getItem('userId');
+  
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
@@ -47,6 +54,37 @@ const BioData: React.FC = () => {
     else newFavorites.add(id);
     setFavorites(newFavorites);
   };
+const handleViewDetails = async (id: number) => {
+  const token = localStorage.getItem('token');
+  const currentUserId = userIdFromUrl || userId;
+
+  if (!currentUserId || !token) {
+    alert("Please log in to view profile details.");
+    navigate('/login');
+    return;
+  }
+
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/api/premiumpayment/status/${currentUserId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const isPremium = response.data?.user?.isPremium || false;
+
+    if (isPremium) {
+      navigate(`/profiledetails/${id}?userId=${currentUserId}`);
+    } else {
+      alert("Only Premium members can view detailed profiles.");
+      navigate(`/premiumpayment?userId=${currentUserId}`);
+    }
+  } catch (error) {
+    console.error("Error verifying premium status:", error);
+    alert("Please complete your Premium payment to access profile details.");
+    navigate(`/premiumpayment?userId=${currentUserId}`);
+  }
+};
+
 
   const filtered = profiles.filter((p) => {
     if (p.age < ageRange[0] || p.age > ageRange[1]) return false;
@@ -55,10 +93,6 @@ const BioData: React.FC = () => {
     if (division !== "All" && p.state !== division) return false;
     return true;
   });
-
-  const handleViewDetails = (id: number) => {
-    console.log(`Viewing profile ${id}`);
-  };
 
   // ✅ Loading screen
   if (loading) {
@@ -236,12 +270,19 @@ const BioData: React.FC = () => {
                   Age: {profile.age}
                 </p>
 
+               <button
+  onClick={() => handleViewDetails(profile.id)}
+  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+>
+  View Details
+</button>
+{/* 
                 <button
                  onClick={() => navigate(`/profiledetails/${profile.id}`)}
                   className="mt-auto w-full py-1.5 lg:py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] lg:text-sm font-semibold rounded hover:shadow-md transition lg:w-4/5 lg:mx-auto"
                 >
                   View Profile
-                </button>
+                </button> */}
               </div>
             </div>
           ))}
