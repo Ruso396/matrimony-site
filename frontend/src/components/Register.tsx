@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { Heart, User, Briefcase, MapPin, Camera, X, Check, AlertCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 
 type FormErrors = {
@@ -72,6 +72,12 @@ const ModernRegister = () => {
       '6.0', '6.1', '6.2', '6.3', '6.4', '6.5']
   };
 
+  useEffect(() => {
+  if (isSuccess) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}, [isSuccess]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
@@ -134,10 +140,18 @@ const ModernRegister = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateStep(currentStep)) setCurrentStep(prev => prev + 1);
-  };
-  const handlePrev = () => setCurrentStep(prev => prev - 1);
+const handleNext = () => {
+  if (validateStep(currentStep)) {
+    setCurrentStep(prev => prev + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
+  }
+};
+
+const handlePrev = () => {
+  setCurrentStep(prev => prev - 1);
+  window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
+};
+
 
   const handleSubmit = async () => {
     if (!validateStep(3)) return;
