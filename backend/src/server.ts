@@ -8,6 +8,7 @@ import path from 'path';
 
 // Your new registration routes
 import registerRoutes from './routes/registerRoutes';
+import premiumRoutes from './routes/PremiumPaymentRoutes';
 
 import { connectDB, sequelize } from './config/db';
 
@@ -23,6 +24,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 
 app.use('/api/register', registerRoutes); // <- registration endpoints
+app.use('/api/premiumpayment', premiumRoutes);
 
 // Health Check
 app.get('/', (req, res) => res.send('Soulmate API is running!'));

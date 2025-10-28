@@ -24,6 +24,7 @@ export class RegisterUser extends Model {
   public mobile!: string;
   public password!: string;
   public profilePhoto!: string;
+    public isPremium!: boolean;
 
   public validPassword!: (password: string) => Promise<boolean>;
 }
@@ -49,6 +50,11 @@ RegisterUser.init({
   mobile: DataTypes.STRING,
   password: DataTypes.STRING,
   profilePhoto: DataTypes.STRING,
+   isPremium: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 }, {
   sequelize,
   modelName: 'RegisterUser',

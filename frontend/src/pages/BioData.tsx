@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Heart, MapPin, Briefcase, User, Sparkles } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface UserProfile {
   id: number;
@@ -14,6 +14,12 @@ interface UserProfile {
 }
 
 const BioData: React.FC = () => {
+   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userIdFromUrl = queryParams.get('userId');
+
+  const userId = userIdFromUrl || localStorage.getItem('userId');
+  
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
@@ -47,6 +53,37 @@ const BioData: React.FC = () => {
     else newFavorites.add(id);
     setFavorites(newFavorites);
   };
+const handleViewDetails = async (id: number) => {
+  const token = localStorage.getItem('token');
+  const currentUserId = userIdFromUrl || userId;
+
+  if (!currentUserId || !token) {
+    alert("Please log in to view profile details.");
+    navigate('/login');
+    return;
+  }
+
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/api/premiumpayment/status/${currentUserId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const isPremium = response.data?.user?.isPremium || false;
+
+    if (isPremium) {
+      navigate(`/profiledetails/${id}?userId=${currentUserId}`);
+    } else {
+      alert("Only Premium members can view detailed profiles.");
+      navigate(`/premiumpayment?userId=${currentUserId}`);
+    }
+  } catch (error) {
+    console.error("Error verifying premium status:", error);
+    alert("Please complete your Premium payment to access profile details.");
+    navigate(`/premiumpayment?userId=${currentUserId}`);
+  }
+};
+
 
   // ✅ Apply filters
   const filteredProfiles = profiles.filter(profile => {
@@ -198,12 +235,13 @@ const BioData: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => navigate(`/profiledetails/${profile.id}`)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
-                >
-                  View Details
-                </button>
+               <button
+  onClick={() => handleViewDetails(profile.id)}
+  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+>
+  View Details
+</button>
+
               </div>
             </div>
           ))}
