@@ -3,9 +3,11 @@ import { sendEmail } from "../utils/sendEmail";
 import { RegisterUser } from "../models/registerUser";
 import { PremiumPayment } from "../models/PremiumPaymentModel";
 import { InterestRequest } from "../models/InterestRequestModel";
+import { Op } from "sequelize";
 
-const BASE_URL = "http://localhost:5000"; // 🔁 change to deployed URL if needed
+const BASE_URL = "http://localhost:5000"; // 🔁 Change if deployed
 
+// ✅ Send Interest Request
 export const sendInterestRequest = async (req: Request, res: Response) => {
   try {
     const { senderId, receiverId } = req.body;
@@ -30,14 +32,30 @@ export const sendInterestRequest = async (req: Request, res: Response) => {
       });
     }
 
-    // ✅ Save the request (pending)
+    // ✅ Check if a request already exists (either direction)
+    const existingRequest = await InterestRequest.findOne({
+      where: {
+        [Op.or]: [
+          { senderId, receiverId },
+          { senderId: receiverId, receiverId: senderId },
+        ],
+      },
+    });
+
+    if (existingRequest) {
+      return res.status(400).json({
+        message: `Request already ${existingRequest.status}.`,
+      });
+    }
+
+    // ✅ Save new request (pending)
     const newRequest = await InterestRequest.create({
       senderId,
       receiverId,
       status: "pending",
     });
 
-    const requestId = newRequest.getDataValue("id"); // ✅ safer access
+    const requestId = newRequest.getDataValue("id");
 
     // ✅ Accept / Reject URLs
     const acceptUrl = `${BASE_URL}/api/request/respond?requestId=${requestId}&status=accepted`;
@@ -49,7 +67,7 @@ export const sendInterestRequest = async (req: Request, res: Response) => {
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2>New Interest Request 💌</h2>
         <p><strong>${sender.fullName}</strong> has shown interest in your profile.</p>
-        <p>You can view their profile in the Matrimony site.</p>
+        <p>You can view their profile on the Matrimony site.</p>
         <div style="margin-top: 20px;">
           <a href="${acceptUrl}" style="background-color:#28a745;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Accept</a>
           <a href="${rejectUrl}" style="background-color:#dc3545;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;margin-left:10px;">Reject</a>
@@ -68,7 +86,6 @@ export const sendInterestRequest = async (req: Request, res: Response) => {
   }
 };
 
-
 // ✅ Accept or Reject Request
 export const handleRequestResponse = async (req: Request, res: Response) => {
   try {
@@ -82,10 +99,9 @@ export const handleRequestResponse = async (req: Request, res: Response) => {
     const request = await InterestRequest.findByPk(requestId);
     if (!request) return res.status(404).send("Request not found.");
 
-    // ✅ Update status in DB
+    // ✅ Update status
     await request.update({ status });
 
-    // ✅ Notify sender via email
     const sender = await RegisterUser.findByPk(request.senderId);
     const receiver = await RegisterUser.findByPk(request.receiverId);
 
@@ -98,7 +114,7 @@ export const handleRequestResponse = async (req: Request, res: Response) => {
       const message =
         status === "accepted"
           ? `<p>Good news! <strong>${receiver.fullName}</strong> has accepted your interest request. You can now connect with them on the Matrimony site.</p>`
-          : `<p>Unfortunately, <strong>${receiver.fullName}</strong> has rejected your interest request. Don’t lose hope — keep looking for your perfect match!</p>`;
+          : `<p>Unfortunately, <strong>${receiver.fullName}</strong> has rejected your interest request. Don’t lose hope — your perfect match is waiting!</p>`;
 
       const html = `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
@@ -123,8 +139,7 @@ export const handleRequestResponse = async (req: Request, res: Response) => {
   }
 };
 
-
-// ✅ Get current request status between two users
+// ✅ Get request status between two users (BIDIRECTIONAL)
 export const getRequestStatus = async (req: Request, res: Response) => {
   try {
     const senderId = Number(req.query.senderId);
@@ -134,14 +149,22 @@ export const getRequestStatus = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Missing senderId or receiverId" });
 
     const existingRequest = await InterestRequest.findOne({
-      where: { senderId, receiverId },
-      order: [["createdAt", "DESC"]], // latest request
+      where: {
+        [Op.or]: [
+          { senderId, receiverId },
+          { senderId: receiverId, receiverId: senderId },
+        ],
+      },
+      order: [["createdAt", "DESC"]],
     });
 
-    if (!existingRequest)
-      return res.json({ status: "none" });
+    if (!existingRequest) return res.json({ status: "none" });
 
-    return res.json({ status: existingRequest.status });
+    return res.json({
+      status: existingRequest.status,
+      senderId: existingRequest.senderId,
+      receiverId: existingRequest.receiverId,
+    });
   } catch (err) {
     console.error("❌ Error checking request status:", err);
     return res.status(500).json({ message: "Server error" });
