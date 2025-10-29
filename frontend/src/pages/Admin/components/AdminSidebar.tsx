@@ -1,5 +1,6 @@
 import React from 'react';
 import { BarChart3, Users, Heart, Settings } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -7,45 +8,30 @@ interface AdminSidebarProps {
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActiveTab }) => {
+  const { bgColor } = useTheme();
+
+  const navItems = [
+    { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
+    { id: 'users', icon: Users, label: 'Users' },
+    { id: 'matches', icon: Heart, label: 'Matches' },
+    { id: 'settings', icon: Settings, label: 'Settings' },
+  ];
+
   return (
-    <aside className="w-64 bg-white shadow-lg min-h-screen">
+    <aside className={`w-64 ${bgColor} text-white min-h-screen shadow-lg`}>
       <nav className="p-4">
-        <button
-          onClick={() => setActiveTab('dashboard')}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
-            activeTab === 'dashboard' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          <BarChart3 className="w-5 h-5" />
-          <span className="font-medium">Dashboard</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
-            activeTab === 'users' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          <Users className="w-5 h-5" />
-          <span className="font-medium">Users</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('matches')}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
-            activeTab === 'matches' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          <Heart className="w-5 h-5" />
-          <span className="font-medium">Matches</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('settings')}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
-            activeTab === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          <Settings className="w-5 h-5" />
-          <span className="font-medium">Settings</span>
-        </button>
+        {navItems.map(({ id, icon: Icon, label }) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
+              activeTab === id ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-10'
+            }`}
+          >
+            <Icon className="w-5 h-5" />
+            <span className="font-medium">{label}</span>
+          </button>
+        ))}
       </nav>
     </aside>
   );

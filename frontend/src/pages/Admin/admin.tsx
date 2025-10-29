@@ -8,22 +8,23 @@ import MatchManagement from './components/MatchManagement';
 import Settings from './components/Settings';
 import { User, Match } from './components/types';
 import { AdminProvider } from '../../context/AdminContext';
+import { ThemeProvider } from '../../context/ThemeContext';  // ✅ added
 import { fetchUserStats } from './api/adminApi';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
+  // ✅ Admin auth check
   useEffect(() => {
-    // Check if user is admin
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const adminToken = localStorage.getItem('adminToken');
-
     if (!isAdmin || !adminToken) {
       navigate('/admin/login');
     }
   }, [navigate]);
-  
+
+  // ✅ State for dashboard data
   const [users, setUsers] = useState<User[]>([]);
   const [stats, setStats] = useState<{
     totalUsers: number;
@@ -40,9 +41,11 @@ const AdminPage: React.FC = () => {
     premiumUsers: 0,
     recentUsers: []
   });
+
   const [matches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Fetch Dashboard Data
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
@@ -55,10 +58,10 @@ const AdminPage: React.FC = () => {
         setLoading(false);
       }
     };
-
     loadDashboardData();
   }, []);
 
+  // ✅ Action Handlers
   const approveUser = (id: number) => {
     setUsers(users.map(u => u.id === id ? { ...u, status: 'approved' } : u));
   };
@@ -71,45 +74,40 @@ const AdminPage: React.FC = () => {
     setUsers(users.filter(u => u.id !== id));
   };
 
+  // ✅ Render
   return (
     <AdminProvider>
-      <div className="min-h-screen bg-gray-100">
-        <AdminHeader />
-        <div className="flex">
-          <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          <main className="flex-1 p-8">
-            {loading ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-              </div>
-            ) : (
-              <>
-                {activeTab === 'dashboard' && (
-                  <Dashboard
-                    users={users}
-                    matches={matches}
-                    stats={stats}
-                  />
-                )}
-                {activeTab === 'users' && (
-                  <UserManagement
-                    users={users}
-                    approveUser={approveUser}
-                    rejectUser={rejectUser}
-                    deleteUser={deleteUser}
-                  />
-                )}
-                {activeTab === 'matches' && (
-                  <MatchManagement
-                    matches={matches}
-                  />
-                )}
-                {activeTab === 'settings' && <Settings />}
-              </>
-            )}
-          </main>
+      <ThemeProvider>  {/* ✅ Wrap your entire admin dashboard with ThemeProvider */}
+        <div className="min-h-screen bg-gray-100">
+          <AdminHeader />  {/* Header includes theme selector */}
+          <div className="flex">
+            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+            <main className="flex-1 p-8">
+              {loading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                </div>
+              ) : (
+                <>
+                  {activeTab === 'dashboard' && (
+                    <Dashboard users={users} matches={matches} stats={stats} />
+                  )}
+                  {activeTab === 'users' && (
+                    <UserManagement
+                      users={users}
+                      approveUser={approveUser}
+                      rejectUser={rejectUser}
+                      deleteUser={deleteUser}
+                    />
+                  )}
+                  {activeTab === 'matches' && <MatchManagement matches={matches} />}
+                  {activeTab === 'settings' && <Settings />}
+                </>
+              )}
+            </main>
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     </AdminProvider>
   );
 };
