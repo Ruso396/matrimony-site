@@ -8,6 +8,7 @@ import fs from 'fs';
 import registerRoutes from './routes/registerRoutes';
 import premiumRoutes from './routes/PremiumPaymentRoutes';
 import favoriteRoutes from './routes/favoriteRoutes';
+import adminRoutes from './routes/adminRoutes';
 import { connectDB, sequelize } from './config/db';
 import storyRoutes from './routes/storyRoute';
 import requestRoutes from "./routes/requestRoutes";
@@ -36,6 +37,8 @@ app.use('/api/stories', storyRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use("/api/request", requestRoutes);
 
+// Admin routes
+app.use('/api/admin', adminRoutes);
 
 // ✅ Health check route
 app.get('/', (req, res) => res.send('Soulmate API is running!'));

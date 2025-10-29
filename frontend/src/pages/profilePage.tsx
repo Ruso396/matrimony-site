@@ -14,6 +14,7 @@ import {
   Camera,
   Trash2,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 // 🔹 Small helper components
 const SectionTitle = ({ icon, title }: { icon: any; title: string }) => (
@@ -22,6 +23,7 @@ const SectionTitle = ({ icon, title }: { icon: any; title: string }) => (
   </h2>
 );
 
+// EditableField now supports an optional `options` array to render a <select>
 const EditableField = ({
   label,
   name,
@@ -29,19 +31,37 @@ const EditableField = ({
   editing,
   onChange,
   icon,
+  options,
+  type,
 }: any) => (
   <div className="flex items-start justify-between border-b pb-2">
     <span className="text-gray-600 font-medium flex items-center gap-2">
       {icon} {label}
     </span>
     {editing ? (
-      <input
-        type="text"
-        name={name}
-        value={value || ""}
-        onChange={onChange}
-        className="border rounded-md p-1 text-gray-800 w-44"
-      />
+      options && Array.isArray(options) ? (
+        <select name={name} value={value || ""} onChange={onChange} className="border rounded-md p-1 text-gray-800 w-44">
+          {options.map((opt: string) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
+      ) : type === 'date' ? (
+        <input
+          type="date"
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          className="border rounded-md p-1 text-gray-800 w-44"
+        />
+      ) : (
+        <input
+          type="text"
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          className="border rounded-md p-1 text-gray-800 w-44"
+        />
+      )
     ) : (
       <span className="text-gray-800 font-semibold text-right">
         {value || "-"}
@@ -50,13 +70,26 @@ const EditableField = ({
   </div>
 );
 
+// Options mirror the Register component so dropdowns match
+const fieldOptions = {
+  profileFor: ['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend'],
+  genders: ['Male', 'Female'],
+  religions: ['Hindu', 'Christian', 'Muslim', 'Sikh', 'Buddhist', 'Jain', 'Other'],
+  motherTongues: ['Tamil', 'Telugu', 'Malayalam', 'Kannada', 'Hindi', 'English', 'Marathi', 'Bengali', 'Other'],
+  maritalStatuses: ['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce'],
+  heights: ['4.0', '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', '4.11', '5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '6.0', '6.1', '6.2', '6.3', '6.4', '6.5'],
+  countries: ['India', 'USA', 'UK', 'Canada', 'Australia', 'Other']
+};
+
 const ProfilePage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [tempProfile, setTempProfile] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const userId = localStorage.getItem("userId");
+  const { setUserName } = useAuth();
 
   // ✅ Fetch user details on load
   useEffect(() => {
@@ -111,7 +144,22 @@ const ProfilePage = () => {
       setProfile(res.data.user);
       setIsEditing(false);
       setSelectedFile(null);
-      alert("Profile updated successfully!");
+      // update header username (AuthContext + localStorage)
+      const newName = res.data.user.fullName;
+      if (newName) {
+        try {
+          setUserName(newName);
+          localStorage.setItem('userName', newName);
+          // also dispatch a global event in case other parts listen
+          window.dispatchEvent(new Event('userNameChanged'));
+        } catch (e) {
+          console.warn('Could not update header username in context/localStorage', e);
+        }
+      }
+      // show success modal instead of alert
+      setShowSuccessPopup(true);
+      // auto-hide after 2.5s
+      setTimeout(() => setShowSuccessPopup(false), 2500);
     } catch (err) {
       console.error(err);
       alert("Error updating profile.");
@@ -230,15 +278,16 @@ const ProfilePage = () => {
         <div className="p-8 grid md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <SectionTitle icon={<User />} title="Personal Info" />
-            <EditableField label="Profile For" name="profileFor" value={tempProfile.profileFor} editing={isEditing} onChange={handleChange} />
-            <EditableField label="Gender" name="gender" value={tempProfile.gender} editing={isEditing} onChange={handleChange} />
-            <EditableField label="DOB" name="dob" value={tempProfile.dob} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Profile For" name="profileFor" value={tempProfile.profileFor} editing={isEditing} onChange={handleChange} options={fieldOptions.profileFor} />
+            <EditableField label="Gender" name="gender" value={tempProfile.gender} editing={isEditing} onChange={handleChange} options={fieldOptions.genders} />
+            <EditableField label="DOB" name="dob" value={tempProfile.dob} editing={isEditing} onChange={handleChange} type="date" />
             <EditableField label="Age" name="age" value={tempProfile.age} editing={isEditing} onChange={handleChange} />
-            <EditableField label="Religion" name="religion" value={tempProfile.religion} editing={isEditing} onChange={handleChange} />
-            <EditableField label="Mother Tongue" name="motherTongue" value={tempProfile.motherTongue} editing={isEditing} onChange={handleChange} />
-            <EditableField label="Marital Status" name="maritalStatus" value={tempProfile.maritalStatus} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Religion" name="religion" value={tempProfile.religion} editing={isEditing} onChange={handleChange} options={fieldOptions.religions} />
+            <EditableField label="Mother Tongue" name="motherTongue" value={tempProfile.motherTongue} editing={isEditing} onChange={handleChange} options={fieldOptions.motherTongues} />
+            <EditableField label="Marital Status" name="maritalStatus" value={tempProfile.maritalStatus} editing={isEditing} onChange={handleChange} options={fieldOptions.maritalStatuses} />
             <EditableField label="Caste" name="caste" value={tempProfile.caste} editing={isEditing} onChange={handleChange} />
-            <EditableField label="Height" name="height" value={tempProfile.height} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Height" name="height" value={tempProfile.height} editing={isEditing} onChange={handleChange} options={fieldOptions.heights} />
+            
           </div>
 
           <div className="space-y-4">
@@ -246,7 +295,7 @@ const ProfilePage = () => {
             <EditableField label="Education" name="education" value={tempProfile.education} editing={isEditing} onChange={handleChange} />
             <EditableField label="Occupation" name="occupation" value={tempProfile.occupation} editing={isEditing} onChange={handleChange} />
             <EditableField label="Annual Income" name="annualIncome" value={tempProfile.annualIncome} editing={isEditing} onChange={handleChange} />
-            <EditableField label="Country" name="country" value={tempProfile.country} editing={isEditing} onChange={handleChange} />
+            <EditableField label="Country" name="country" value={tempProfile.country} editing={isEditing} onChange={handleChange} options={fieldOptions.countries} />
             <EditableField label="State" name="state" value={tempProfile.state} editing={isEditing} onChange={handleChange} />
             <EditableField label="City" name="city" value={tempProfile.city} editing={isEditing} onChange={handleChange} />
             <EditableField label="Email" name="email" value={tempProfile.email} editing={isEditing} onChange={handleChange} icon={<Mail />} />
@@ -275,6 +324,22 @@ const ProfilePage = () => {
               >
                 No
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ Success popup (shown after profile update) */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-96 text-center shadow-2xl">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Check className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Profile Updated</h3>
+            <p className="text-gray-600 mb-4">Your profile was updated successfully.</p>
+            <div className="flex justify-center">
+              <button onClick={() => setShowSuccessPopup(false)} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">OK</button>
             </div>
           </div>
         </div>
