@@ -1,5 +1,5 @@
-import React, { useState ,useEffect } from 'react';
-import { Heart, User, Briefcase, MapPin, Camera, X, Check, AlertCircle, ArrowRight, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, User, Briefcase, Shield, Info, MapPin, Camera, X, Check, AlertCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 
 type FormErrors = {
   profileFor?: string;
@@ -26,6 +26,7 @@ type FormErrors = {
   profilePhoto?: string;
   submit?: string;
   age?: string;
+  rulesAccepted?: string;
 };
 
 const ModernRegister = () => {
@@ -53,6 +54,11 @@ const ModernRegister = () => {
     termsAccepted: false,
     profilePhoto: null as File | null,
     age: '',
+    rule1: false,
+    rule2: false,
+    rule3: false,
+    rule4: false,
+    rule5: false,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -60,7 +66,7 @@ const ModernRegister = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const options = {
     profileFor: ['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend'],
     genders: ['Male', 'Female'],
@@ -73,10 +79,10 @@ const ModernRegister = () => {
   };
 
   useEffect(() => {
-  if (isSuccess) {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-}, [isSuccess]);
+    if (isSuccess) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [isSuccess]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -87,6 +93,7 @@ const ModernRegister = () => {
     }));
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
+
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -140,53 +147,78 @@ const ModernRegister = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleNext = () => {
-  if (validateStep(currentStep)) {
-    setCurrentStep(prev => prev + 1);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
-  }
-};
-
-const handlePrev = () => {
-  setCurrentStep(prev => prev - 1);
-  window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
-};
-
-
-  const handleSubmit = async () => {
-    if (!validateStep(3)) return;
-
-    setIsLoading(true);
-    try {
-      const formPayload = new FormData();
-      for (const key in formData) {
-        if (key === 'profilePhoto' && formData.profilePhoto) {
-          formPayload.append('profilePhoto', formData.profilePhoto);
-        } else if (key === 'termsAccepted') {
-          formPayload.append(key, formData.termsAccepted ? 'true' : 'false');
-        } else {
-          formPayload.append(key, (formData as any)[key]);
-        }
-      }
-
-      const res = await fetch('http://localhost:5000/api/register/register', {
-        method: 'POST',
-        body: formPayload
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setErrors({ submit: data.message || 'Registration failed' });
-      } else {
-        setIsSuccess(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrors({ submit: 'Something went wrong. Please try again.' });
-    } finally {
-      setIsLoading(false);
+  const handleNext = () => {
+    if (validateStep(currentStep)) {
+      setCurrentStep(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
     }
   };
+
+  const handlePrev = () => {
+    setCurrentStep(prev => prev - 1);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
+  };
+
+
+ const handleSubmit = async () => {
+  // First validate step 3
+  if (!validateStep(3)) return;
+
+  // Then check if all rules are accepted
+  const newErrors: FormErrors = {};
+
+  if (!formData.rule1 || !formData.rule2 || !formData.rule3 || !formData.rule4 || !formData.rule5) {
+    newErrors.rulesAccepted = 'Please accept all rules and regulations to proceed';
+    setErrors(newErrors);
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const formDataToSend = new FormData();
+
+    // Append all form fields EXCEPT rules
+    Object.keys(formData).forEach((key) => {
+      if (key !== 'profilePhoto' && key !== 'termsAccepted' &&
+          key !== 'rule1' && key !== 'rule2' && key !== 'rule3' &&
+          key !== 'rule4' && key !== 'rule5') {
+        formDataToSend.append(key, formData[key as keyof typeof formData] as string);
+      }
+    });
+
+    // ✅ Append rules as boolean strings explicitly
+    formDataToSend.append('rule1', formData.rule1.toString());
+    formDataToSend.append('rule2', formData.rule2.toString());
+    formDataToSend.append('rule3', formData.rule3.toString());
+    formDataToSend.append('rule4', formData.rule4.toString());
+    formDataToSend.append('rule5', formData.rule5.toString());
+
+    // Append profile photo if exists
+    if (formData.profilePhoto) {
+      formDataToSend.append('profilePhoto', formData.profilePhoto);
+    }
+
+    const response = await fetch('http://localhost:5000/api/register/register', {
+      method: 'POST',
+      body: formDataToSend,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('Registration successful! Please login.');
+      window.location.href = '/login';
+    } else {
+      setErrors({ submit: data.message || 'Registration failed. Please try again.' });
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    setErrors({ submit: 'Network error. Please check your connection and try again.' });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const inputClass = (field: keyof FormErrors) => `
     w-full px-4 py-3 rounded-lg border bg-gray-50 transition-all outline-none text-gray-800
@@ -201,9 +233,9 @@ const handlePrev = () => {
       <div className="min-h-screen flex bg-white">
         <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-rose-50 to-pink-50">
           <div className="absolute inset-0 flex items-center justify-center p-12">
-            <img 
-              src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" 
-              alt="Success" 
+            <img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80"
+              alt="Success"
               className="w-full max-w-lg rounded-2xl shadow-2xl"
             />
           </div>
@@ -238,37 +270,34 @@ const handlePrev = () => {
   const steps = [
     { num: 1, label: 'Personal Info', icon: User },
     { num: 2, label: 'Professional', icon: Briefcase },
-    { num: 3, label: 'Contact', icon: MapPin }
+    { num: 3, label: 'Contact', icon: MapPin },
+    { num: 4, label: 'Rules', icon: Shield }
   ];
 
   return (
     <div className="min-h-screen flex bg-white mt-20">
       {/* Left Side - Image */}
-<div
-  className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center bg-no-repeat"
-  style={{
-    backgroundImage:
-      "url('https://www.eastwood-hall.co.uk/wp-content/uploads/2024/01/130-SaywellHQ-Picks-_-Lauren-Adam-_-09-10-2021-_-SaywellHQ.co_.uk-HQ300675_websize-2.jpg')", // 👈 Replace this with any image you like
-  }}
->
-  {/* Optional: dark overlay for readability */}
-  <div className="absolute inset-0 bg-black/30"></div>
-
-  {/* Content */}
-  <div className="relative z-10 flex items-center justify-center w-full h-full p-12">
-    <div className="text-center text-white">
-     
-      <div className="mt-8">
-        <h2 className="text-3xl font-bold mb-2 drop-shadow-md">
-          Start Your Journey
-        </h2>
-        <p className="text-gray-100 drop-shadow-sm">
-          Create your profile and find your perfect match
-        </p>
+      <div
+        className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage:
+            "url('https://www.eastwood-hall.co.uk/wp-content/uploads/2024/01/130-SaywellHQ-Picks-_-Lauren-Adam-_-09-10-2021-_-SaywellHQ.co_.uk-HQ300675_websize-2.jpg')",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="relative z-10 flex items-center justify-center w-full h-full p-12">
+          <div className="text-center text-white">
+            <div className="mt-8">
+              <h2 className="text-3xl font-bold mb-2 drop-shadow-md">
+                Start Your Journey
+              </h2>
+              <p className="text-gray-100 drop-shadow-sm">
+                Create your profile and find your perfect match
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
       {/* Right Side - Register Form */}
       <div className="w-full lg:w-1/2 overflow-y-auto p-8">
@@ -287,11 +316,10 @@ const handlePrev = () => {
               {steps.map((step, idx) => (
                 <React.Fragment key={step.num}>
                   <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all border-2 ${
-                      currentStep >= step.num
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all border-2 ${currentStep >= step.num
                         ? 'bg-rose-600 text-white border-rose-600'
                         : 'bg-white text-gray-400 border-gray-300'
-                    }`}>
+                      }`}>
                       {currentStep > step.num ? <Check className="w-6 h-6" /> : <step.icon className="w-5 h-5" />}
                     </div>
                     <span className={`text-xs mt-2 font-medium ${currentStep >= step.num ? 'text-gray-800' : 'text-gray-400'}`}>
@@ -299,9 +327,8 @@ const handlePrev = () => {
                     </span>
                   </div>
                   {idx < steps.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-4 transition-all ${
-                      currentStep > step.num ? 'bg-rose-600' : 'bg-gray-300'
-                    }`} />
+                    <div className={`flex-1 h-0.5 mx-4 transition-all ${currentStep > step.num ? 'bg-rose-600' : 'bg-gray-300'
+                      }`} />
                   )}
                 </React.Fragment>
               ))}
@@ -522,7 +549,7 @@ const handlePrev = () => {
                     <input type="checkbox" name="termsAccepted" checked={formData.termsAccepted}
                       onChange={handleChange} className="mt-1 w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500" />
                     <span className="text-sm text-gray-700">
-                      I accept the <button type="button"   className="text-rose-600 font-semibold hover:underline">Terms & Conditions</button> and <button type="button"   className="text-rose-600 font-semibold hover:underline">Privacy Policy</button>
+                      I accept the <button type="button" className="text-rose-600 font-semibold hover:underline">Terms & Conditions</button> and <button type="button" className="text-rose-600 font-semibold hover:underline">Privacy Policy</button>
                     </span>
                   </label>
                   {errors.termsAccepted && <p className="text-red-600 text-xs mt-2 ml-8 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.termsAccepted}</p>}
@@ -530,22 +557,116 @@ const handlePrev = () => {
               </div>
             )}
 
+            {currentStep === 4 && (
+              <div className="space-y-5">
+                <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                  <Shield className="w-6 h-6 text-rose-600" />
+                  Rules and Regulations
+                </h2>
+
+                <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl p-6 border border-rose-200">
+                  <p className="text-gray-700 mb-6 text-sm leading-relaxed">
+                    Please read and accept all the following rules and regulations to complete your registration:
+                  </p>
+
+                  <div className="space-y-4">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.rule1}
+                        onChange={(e) => setFormData({ ...formData, rule1: e.target.checked })}
+                        className="mt-1 w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500"
+                      />
+                      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                        <strong>Authenticity:</strong> I confirm that all information provided in my profile is accurate, truthful, and up-to-date. I understand that providing false information may result in account suspension.
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.rule2}
+                        onChange={(e) => setFormData({ ...formData, rule2: e.target.checked })}
+                        className="mt-1 w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500"
+                      />
+                      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                        <strong>Respectful Conduct:</strong> I agree to maintain respectful and appropriate behavior with all members. Any form of harassment, abuse, or inappropriate communication will not be tolerated.
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.rule3}
+                        onChange={(e) => setFormData({ ...formData, rule3: e.target.checked })}
+                        className="mt-1 w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500"
+                      />
+                      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                        <strong>No Refund Policy:</strong> I understand that all subscription fees and payments made are non-refundable. Once payment is processed, no refunds will be issued under any circumstances.
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.rule4}
+                        onChange={(e) => setFormData({ ...formData, rule4: e.target.checked })}
+                        className="mt-1 w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500"
+                      />
+                      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                        <strong>No Commercial Use:</strong> I will not use this platform for any commercial purposes, advertising, or promoting any business or services. This platform is strictly for matrimonial purposes only.
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={formData.rule5}
+                        onChange={(e) => setFormData({ ...formData, rule5: e.target.checked })}
+                        className="mt-1 w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500"
+                      />
+                      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">
+                        <strong>Age Verification:</strong> I confirm that I am at least 18 years of age and legally eligible to enter into a matrimonial relationship as per the laws of my country/region.
+                      </span>
+                    </label>
+                  </div>
+
+                  {errors.rulesAccepted && (
+                    <p className="text-red-600 text-sm mt-4 flex items-center gap-2 bg-red-50 p-3 rounded-lg">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.rulesAccepted}
+                    </p>
+                  )}
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-4">
+                  <div className="flex gap-3">
+                    <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-semibold mb-1">Important Notice</p>
+                      <p>By accepting these rules, you acknowledge that you have read, understood, and agree to comply with all the terms mentioned above. Violation of any rules may result in immediate account termination without prior notice.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-4 mt-8">
               {currentStep > 1 && (
-                <button type="button" onClick={handlePrev}  
+                <button type="button" onClick={handlePrev}
                   className="flex-1 flex items-center justify-center gap-2 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition">
                   <ArrowLeft className="w-5 h-5" />
                   Previous
                 </button>
               )}
-              {currentStep < 3 ? (
-                <button type="button" onClick={handleNext}  
+              {currentStep < 4 ? (
+                <button type="button" onClick={handleNext}
                   className="flex-1 flex items-center justify-center gap-2 bg-rose-600 text-white py-3 rounded-lg font-semibold hover:bg-rose-700 transition shadow-md hover:shadow-lg">
                   Next Step
                   <ArrowRight className="w-5 h-5" />
                 </button>
               ) : (
-                <button type="button" onClick={handleSubmit} disabled={isLoading}  
+                <button type="button" onClick={handleSubmit} disabled={isLoading}
                   className="flex-1 bg-rose-600 text-white py-3 rounded-lg font-semibold hover:bg-rose-700 transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                   {isLoading ? (
                     <>
@@ -567,11 +688,10 @@ const handlePrev = () => {
           </div>
 
           <p className="text-center text-gray-600 mt-6">
-            Already have an account? <button onClick={() => window.location.href = '/login'}   className="text-rose-600 font-semibold hover:underline">Login here</button>
+            Already have an account? <button onClick={() => window.location.href = '/login'} className="text-rose-600 font-semibold hover:underline">Login here</button>
           </p>
         </div>
       </div>
-
 
       <style>{`
         @keyframes fadeIn {
