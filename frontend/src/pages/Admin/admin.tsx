@@ -9,6 +9,7 @@ import Settings from './components/Settings';
 import { User, Match } from './components/types';
 import { AdminProvider } from '../../context/AdminContext';
 import { fetchUserStats } from './api/adminApi';
+import InterestRequests from './components/InterestRequestsPage';
 
 const AdminPage: React.FC = () => {
   const navigate = useNavigate();
@@ -107,6 +108,9 @@ const AdminPage: React.FC = () => {
                 {activeTab === 'settings' && <Settings />}
               </>
             )}
+            {activeTab === 'interestRequestsPage' && (
+              <InterestRequests/>
+            )}
           </main>
         </div>
       </div>
@@ -115,3 +119,4 @@ const AdminPage: React.FC = () => {
 };
 
 export default AdminPage;
+                  
