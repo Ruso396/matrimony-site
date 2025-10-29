@@ -11,23 +11,28 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const {
-      profileFor, fullName, gender, dob,age, religion, motherTongue, maritalStatus,
+      profileFor, fullName, gender, dob, age, religion, motherTongue, maritalStatus,
       caste, height, education, occupation, annualIncome, country, state, city,
-      email, mobile, password
+      email, mobile, password,
+      rule1, rule2, rule3, rule4, rule5
     } = req.body;
 
-    // check duplicate email
     const existing = await RegisterUser.findOne({ where: { email } });
     if (existing) return res.status(400).json({ message: 'Email already registered' });
 
-    // handle file upload
     let profilePhoto = '';
     if (req.file) profilePhoto = req.file.filename;
 
+    // ✅ Convert string "true"/"false" to actual boolean
     const user = await RegisterUser.create({
-      profileFor, fullName, gender, dob,age, religion, motherTongue, maritalStatus,
+      profileFor, fullName, gender, dob, age, religion, motherTongue, maritalStatus,
       caste, height, education, occupation, annualIncome, country, state, city,
-      email, mobile, password, profilePhoto
+      email, mobile, password, profilePhoto,
+      rule1: rule1 === 'true' || rule1 === true,  // ✅ Handle both string and boolean
+      rule2: rule2 === 'true' || rule2 === true,
+      rule3: rule3 === 'true' || rule3 === true,
+      rule4: rule4 === 'true' || rule4 === true,
+      rule5: rule5 === 'true' || rule5 === true
     });
 
     return res.status(201).json({ message: 'User registered successfully', user });
@@ -36,6 +41,7 @@ export const registerUser = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
