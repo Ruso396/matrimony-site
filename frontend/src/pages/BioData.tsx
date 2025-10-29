@@ -12,6 +12,7 @@ interface UserProfile {
   occupation: string;
   state: string;
   profilePhoto: string;
+  imageSrc?: string; // blob or direct url used in <img>
 }
 
 
@@ -39,7 +40,9 @@ const BioData: React.FC = () => {
       const result = Array.isArray(res.data)
         ? res.data
         : res.data.users || res.data.data || [];
-      setProfiles(result);
+  // Initialize profiles without imageSrc
+  const initProfiles = result.map((p: any) => ({ ...p, imageSrc: undefined }));
+  setProfiles(initProfiles);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching profiles:", error);
@@ -63,6 +66,54 @@ const BioData: React.FC = () => {
   fetchProfiles();
   fetchFavorites();
 }, [userId]);
+
+  // Fetch profile images as blobs when token exists so Authorization header is included.
+  useEffect(() => {
+    let active = true;
+    const token = localStorage.getItem('token');
+
+    const loadImages = async () => {
+      if (!profiles || profiles.length === 0) return;
+
+      const updated = await Promise.all(profiles.map(async (p) => {
+        if (!p.profilePhoto) return p;
+
+        // Extract filename (stored by backend as full URL sometimes)
+        const parts = p.profilePhoto.split('/');
+        const filename = parts[parts.length - 1];
+
+        const endpoint = `http://localhost:5000/api/register/profile-photo/${filename}`;
+
+        try {
+          if (token) {
+            const resp = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            if (!resp.ok) throw new Error('Image fetch failed');
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            return { ...p, imageSrc: url };
+          } else {
+            // Guest: use public endpoint directly (backend will return blurred image)
+            return { ...p, imageSrc: endpoint };
+          }
+        } catch (err) {
+          console.error('Error loading image for', p.id, err);
+          return { ...p, imageSrc: p.profilePhoto || undefined };
+        }
+      }));
+
+      if (active) setProfiles(updated as UserProfile[]);
+    };
+
+    loadImages();
+
+    return () => {
+      active = false;
+      // Revoke any object URLs we created
+      profiles.forEach(p => {
+        if (p.imageSrc && p.imageSrc.startsWith('blob:')) URL.revokeObjectURL(p.imageSrc);
+      });
+    };
+  }, [profiles]);
 
 
   const toggleFavorite = async (favoriteUserId: number) => {
@@ -282,13 +333,11 @@ const filtered = profiles.filter((p) => {
               className="bg-white rounded-lg shadow-sm hover:shadow-md transition flex flex-col overflow-hidden group"
             >
               <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-square overflow-hidden">
+                {/* Show blurred image for guests/non-premium, clear for premium */}
                 <img
-                  src={
-                    profile.profilePhoto ||
-                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  }
+                  src={profile.imageSrc || profile.profilePhoto || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
                   alt={profile.fullName}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-110`}
                 />
                 <button
                   onClick={() => toggleFavorite(profile.id)}  

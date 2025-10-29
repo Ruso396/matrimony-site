@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+
 import {
   registerUser,
   loginUser,
@@ -10,6 +11,8 @@ import {
   updateUserProfile,
   deleteUserProfile
 } from '../controllers/registerController';
+
+import { serveProfilePhoto } from '../controllers/profilePhotoController';
 
 const router = express.Router();
 
@@ -34,6 +37,9 @@ router.get('/users/:id', getUserById);
 router.get('/related/:id', getRelatedProfiles);
 router.put('/update/:id', upload.single('profilePhoto'), updateUserProfile);
 router.delete('/users/:id', deleteUserProfile);
+
+// Serve profile photo with blur for non-premium/guest
+router.get('/profile-photo/:filename', serveProfilePhoto);
 
 
 export default router;
