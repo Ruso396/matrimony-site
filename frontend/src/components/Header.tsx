@@ -31,7 +31,6 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userName");
     localStorage.removeItem("userId");
     setUserName(null);
     setShowDropdown(false);
@@ -41,7 +40,7 @@ const Header: React.FC = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "Brides", path: "/biodata" },
+    { name: "Brides/Grooms", path: "/biodata" },
     { name: "Contact Us", path: "/contact" },
     { name: "FAQ", path: "/faq" },
   ];
@@ -128,26 +127,18 @@ const Header: React.FC = () => {
           ))}
         </nav>
 
-        {/* Right Side */}
+               {/* Right Side - Login/User */}
         <div className="hidden md:flex items-center gap-4 relative">
           {userName ? (
             <div className="relative">
-              {/* Simplified: only icon + text (no border or background) */}
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
-                onMouseLeave={() => setShowDropdown(false)}
-                className={`flex items-center gap-2 cursor-pointer font-medium transition ${
-                  isTransparentPage && !isScrolled
-                    ? "text-white hover:text-yellow-300"
-                    : "text-pink-600 hover:text-pink-700"
-                }`}
+                className="flex items-center gap-2 px-4 py-2 border rounded-full text-pink-600 border-pink-600 bg-pink-50 cursor-pointer hover:bg-pink-100 transition"
               >
-                <User className="w-5 h-5" />
-                <span>{userName}</span>
+                <span className="font-semibold">{userName}</span>
               </button>
 
-              {/* Dropdown */}
               {showDropdown && (
                 <div
                   className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50"
@@ -171,7 +162,6 @@ const Header: React.FC = () => {
               )}
             </div>
           ) : (
-            // Normal login button before login
             <Link
               to="/login"
               className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${
@@ -184,6 +174,7 @@ const Header: React.FC = () => {
             </Link>
           )}
         </div>
+
 
         {/* Mobile menu toggle */}
         <button onClick={toggleMenu} className="md:hidden focus:outline-none p-1">
