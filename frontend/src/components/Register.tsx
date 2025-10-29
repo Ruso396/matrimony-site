@@ -207,8 +207,12 @@ const ModernRegister = () => {
     const data = await response.json();
 
     if (response.ok) {
-      alert('Registration successful! Please login.');
-      window.location.href = '/login';
+      // Show success popup
+      setIsSuccess(true);
+      // Automatically redirect to login after 3 seconds
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 3000);
     } else {
       setErrors({ submit: data.message || 'Registration failed. Please try again.' });
     }

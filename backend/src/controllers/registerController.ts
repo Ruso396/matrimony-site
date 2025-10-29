@@ -111,8 +111,11 @@ export const getUsers = async (req: Request, res: Response) => {
         'email',
         'mobile',
         'profilePhoto',
+        'status',
+        'isPremium',
         'createdAt'
-      ]
+      ],
+      order: [['createdAt', 'DESC']] // Order by most recent first
     });
 
     // ✅ Build base URL dynamically (so it works on any host)
