@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart3, Users, Heart, Settings } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
+import { CreditCard, FileText, Bell } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -15,6 +16,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActiveTab }) 
     { id: 'users', icon: Users, label: 'Users' },
     { id: 'matches', icon: Heart, label: 'Matches' },
     { id: 'settings', icon: Settings, label: 'Settings' },
+    { id: 'interestRequestsPage', icon: Bell, label: 'Interest Requests' },
   ];
 
   return (
