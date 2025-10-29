@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Crown, Check, CreditCard, Smartphone, Building2, ArrowRight, Shield, Star, Users, MessageCircle, Heart, Sparkles, Lock, Zap } from 'lucide-react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const PremiumPayment = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userId = queryParams.get("userId");
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -68,9 +69,6 @@ const PremiumPayment = () => {
 
       if (response.ok) {
         setShowSuccess(true);
-        setTimeout(() => {
-          alert('Payment successful! Redirecting to dashboard...');
-        }, 1000);
       } else {
         alert(data.message || 'Payment failed.');
       }
@@ -135,8 +133,19 @@ const PremiumPayment = () => {
               Profile Upgraded Successfully
             </div>
           </div>
-          <p className="text-sm text-gray-500 mb-3">Redirecting to dashboard...</p>
-          <div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-gray-500 mb-3">You're all set — enjoy premium features.</p>
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => {
+                // Navigate to biodata after user acknowledges
+                if (userId) navigate(`/biodata?userId=${userId}`);
+                else navigate('/biodata');
+              }}
+              className="px-6 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold"
+            >
+              OK
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -6,7 +6,10 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "strict": true,
-    "moduleResolution": "NodeNext", "resolveJsonModule": true
-
-  }
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
 }
