@@ -132,14 +132,17 @@ const BioData: React.FC = () => {
     }
   };
 
+const filtered = profiles.filter((p) => {
+  // 🚫 Hide logged-in user's profile
+  if (userId && Number(p.id) === Number(userId)) return false;
 
-  const filtered = profiles.filter((p) => {
-    if (p.age < ageRange[0] || p.age > ageRange[1]) return false;
-    if (biodataType === "Brides" && p.gender !== "Female") return false;
-    if (biodataType === "Grooms" && p.gender !== "Male") return false;
-    if (division !== "All" && p.state !== division) return false;
-    return true;
-  });
+  if (p.age < ageRange[0] || p.age > ageRange[1]) return false;
+  if (biodataType === "Brides" && p.gender !== "Female") return false;
+  if (biodataType === "Grooms" && p.gender !== "Male") return false;
+  if (division !== "All" && p.state !== division) return false;
+  return true;
+});
+
 
   // ✅ Loading screen
   if (loading) {
