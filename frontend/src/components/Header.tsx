@@ -30,20 +30,13 @@ const Header: React.FC = () => {
   }, [isTransparentPage, location.pathname]);
 
   const handleLogout = () => {
-    // Clear all auth-related localStorage keys so the user is fully logged out
     try {
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
       localStorage.removeItem("userName");
-      // If you have other keys (e.g., rememberMe, refreshToken), remove them here as well
-    } catch (e) {
-      // ignore localStorage errors
-    }
-
-    // Update context/UI
+    } catch (e) {}
     setUserName(null);
     setShowDropdown(false);
-    // Notify other tabs/components about the change
     window.dispatchEvent(new Event("userLoginChange"));
     navigate("/login");
   };
@@ -100,25 +93,19 @@ const Header: React.FC = () => {
       `}</style>
 
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-<Link to="/" className="flex items-center">
-  <img
-    src={
-      isTransparentPage && !isScrolled
-        ? logoWhite   // white logo for transparent header
-        : logoBlack   // black logo for white header
-    }
-    alt="Royal Delight"
-    className="
-      h-8 w-auto object-contain transition-all duration-300
-      sm:h-9
-      md:h-10
-      lg:h-11
-      xl:h-12
-    "
-  />
-</Link>
-
-
+        {/* LOGO */}
+        <Link to="/" className="flex items-center">
+          <img
+            src={
+              isTransparentPage && !isScrolled ? logoWhite : logoBlack
+            }
+            alt="Royal Delight"
+            className="
+              h-8 w-auto object-contain transition-all duration-300
+              sm:h-9 md:h-10 lg:h-11 xl:h-12
+            "
+          />
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
@@ -137,18 +124,33 @@ const Header: React.FC = () => {
           ))}
         </nav>
 
-               {/* Right Side - Login/User */}
+        {/* Right Side - Login/User */}
         <div className="hidden md:flex items-center gap-4 relative">
           {userName ? (
             <div className="relative">
+              {/* ✅ Added dynamic style for transparent vs scrolled */}
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
-                className="flex items-center gap-2 px-4 py-2 border rounded-full text-pink-600 border-pink-600 bg-pink-50 cursor-pointer hover:bg-pink-100 transition"
+                className={`flex items-center gap-2 px-4 py-2  cursor-pointer transition font-semibold
+                  ${
+                    isTransparentPage && !isScrolled
+                      ? " text-white  hover:text-pink-700"
+                      : "text-pink-600  hover:text-pink-700"
+                  }`}
               >
-                <span className="font-semibold">{userName}</span>
+                {/* ✅ Added User icon before name */}
+                <User
+                  className={`w-4 h-4 ${
+                    isTransparentPage && !isScrolled
+                      ? "text-white"
+                      : "text-pink-600"
+                  }`}
+                />
+                <span>{userName}</span>
               </button>
 
+              {/* Dropdown */}
               {showDropdown && (
                 <div
                   className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50"
@@ -184,7 +186,6 @@ const Header: React.FC = () => {
             </Link>
           )}
         </div>
-
 
         {/* Mobile menu toggle */}
         <button onClick={toggleMenu} className="md:hidden focus:outline-none p-1">
