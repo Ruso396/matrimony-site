@@ -30,10 +30,20 @@ const Header: React.FC = () => {
   }, [isTransparentPage, location.pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
+    // Clear all auth-related localStorage keys so the user is fully logged out
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userName");
+      // If you have other keys (e.g., rememberMe, refreshToken), remove them here as well
+    } catch (e) {
+      // ignore localStorage errors
+    }
+
+    // Update context/UI
     setUserName(null);
     setShowDropdown(false);
+    // Notify other tabs/components about the change
     window.dispatchEvent(new Event("userLoginChange"));
     navigate("/login");
   };
@@ -232,7 +242,7 @@ const Header: React.FC = () => {
                     Hi, {userName.split(" ")[0]}
                   </div>
                   <Link
-                    to="/profile"
+                    to="/profilePage"
                     onClick={closeMenuWithAnimation}
                     className="block w-full py-3 text-center border border-pink-600 rounded-full text-pink-600 hover:bg-pink-600 hover:text-white transition"
                   >
