@@ -11,6 +11,7 @@ import favoriteRoutes from './routes/favoriteRoutes';
 import adminRoutes from './routes/adminRoutes';
 import { connectDB, sequelize } from './config/db';
 import storyRoutes from './routes/storyRoute';
+import requestRoutes from "./routes/requestRoutes";
 
 dotenv.config();
 
@@ -34,6 +35,8 @@ app.use('/api/premiumpayment', premiumRoutes);
 app.use('/api/register', registerRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/favorites', favoriteRoutes);
+app.use("/api/request", requestRoutes);
+
 // Admin routes
 app.use('/api/admin', adminRoutes);
 

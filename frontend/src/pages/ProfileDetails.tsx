@@ -123,6 +123,27 @@ const ProfileDetails: React.FC = () => {
     useEffect(() => {
         fetchProfileData();
     }, [id]); // Re-fetch when ID changes
+    const [requestStatus, setRequestStatus] = useState<string>("none");
+
+    // ✅ Fetch current request status when profile loads
+    useEffect(() => {
+        const fetchStatus = async () => {
+            try {
+                const loggedInUserId = localStorage.getItem("userId");
+                if (!loggedInUserId || !id) return;
+
+                const res = await axios.get(`http://localhost:5000/api/request/status`, {
+                    params: { senderId: loggedInUserId, receiverId: id },
+                });
+
+                setRequestStatus(res.data.status);
+            } catch (err) {
+                console.error("Error checking request status:", err);
+            }
+        };
+
+        fetchStatus();
+    }, [id]);
 
     // Carousel controls
     const nextSlide = () => {
@@ -206,14 +227,53 @@ const ProfileDetails: React.FC = () => {
                             </div>
                             <div className="flex items-center justify-center space-x-4 pt-2">
                                 {/* Action Buttons */}
-                                <button
-                                    onClick={() => setIsFavorite(!isFavorite)}
-                                    className={`p-2 rounded-full transition-colors ${isFavorite ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                                    aria-label="Toggle Favorite"
-                                >
-                                    <Heart className="w-5 h-5" fill={isFavorite ? 'white' : 'none'} color="white" />
-                                </button>
-                              
+                                <div className="flex items-center justify-center space-x-4 pt-2">
+                                    {requestStatus === "none" || requestStatus === "rejected" ? (
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    const loggedInUserId = localStorage.getItem("userId");
+                                                    if (!loggedInUserId) {
+                                                        alert("Please log in to send a request.");
+                                                        return;
+                                                    }
+
+                                                    const res = await axios.post("http://localhost:5000/api/request/send", {
+                                                        senderId: Number(loggedInUserId),
+                                                        receiverId: user.id,
+                                                    });
+
+                                                    alert(res.data.message);
+                                                    setRequestStatus("pending"); // immediately reflect UI
+                                                } catch (err: any) {
+                                                    if (err.response?.status === 403) {
+                                                        alert("Only premium members can send requests.");
+                                                    } else {
+                                                        alert("Failed to send request.");
+                                                    }
+                                                }
+                                            }}
+                                            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition"
+                                        >
+                                            Send Request
+                                        </button>
+                                    ) : requestStatus === "pending" ? (
+                                        <button
+                                            disabled
+                                            className="flex-1 bg-yellow-400 text-white py-4 rounded-xl font-semibold cursor-not-allowed"
+                                        >
+                                            Pending...
+                                        </button>
+                                    ) : requestStatus === "accepted" ? (
+                                        <button
+                                            disabled
+                                            className="flex-1 bg-green-600 text-white py-4 rounded-xl font-semibold cursor-not-allowed"
+                                        >
+                                            Accepted ✅
+                                        </button>
+                                    ) : null}
+                                </div>
+
                             </div>
                         </div>
 
@@ -224,7 +284,7 @@ const ProfileDetails: React.FC = () => {
                                     <span className="text-sm font-bold text-indigo-600 uppercase tracking-widest">
                                         {user.profileFor} Profile
                                     </span>
-                                    
+
                                 </div>
                                 <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
                                     ✓ Verified
