@@ -33,16 +33,18 @@ const BioData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // ✅ Fetch from API
- useEffect(() => {
+// ✅ Fetch profiles once
+useEffect(() => {
   const fetchProfiles = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/register/users");
       const result = Array.isArray(res.data)
         ? res.data
         : res.data.users || res.data.data || [];
-  // Initialize profiles without imageSrc
-  const initProfiles = result.map((p: any) => ({ ...p, imageSrc: undefined }));
-  setProfiles(initProfiles);
+
+      // Initialize profiles without imageSrc
+      const initProfiles = result.map((p: any) => ({ ...p, imageSrc: undefined }));
+      setProfiles(initProfiles);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching profiles:", error);
@@ -55,8 +57,7 @@ const BioData: React.FC = () => {
       if (!userId) return;
       const res = await axios.get(`http://localhost:5000/api/favorites/${userId}`);
       const favs = res.data?.favorites || [];
-    const favSet = new Set<number>(favs.map((f: any) => Number(f.favoriteUserId)));
-
+      const favSet = new Set<number>(favs.map((f: any) => Number(f.favoriteUserId)));
       setFavorites(favSet);
     } catch (err) {
       console.error("Error fetching favorites:", err);
@@ -67,21 +68,20 @@ const BioData: React.FC = () => {
   fetchFavorites();
 }, [userId]);
 
-  // Fetch profile images as blobs when token exists so Authorization header is included.
-  useEffect(() => {
-    let active = true;
-    const token = localStorage.getItem('token');
 
-    const loadImages = async () => {
-      if (!profiles || profiles.length === 0) return;
+// ✅ Load images once *after* profiles fetched, not every time profiles change
+useEffect(() => {
+  if (profiles.length === 0) return;
+  const token = localStorage.getItem('token');
+  let isMounted = true;
 
-      const updated = await Promise.all(profiles.map(async (p) => {
+  const loadImages = async () => {
+    const updatedProfiles = await Promise.all(
+      profiles.map(async (p) => {
         if (!p.profilePhoto) return p;
 
-        // Extract filename (stored by backend as full URL sometimes)
         const parts = p.profilePhoto.split('/');
         const filename = parts[parts.length - 1];
-
         const endpoint = `http://localhost:5000/api/register/profile-photo/${filename}`;
 
         try {
@@ -92,28 +92,73 @@ const BioData: React.FC = () => {
             const url = URL.createObjectURL(blob);
             return { ...p, imageSrc: url };
           } else {
-            // Guest: use public endpoint directly (backend will return blurred image)
             return { ...p, imageSrc: endpoint };
           }
-        } catch (err) {
-          console.error('Error loading image for', p.id, err);
-          return { ...p, imageSrc: p.profilePhoto || undefined };
+        } catch {
+          return { ...p, imageSrc: p.profilePhoto };
         }
-      }));
+      })
+    );
 
-      if (active) setProfiles(updated as UserProfile[]);
-    };
+    if (isMounted) setProfiles(updatedProfiles);
+  };
 
-    loadImages();
+  loadImages();
 
-    return () => {
-      active = false;
-      // Revoke any object URLs we created
-      profiles.forEach(p => {
-        if (p.imageSrc && p.imageSrc.startsWith('blob:')) URL.revokeObjectURL(p.imageSrc);
-      });
-    };
-  }, [profiles]);
+  return () => {
+    isMounted = false;
+  };
+  // 👇 Dependency should be empty! Not [profiles]
+}, []); 
+
+
+  // Fetch profile images as blobs when token exists so Authorization header is included.
+  // useEffect(() => {
+  //   let active = true;
+  //   const token = localStorage.getItem('token');
+
+  //   const loadImages = async () => {
+  //     if (!profiles || profiles.length === 0) return;
+
+  //     const updated = await Promise.all(profiles.map(async (p) => {
+  //       if (!p.profilePhoto) return p;
+
+  //       // Extract filename (stored by backend as full URL sometimes)
+  //       const parts = p.profilePhoto.split('/');
+  //       const filename = parts[parts.length - 1];
+
+  //       const endpoint = `http://localhost:5000/api/register/profile-photo/${filename}`;
+
+  //       try {
+  //         if (token) {
+  //           const resp = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+  //           if (!resp.ok) throw new Error('Image fetch failed');
+  //           const blob = await resp.blob();
+  //           const url = URL.createObjectURL(blob);
+  //           return { ...p, imageSrc: url };
+  //         } else {
+  //           // Guest: use public endpoint directly (backend will return blurred image)
+  //           return { ...p, imageSrc: endpoint };
+  //         }
+  //       } catch (err) {
+  //         console.error('Error loading image for', p.id, err);
+  //         return { ...p, imageSrc: p.profilePhoto || undefined };
+  //       }
+  //     }));
+
+  //     if (active) setProfiles(updated as UserProfile[]);
+  //   };
+
+  //   loadImages();
+
+  //   return () => {
+  //     active = false;
+  //     // Revoke any object URLs we created
+  //     profiles.forEach(p => {
+  //       if (p.imageSrc && p.imageSrc.startsWith('blob:')) URL.revokeObjectURL(p.imageSrc);
+  //     });
+  //   };
+  // }, []);
 
 
   const toggleFavorite = async (favoriteUserId: number) => {

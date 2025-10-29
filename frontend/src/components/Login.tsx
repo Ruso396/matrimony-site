@@ -55,7 +55,8 @@ const Login = () => {
         localStorage.setItem('userId', data.user?.id);
         setUserName(userNameFromDB);
 
-        setTimeout(() => navigate(`/biodata?userId=${data.userId}`), 1000);
+  // navigate to biodata; use the returned user id if available
+  setTimeout(() => navigate(`/biodata?userId=${data.user?.id || ''}`), 1000);
       } else {
         setErrors({ submit: data.message });
       }

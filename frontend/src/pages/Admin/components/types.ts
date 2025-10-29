@@ -9,6 +9,18 @@ export interface User {
   status: 'pending' | 'approved' | 'rejected';
   registeredDate: string;
   premium: boolean;
+  email?: string;
+  mobile?: string;
+  profilePhoto?: string;
+  education?: string;
+  caste?: string;
+  height?: string;
+  maritalStatus?: string;
+  motherTongue?: string;
+  annualIncome?: string;
+  country?: string;
+  dob?: string;
+  profileFor?: string;
 }
 
 export interface Match {

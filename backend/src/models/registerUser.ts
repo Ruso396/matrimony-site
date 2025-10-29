@@ -59,6 +59,12 @@ RegisterUser.init(
     password: DataTypes.STRING,
     profilePhoto: DataTypes.STRING,
 
+    status: {
+      type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+      allowNull: false,
+      defaultValue: 'pending',
+    },
+
     isPremium: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
