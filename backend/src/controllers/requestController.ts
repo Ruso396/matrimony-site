@@ -170,3 +170,78 @@ export const getRequestStatus = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// ✅ Get All Interest Requests (with sender & receiver details)
+export const getAllInterestRequests = async (req: Request, res: Response) => {
+  try {
+    const requests = await InterestRequest.findAll({
+      include: [
+        {
+          model: RegisterUser,
+          as: "sender",
+          attributes: ["id", "fullName", "age", "occupation", "city", "profilePhoto"],
+        },
+        {
+          model: RegisterUser,
+          as: "receiver",
+          attributes: ["id", "fullName", "age", "occupation", "city", "profilePhoto"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(200).json({ success: true, data: requests });
+  } catch (err) {
+    console.error("❌ Error fetching all requests:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ✅ Get all mutual matches (Admin View)
+export const getAllMutualMatches = async (req: Request, res: Response) => {
+  try {
+    const acceptedRequests = await InterestRequest.findAll({
+      where: { status: "accepted" },
+      include: [
+        {
+          model: RegisterUser,
+          as: "sender",
+          attributes: ["id", "fullName", "age", "city", "profilePhoto"],
+        },
+        {
+          model: RegisterUser,
+          as: "receiver",
+          attributes: ["id", "fullName", "age", "city", "profilePhoto"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    if (!acceptedRequests || acceptedRequests.length === 0) {
+      return res.status(200).json({ success: true, matches: [] });
+    }
+
+    // Format results cleanly
+    const matches = acceptedRequests.map((reqItem) => ({
+      id: reqItem.id,
+      senderId: reqItem.senderId,
+      receiverId: reqItem.receiverId,
+      senderName: reqItem.sender?.fullName || "",
+      receiverName: reqItem.receiver?.fullName || "",
+      senderAge: reqItem.sender?.age || 0,
+      receiverAge: reqItem.receiver?.age || 0,
+      senderCity: reqItem.sender?.city || "",
+      receiverCity: reqItem.receiver?.city || "",
+      senderPhoto: reqItem.sender?.profilePhoto || null,
+      receiverPhoto: reqItem.receiver?.profilePhoto || null,
+      createdAt: reqItem.createdAt,
+      status: reqItem.status,
+    }));
+
+    return res.status(200).json({ success: true, matches });
+  } catch (err) {
+    console.error("❌ Error fetching matches:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+

@@ -100,11 +100,8 @@ const AdminPage: React.FC = () => {
                     deleteUser={deleteUser}
                   />
                 )}
-                {activeTab === 'matches' && (
-                  <MatchManagement
-                    matches={matches}
-                  />
-                )}
+               {activeTab === 'matches' && <MatchManagement />}
+
                 {activeTab === 'settings' && <Settings />}
               </>
             )}
