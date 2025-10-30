@@ -24,7 +24,7 @@ const AdminPage: React.FC = () => {
       navigate('/admin/login');
     }
   }, [navigate]);
-  
+
   const [users, setUsers] = useState<User[]>([]);
   const [stats, setStats] = useState<{
     totalUsers: number;
@@ -94,11 +94,10 @@ const AdminPage: React.FC = () => {
                 )}
                 {activeTab === 'users' && (
                   <UserManagement
-                    users={users}
-                    approveUser={approveUser}
-                    rejectUser={rejectUser}
+                    users={users as any}
                     deleteUser={deleteUser}
                   />
+
                 )}
                 {activeTab === 'matches' && (
                   <MatchManagement
@@ -109,7 +108,7 @@ const AdminPage: React.FC = () => {
               </>
             )}
             {activeTab === 'interestRequestsPage' && (
-              <InterestRequests/>
+              <InterestRequests />
             )}
           </main>
         </div>
@@ -119,4 +118,3 @@ const AdminPage: React.FC = () => {
 };
 
 export default AdminPage;
-                  

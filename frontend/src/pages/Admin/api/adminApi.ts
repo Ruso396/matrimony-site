@@ -55,3 +55,13 @@ export const fetchUserStats = async (): Promise<UserStatsResponse> => {
         throw new Error('Failed to fetch user statistics');
     }
 };
+
+export const deleteUserById = async (id: number): Promise<void> => {
+  try {
+    const response = await axios.delete(`/api/register/users/${id}`);
+    console.log('Delete success:', response.data);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw new Error('Failed to delete user');
+  }
+};

@@ -170,3 +170,15 @@ export const getRequestStatus = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+// requestController.ts la add pannu
+export const getAcceptedMatchesCount = async (req: Request, res: Response) => {
+  try {
+    const count = await InterestRequest.count({
+      where: { status: "accepted" }
+    });
+    return res.json({ count });
+  } catch (err) {
+    console.error("Error fetching matches count:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
