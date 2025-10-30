@@ -154,20 +154,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
 
           <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <User className="w-6 h-6 text-green-600" />
-              </div>
-              <TrendingUp className="w-5 h-5 text-green-500" />
-            </div>
-            <p className="text-sm text-gray-600 mb-1">Active Users</p>
-            <p className="text-3xl font-bold text-gray-900">{activeCount}</p>
-            <p className="text-xs text-gray-500 mt-2">
-              {users.length > 0 ? ((activeCount/users.length)*100).toFixed(1) : '0'}% active rate
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Heart className="w-6 h-6 text-purple-600" />
               </div>
