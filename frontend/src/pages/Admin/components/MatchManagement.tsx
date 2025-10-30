@@ -13,7 +13,7 @@ interface Match {
   createdAt: string;
 }
 
-const MatchManagement: React.FC = () => {
+const MatchManagement: React.FC = ()=> {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
