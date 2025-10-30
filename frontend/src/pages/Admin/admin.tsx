@@ -94,12 +94,10 @@ const AdminPage: React.FC = () => {
                     <Dashboard users={users} matches={matches} stats={stats} />
                   )}
                   {activeTab === 'users' && (
-                    <UserManagement
-                      users={users}
-                      approveUser={approveUser}
-                      rejectUser={rejectUser}
-                      deleteUser={deleteUser}
-                    />
+                  <UserManagement
+                    users={users as any}
+                    deleteUser={deleteUser}
+                  />
                   )}
                   {activeTab === 'matches' && <MatchManagement/>}
                   {activeTab === 'settings' && <Settings />}
