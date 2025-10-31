@@ -260,7 +260,7 @@ const ProfileDetails: React.FC = () => {
                             setRequestStatus("pending");
                         } catch (err: any) {
                             if (err.response?.status === 403) {
-                                alert("Only premium members can send requests.");
+                                alert("You can only send requests to premium members");
                             } else {
                                 alert(err.response?.data?.message || "Failed to send request.");
                             }
