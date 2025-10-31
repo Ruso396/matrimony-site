@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, LogIn, User, LogOut } from "lucide-react";
+import { Menu, X, LogIn, User, LogOut, Heart } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoWhite from "../components/assets/logowhite.png";
 import logoBlack from "../components/assets/logoblack.png";
@@ -34,7 +34,7 @@ const Header: React.FC = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
       localStorage.removeItem("userName");
-    } catch (e) {}
+    } catch (e) { }
     setUserName(null);
     setShowDropdown(false);
     window.dispatchEvent(new Event("userLoginChange"));
@@ -113,11 +113,10 @@ const Header: React.FC = () => {
             <Link
               key={link.name}
               to={link.path}
-              className={`transition ${
-                isTransparentPage && !isScrolled
+              className={`transition ${isTransparentPage && !isScrolled
                   ? "hover:text-yellow-400"
                   : "hover:text-pink-600"
-              }`}
+                }`}
             >
               {link.name}
             </Link>
@@ -133,19 +132,17 @@ const Header: React.FC = () => {
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
                 className={`flex items-center gap-2 px-4 py-2  cursor-pointer transition font-semibold
-                  ${
-                    isTransparentPage && !isScrolled
-                      ? " text-white  hover:text-pink-700"
-                      : "text-pink-600  hover:text-pink-700"
+                  ${isTransparentPage && !isScrolled
+                    ? " text-white  hover:text-pink-700"
+                    : "text-pink-600  hover:text-pink-700"
                   }`}
               >
                 {/* ✅ Added User icon before name */}
                 <User
-                  className={`w-4 h-4 ${
-                    isTransparentPage && !isScrolled
+                  className={`w-4 h-4 ${isTransparentPage && !isScrolled
                       ? "text-white"
                       : "text-pink-600"
-                  }`}
+                    }`}
                 />
                 <span>{userName}</span>
               </button>
@@ -164,6 +161,13 @@ const Header: React.FC = () => {
                   >
                     <User className="w-4 h-4 text-pink-600" /> Profile
                   </Link>
+                  <Link
+                    to="/requestmanager"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <Heart className="w-4 h-4 text-pink-600" /> Requests
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition text-left"
@@ -176,11 +180,10 @@ const Header: React.FC = () => {
           ) : (
             <Link
               to="/login"
-              className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${
-                isTransparentPage && !isScrolled
+              className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
                   ? "border-white text-white hover:bg-white hover:text-pink-700"
                   : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
-              }`}
+                }`}
             >
               <LogIn className="w-4 h-4" /> Login
             </Link>
@@ -191,15 +194,13 @@ const Header: React.FC = () => {
         <button onClick={toggleMenu} className="md:hidden focus:outline-none p-1">
           {isMenuOpen ? (
             <X
-              className={`w-6 h-6 ${
-                isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
-              }`}
+              className={`w-6 h-6 ${isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
+                }`}
             />
           ) : (
             <Menu
-              className={`w-6 h-6 ${
-                isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
-              }`}
+              className={`w-6 h-6 ${isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
+                }`}
             />
           )}
         </button>
@@ -208,9 +209,8 @@ const Header: React.FC = () => {
       {/* Mobile panel */}
       {menuVisible && (
         <div
-          className={`md:hidden fixed top-0 left-0 h-screen z-40 bg-white text-gray-800 ${
-            menuAnim === "in" ? "anim-slide-in" : "anim-slide-out"
-          }`}
+          className={`md:hidden fixed top-0 left-0 h-screen z-40 bg-white text-gray-800 ${menuAnim === "in" ? "anim-slide-in" : "anim-slide-out"
+            }`}
           style={{ width: "100%", paddingTop: "64px" }}
         >
           <div className="px-6 py-4 space-y-3">

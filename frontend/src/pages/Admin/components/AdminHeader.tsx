@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Heart, Bell, Paintbrush } from "lucide-react";
+import { Heart, Bell, Paintbrush, LogOut} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAdmin } from "../../../context/AdminContext";
 import { useTheme } from "../../../context/ThemeContext";
 
@@ -7,6 +8,13 @@ const AdminHeader: React.FC = () => {
   const { adminName } = useAdmin();
   const { setThemeColor, bgColor } = useTheme();
   const [showPalette, setShowPalette] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+const navigate = useNavigate();
+const handleLogout = () => {
+  localStorage.removeItem("adminToken"); // clear admin session
+  navigate("/admin/login"); // redirect to login page
+};
 
   // ✅ Explicit Tailwind color mapping
   const colors = [
@@ -98,21 +106,40 @@ const AdminHeader: React.FC = () => {
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
 
-          {/* Profile */}
-          <div className="flex items-center gap-2">
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${["purple", "yellow", "amber", "lime", "sky", "fuchsia"].some(c =>
-                bgColor.includes(c)
-              )
-                  ? "bg-black bg-opacity-10 text-black"
-                  : "bg-white bg-opacity-20 text-white"
-                }`}
-            >
-              {adminName ? adminName.charAt(0).toUpperCase() : "A"}
-            </div>
+          
+          {/* Profile with Logout */}
+<div className="relative">
+  <button
+    onClick={() => setShowProfileMenu(!showProfileMenu)}
+    className="flex items-center gap-2 focus:outline-none"
+  >
+    <div
+      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+        ["purple", "yellow", "amber", "lime", "sky", "fuchsia"].some((c) =>
+          bgColor.includes(c)
+        )
+          ? "bg-black bg-opacity-10 text-black"
+          : "bg-white bg-opacity-20 text-white"
+      }`}
+    >
+      {adminName ? adminName.charAt(0).toUpperCase() : "A"}
+    </div>
+    <span className="text-sm">{adminName || "Admin"}</span>
+  </button>
 
-            <span className="text-sm">{adminName || "Admin"}</span>
-          </div>
+  {/* 🔻 Dropdown menu */}
+  {showProfileMenu && (
+    <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg z-50">
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-100 rounded-md"
+      >
+        <LogOut className="w-4 h-4" /> Logout
+      </button>
+    </div>
+  )}
+</div>
+
         </div>
       </div>
     </header>
