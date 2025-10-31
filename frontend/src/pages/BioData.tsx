@@ -550,55 +550,56 @@ const BioData: React.FC = () => {
                 >
                   {/* Image Section - Reduced Height */}
                   <div className="relative w-full overflow-hidden">
-                    <div className="aspect-[3/4]">
-                      <img
-                        src={
-                          profile.imageSrc ||
-                          profile.profilePhoto ||
-                          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                        }
-                        alt={profile.fullName}
-                        className={`w-full h-full object-cover transition-transform duration-500 hover:scale-110 ${
-                          !isLoggedIn || !isPremiumUser ? 'brightness-75 blur-sm' : ''
-                        }`}
-                      />
-                    </div>
+  <div className="aspect-[3/4]">
+    {profile.imageSrc || profile.profilePhoto ? (
+      <img
+        src={profile.imageSrc || profile.profilePhoto}
+        alt={profile.fullName}
+        className={`w-full h-full object-cover transition-transform duration-500 hover:scale-110 ${
+          !isLoggedIn || !isPremiumUser ? 'brightness-75 blur-sm' : ''
+        }`}
+      />
+    ) : (
+      // 🧩 Show first letter when no photo
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 via-rose-100 to-orange-100 text-pink-600 text-5xl font-bold uppercase">
+        {profile.fullName?.charAt(0) || "?"}
+      </div>
+    )}
+  </div>
 
-                    {/* Favorite Heart Button */}
-                    <button
-                      onClick={() => toggleFavorite(profile.id)}
-                      className={`absolute top-2 right-2 p-1.5 sm:p-2 rounded-full shadow-lg backdrop-blur-sm transform transition-all duration-200 hover:scale-110 ${
-                        isFav
-                          ? "bg-gradient-to-r from-red-500 to-pink-500 text-white"
-                          : "bg-white/90 text-red-500 hover:bg-white"
-                      }`}
-                      aria-label={isFav ? "Remove favorite" : "Add favorite"}
-                    >
-                      <div className={isAnimating ? 'animate-like' : ''}>
-                        <Heart size={14} fill={isFav ? "white" : "none"} strokeWidth={2.5} />
-                      </div>
-                    </button>
+  {/* ❤️ Favorite Heart Button */}
+  <button
+    onClick={() => toggleFavorite(profile.id)}
+    className={`absolute top-2 right-2 p-1.5 sm:p-2 rounded-full shadow-lg backdrop-blur-sm transform transition-all duration-200 hover:scale-110 ${
+      isFav
+        ? "bg-gradient-to-r from-red-500 to-pink-500 text-white"
+        : "bg-white/90 text-red-500 hover:bg-white"
+    }`}
+    aria-label={isFav ? "Remove favorite" : "Add favorite"}
+  >
+    <div className={isAnimating ? "animate-like" : ""}>
+      <Heart size={14} fill={isFav ? "white" : "none"} strokeWidth={2.5} />
+    </div>
+  </button>
 
-                    {/* Age Badge */}
- <div className="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white 
-px-2 py-0.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold shadow-lg">
-  <h2>age {profile.age}</h2>
+  {/* 🎂 Age Badge */}
+  <div className="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-2 py-0.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold shadow-lg">
+    <h2>age {profile.age}</h2>
+  </div>
+
+  {/* 🔒 Premium Blur Overlay */}
+  {(!isLoggedIn || !isPremiumUser) && (
+    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 to-black/20">
+      <div className="text-center text-white px-4">
+        <div className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-3 py-1 rounded-full text-[10px] font-bold mb-1 inline-block">
+          ⭐ PREMIUM
+        </div>
+        <p className="text-[10px] font-medium">Unlock to view</p>
+      </div>
+    </div>
+  )}
 </div>
 
-
-
-                    {/* Premium Blur Overlay */}
-                    {(!isLoggedIn || !isPremiumUser) && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 to-black/20">
-                        <div className="text-center text-white px-4">
-                          <div className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-3 py-1 rounded-full text-[10px] font-bold mb-1 inline-block">
-                            ⭐ PREMIUM
-                          </div>
-                          <p className="text-[10px] font-medium">Unlock to view</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
 
                   {/* Content Section - Compact */}
                   <div className="p-2.5 sm:p-3 flex flex-col flex-1">

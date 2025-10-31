@@ -216,7 +216,7 @@ const ProfileDetails: React.FC = () => {
             </div>
         </div>
     );
-    
+
     if (error) return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="text-center py-10">
@@ -224,7 +224,7 @@ const ProfileDetails: React.FC = () => {
             </div>
         </div>
     );
-    
+
     if (!user) return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="text-center py-10">
@@ -262,14 +262,26 @@ const ProfileDetails: React.FC = () => {
                         {/* Left Side - Image and Primary Info */}
                         <div className="md:col-span-1 bg-gradient-to-br from-gray-800 to-gray-900 p-4 sm:p-6 flex flex-col items-center justify-center text-white space-y-3 sm:space-y-4">
                             <div className="relative p-1 bg-white rounded-lg shadow-xl w-full max-w-[200px] sm:max-w-none">
-                                <div className="w-full aspect-[4/5] rounded-md overflow-hidden">
-                                    <img
-                                        src={user.profilePhoto || 'https://via.placeholder.com/300?text=No+Photo'}
-                                        alt={user.fullName}
-                                        className="w-full h-full object-cover object-center"
-                                    />
+                                <div className="w-full aspect-[4/5] rounded-md overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-600 to-purple-700">
+                                    {user.profilePhoto ? (
+                                        <img
+                                            src={user.profilePhoto}
+                                            alt={user.fullName}
+                                            className="w-full h-full object-cover object-center"
+                                        />
+                                    ) : (
+                                        <span
+                                            className="text-7xl font-bold text-white"
+                                            style={{
+                                                fontFamily: "'Brush Script MT', cursive",
+                                            }}
+                                        >
+                                            {user.fullName?.charAt(0)?.toUpperCase() || "?"}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
+
                             <h1 className="text-xl sm:text-2xl font-bold text-center mt-2 truncate max-w-full px-2">
                                 {user.fullName}
                             </h1>
@@ -278,7 +290,9 @@ const ProfileDetails: React.FC = () => {
                             </p>
                             <div className="flex items-center space-x-2 text-xs sm:text-sm">
                                 <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                                <span className="truncate">{user.city}, {user.country}</span>
+                                <span className="truncate">
+                                    {user.city}, {user.country}
+                                </span>
                             </div>
 
                             {/* Send Interest Button */}
@@ -288,13 +302,13 @@ const ProfileDetails: React.FC = () => {
                                         <button
                                             onClick={handleSendInterest}
                                             className="w-full flex items-center justify-center gap-2 
-                                                     bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 
-                                                     text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl 
-                                                     font-semibold text-xs sm:text-sm
-                                                     shadow-lg shadow-pink-300/40 
-                                                     hover:shadow-xl hover:shadow-pink-400/50 
-                                                     hover:scale-[1.02] active:scale-95 
-                                                     transition-all duration-300 ease-in-out group"
+                     bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 
+                     text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl 
+                     font-semibold text-xs sm:text-sm
+                     shadow-lg shadow-pink-300/40 
+                     hover:shadow-xl hover:shadow-pink-400/50 
+                     hover:scale-[1.02] active:scale-95 
+                     transition-all duration-300 ease-in-out group"
                                         >
                                             <Heart className="w-4 h-4 group-hover:animate-pulse" />
                                             <span>Send Interest</span>
@@ -303,9 +317,9 @@ const ProfileDetails: React.FC = () => {
                                         <button
                                             disabled
                                             className="w-full flex items-center justify-center gap-2 
-                                                     bg-yellow-400 text-gray-800 py-2.5 sm:py-3 px-4 sm:px-6 
-                                                     rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm
-                                                     shadow-md cursor-not-allowed opacity-90"
+                     bg-yellow-400 text-gray-800 py-2.5 sm:py-3 px-4 sm:px-6 
+                     rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm
+                     shadow-md cursor-not-allowed opacity-90"
                                         >
                                             <Clock className="w-4 h-4 animate-pulse" />
                                             <span>Request Pending</span>
@@ -314,9 +328,9 @@ const ProfileDetails: React.FC = () => {
                                         <button
                                             disabled
                                             className="w-full flex items-center justify-center gap-2 
-                                                     bg-green-600 text-white py-2.5 sm:py-3 px-4 sm:px-6 
-                                                     rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm
-                                                     shadow-md cursor-not-allowed"
+                     bg-green-600 text-white py-2.5 sm:py-3 px-4 sm:px-6 
+                     rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm
+                     shadow-md cursor-not-allowed"
                                         >
                                             <Heart className="w-4 h-4 fill-current" />
                                             <span>Request Accepted</span>
@@ -326,6 +340,7 @@ const ProfileDetails: React.FC = () => {
                             )}
                         </div>
 
+
                         {/* Right Side - Quick Info Cards & Contact */}
                         <div className="md:col-span-2 lg:col-span-3 p-4 sm:p-6 md:p-8">
                             {/* Header */}
@@ -333,12 +348,11 @@ const ProfileDetails: React.FC = () => {
                                 <span className="text-xs sm:text-sm font-bold text-indigo-600 uppercase tracking-widest">
                                     {user.profileFor} Profile
                                 </span>
-                                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${
-                                    user.isPublic 
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-red-100 text-red-700"
-                                }`}>
-                                    {user.isPublic ? <Globe className="w-3 h-3"/> : <Lock className="w-3 h-3"/>}
+                                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${user.isPublic
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-red-100 text-red-700"
+                                    }`}>
+                                    {user.isPublic ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                                     {user.isPublic ? "Public" : "Private"}
                                 </div>
                             </div>
@@ -429,7 +443,7 @@ const ProfileDetails: React.FC = () => {
                                                     {requestStatus === 'accepted' ? ' Reveal Contact' : ' Contact Locked'}
                                                 </button>
                                                 <p className="text-[10px] sm:text-xs text-gray-500">
-                                                    {requestStatus === 'accepted' 
+                                                    {requestStatus === 'accepted'
                                                         ? "Request accepted! Click to reveal."
                                                         : "Send interest request to unlock."
                                                     }
@@ -468,7 +482,7 @@ const ProfileDetails: React.FC = () => {
 
                             {/* Carousel Container */}
                             <div className="overflow-hidden">
-                                <div 
+                                <div
                                     className="flex gap-3 transition-transform duration-500 ease-out"
                                     style={{ transform: `translateX(-${currentSlide * (100 / getProfilesPerView())}%)` }}
                                 >
