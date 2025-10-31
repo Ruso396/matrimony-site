@@ -167,7 +167,7 @@ const Features: React.FC = () => {
             </div>
 
             <h3 className="text-lg sm:text-xl text-red-600 font-semibold mb-5 leading-snug">
-              The largest and most successful matrimony service
+              The Largest And Most Successful Matrimony Service
             </h3>
 
             <div className="space-y-5 text-left">
