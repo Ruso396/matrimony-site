@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Search, Filter, Clock, CheckCircle, XCircle, AlertCircle, Loader, TrendingUp, Users, Heart } from 'lucide-react';
+import { Search, Filter, Clock, CheckCircle, XCircle, User, ChevronDown } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:5000/api/request';
+const BACKEND_URL = 'http://localhost:5000';
 
 interface UserInfo {
   id: number;
@@ -9,7 +10,8 @@ interface UserInfo {
   age: number;
   profession: string;
   city: string;
-  profileImage: string;
+  profileImage: string | null;
+  profilePhoto?: string;
 }
 
 interface InterestRequest {
@@ -29,7 +31,6 @@ const InterestRequests = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedRequest, setSelectedRequest] = useState<InterestRequest | null>(null);
 
   const fetchInterestRequests = async () => {
     try {
@@ -65,52 +66,52 @@ const InterestRequests = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const getStatusConfig = (status: 'pending' | 'accepted' | 'rejected') => {
-    switch(status) {
-      case 'pending':
-        return {
-          color: 'bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border-amber-200',
-          badgeColor: 'bg-amber-500',
-          icon: Clock,
-          label: 'Pending'
-        };
-      case 'accepted':
-        return {
-          color: 'bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 border-emerald-200',
-          badgeColor: 'bg-emerald-500',
-          icon: CheckCircle,
-          label: 'Accepted'
-        };
-      case 'rejected':
-        return {
-          color: 'bg-gradient-to-r from-rose-50 to-red-50 text-rose-700 border-rose-200',
-          badgeColor: 'bg-rose-500',
-          icon: XCircle,
-          label: 'Rejected'
-        };
-      default:
-        return {
-          color: 'bg-gray-50 text-gray-700 border-gray-200',
-          badgeColor: 'bg-gray-500',
-          icon: AlertCircle,
-          label: status
-        };
+  const getProfileImage = (user: UserInfo): string => {
+    if (user.profileImage) return user.profileImage;
+    if (user.profilePhoto) {
+      const filename = user.profilePhoto.replace(`${BACKEND_URL}/uploads/`, '');
+      return `${BACKEND_URL}/uploads/${filename}`;
     }
+    return "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
   };
 
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
-    const dateFormatted = date.toLocaleDateString('en-IN', { 
+    return date.toLocaleDateString('en-IN', { 
       year: 'numeric', 
       month: 'short', 
-      day: 'numeric' 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
-    const timeFormatted = date.toLocaleTimeString('en-IN', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
-    });
-    return { date: dateFormatted, time: timeFormatted };
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'pending':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200">
+            <Clock className="w-3.5 h-3.5" />
+            Pending
+          </span>
+        );
+      case 'accepted':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-xs font-medium rounded border border-green-200">
+            <CheckCircle className="w-3.5 h-3.5" />
+            Accepted
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-700 text-xs font-medium rounded border border-red-200">
+            <XCircle className="w-3.5 h-3.5" />
+            Rejected
+          </span>
+        );
+      default:
+        return <span className="text-xs text-gray-500">{status}</span>;
+    }
   };
 
   const stats = {
@@ -122,111 +123,61 @@ const InterestRequests = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="relative">
-            <Loader className="w-16 h-16 text-blue-600 animate-spin mx-auto mb-4" />
-            <Heart className="w-6 h-6 text-pink-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-          </div>
-          <p className="text-gray-600 font-medium">Loading interest requests...</p>
+          <div className="w-12 h-12 border-3 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 text-sm">Loading requests...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header with Gradient */}
-        <div className="mb-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-indigo-100">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-3 rounded-xl shadow-lg">
-                <MessageCircle className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Interest Requests
-                </h1>
-                <p className="text-gray-500 mt-1">Track and monitor all connection requests</p>
-              </div>
-            </div>
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Interest Requests</h1>
+          <p className="text-sm text-gray-600">Manage all connection requests</p>
+        </div>
+
+        {/* Stats Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="text-xs text-gray-600 mb-1">Total</div>
+            <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="text-xs text-gray-600 mb-1">Pending</div>
+            <div className="text-2xl font-bold text-amber-600">{stats.pending}</div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="text-xs text-gray-600 mb-1">Accepted</div>
+            <div className="text-2xl font-bold text-green-600">{stats.accepted}</div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <div className="text-xs text-gray-600 mb-1">Rejected</div>
+            <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
           </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-500 rounded-xl p-4 shadow-lg animate-pulse">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-6 h-6 text-red-500" />
-              <span className="text-red-800 font-medium">{error}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Enhanced Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-3">
-              <div className="bg-blue-100 p-3 rounded-xl">
-                <Users className="w-6 h-6 text-blue-600" />
-              </div>
-              <TrendingUp className="w-5 h-5 text-blue-400" />
-            </div>
-            <div className="text-gray-600 text-sm font-medium mb-1">Total Requests</div>
-            <div className="text-3xl font-bold text-blue-600">{stats.total}</div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-amber-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-3">
-              <div className="bg-amber-100 p-3 rounded-xl">
-                <Clock className="w-6 h-6 text-amber-600" />
-              </div>
-              <div className="bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full">New</div>
-            </div>
-            <div className="text-gray-600 text-sm font-medium mb-1">Pending</div>
-            <div className="text-3xl font-bold text-amber-600">{stats.pending}</div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-emerald-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-3">
-              <div className="bg-emerald-100 p-3 rounded-xl">
-                <CheckCircle className="w-6 h-6 text-emerald-600" />
-              </div>
-              <Heart className="w-5 h-5 text-emerald-400" />
-            </div>
-            <div className="text-gray-600 text-sm font-medium mb-1">Accepted</div>
-            <div className="text-3xl font-bold text-emerald-600">{stats.accepted}</div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-rose-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-3">
-              <div className="bg-rose-100 p-3 rounded-xl">
-                <XCircle className="w-6 h-6 text-rose-600" />
-              </div>
-            </div>
-            <div className="text-gray-600 text-sm font-medium mb-1">Rejected</div>
-            <div className="text-3xl font-bold text-rose-600">{stats.rejected}</div>
-          </div>
-        </div>
-
-        {/* Enhanced Search and Filter */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-indigo-100">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative group">
-              <Search className="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+        {/* Search and Filter */}
+        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1 relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by name or location..."
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-xl border-2 border-gray-200">
-              <Filter className="w-5 h-5 text-gray-600" />
+            <div className="relative">
+              <Filter className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               <select
-                className="bg-transparent border-none focus:ring-0 font-medium text-gray-700 cursor-pointer"
+                className="pl-9 pr-8 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white cursor-pointer"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
               >
@@ -235,175 +186,171 @@ const InterestRequests = () => {
                 <option value="accepted">Accepted</option>
                 <option value="rejected">Rejected</option>
               </select>
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
           </div>
         </div>
 
-        {/* Enhanced Interest Requests List */}
-        <div className="space-y-6">
-          {filteredRequests.map((request) => {
-            const statusConfig = getStatusConfig(request.status);
-            const StatusIcon = statusConfig.icon;
-            const sentDateTime = formatDateTime(request.createdAt);
-            const respondedDateTime = request.updatedAt !== request.createdAt ? formatDateTime(request.updatedAt) : null;
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        )}
 
-            return (
-              <div key={request.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-indigo-200">
-                {/* Status Bar */}
-                <div className={`h-2 ${statusConfig.badgeColor}`}></div>
-                
-                <div className="p-6">
-                  {/* Request Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-2 rounded-lg">
-                        <MessageCircle className="w-5 h-5 text-white" />
+        {/* Table - Desktop View */}
+        <div className="hidden lg:block bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Sender</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Receiver</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredRequests.map((request, index) => (
+                  <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-medium text-gray-900">#{request.id}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                          <img 
+                            src={getProfileImage(request.sender)} 
+                            alt={request.sender.fullName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+                            }}
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-gray-900 truncate">{request.sender.fullName}</div>
+                          <div className="text-xs text-gray-500">{request.sender.age} yrs • {request.sender.city}</div>
+                        </div>
                       </div>
-                      <span className="text-sm font-bold text-gray-700">Request #{request.id}</span>
-                    </div>
-                    <span className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 font-bold text-sm ${statusConfig.color} shadow-sm`}>
-                      <StatusIcon className="w-4 h-4" />
-                      {statusConfig.label}
-                    </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                          <img 
+                            src={getProfileImage(request.receiver)} 
+                            alt={request.receiver.fullName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+                            }}
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-gray-900 truncate">{request.receiver.fullName}</div>
+                          <div className="text-xs text-gray-500">{request.receiver.age} yrs • {request.receiver.city}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {getStatusBadge(request.status)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{formatDateTime(request.createdAt)}</div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mobile Cards View */}
+        <div className="lg:hidden space-y-4">
+          {filteredRequests.map((request) => (
+            <div key={request.id} className="bg-white border border-gray-200 rounded-lg p-4">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+                <span className="text-sm font-semibold text-gray-900">Request #{request.id}</span>
+                {getStatusBadge(request.status)}
+              </div>
+
+              {/* Sender */}
+              <div className="mb-4">
+                <div className="text-xs text-gray-500 mb-2">Sender</div>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                    <img 
+                      src={getProfileImage(request.sender)} 
+                      alt={request.sender.fullName}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+                      }}
+                    />
                   </div>
-
-                  {/* Users Info */}
-                  <div className="grid md:grid-cols-3 gap-6 mb-6">
-                    {/* Sender */}
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border-2 border-blue-100 hover:border-blue-300 transition-all">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <p className="text-xs text-blue-700 font-bold tracking-wide">REQUEST FROM</p>
-                      </div>
-                      <div className="flex items-start gap-4">
-                        <div className="relative">
-                          <div className="w-16 h-16 rounded-full overflow-hidden bg-blue-100 ring-4 ring-blue-200 shadow-lg">
-                            {request.sender.profileImage ? (
-                              <img 
-                                src={request.sender.profileImage} 
-                                alt={request.sender.fullName}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-2xl font-bold bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
-                                {request.sender.fullName.charAt(0)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-gray-800 mb-1 text-lg">{request.sender.fullName}</h3>
-                          <div className="space-y-1">
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
-                              {request.sender.age} years
-                            </p>
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
-                              {request.sender.profession}
-                            </p>
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
-                              {request.sender.city}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="flex items-center justify-center">
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-4 rounded-full shadow-lg">
-                        <Heart className="w-6 h-6 text-white" />
-                      </div>
-                    </div>
-
-                    {/* Receiver */}
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border-2 border-purple-100 hover:border-purple-300 transition-all">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                        <p className="text-xs text-purple-700 font-bold tracking-wide">REQUEST TO</p>
-                      </div>
-                      <div className="flex items-start gap-4">
-                        <div className="relative">
-                          <div className="w-16 h-16 rounded-full overflow-hidden bg-purple-100 ring-4 ring-purple-200 shadow-lg">
-                            {request.receiver.profileImage ? (
-                              <img 
-                                src={request.receiver.profileImage} 
-                                alt={request.receiver.fullName}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-2xl font-bold bg-gradient-to-br from-purple-400 to-pink-500 text-white">
-                                {request.receiver.fullName.charAt(0)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-gray-800 mb-1 text-lg">{request.receiver.fullName}</h3>
-                          <div className="space-y-1">
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-purple-400 rounded-full"></span>
-                              {request.receiver.age} years
-                            </p>
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-purple-400 rounded-full"></span>
-                              {request.receiver.profession}
-                            </p>
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-purple-400 rounded-full"></span>
-                              {request.receiver.city}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Timeline */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm bg-gray-50 p-4 rounded-xl border border-gray-200">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Clock className="w-4 h-4 text-blue-500" />
-                      <span className="font-medium">Sent:</span>
-                      <span className="text-gray-800 font-semibold">{sentDateTime.date}</span>
-                      <span className="text-gray-500">at</span>
-                      <span className="text-gray-800 font-semibold">{sentDateTime.time}</span>
-                    </div>
-                    {respondedDateTime && request.status !== 'pending' && (
-                      <>
-                        <span className="text-gray-300">•</span>
-                        <div className="flex items-center gap-2 text-gray-600">
-                          {request.status === 'accepted' ? (
-                            <CheckCircle className="w-4 h-4 text-emerald-500" />
-                          ) : (
-                            <XCircle className="w-4 h-4 text-rose-500" />
-                          )}
-                          <span className="font-medium">Responded:</span>
-                          <span className="text-gray-800 font-semibold">{respondedDateTime.date}</span>
-                          <span className="text-gray-500">at</span>
-                          <span className="text-gray-800 font-semibold">{respondedDateTime.time}</span>
-                        </div>
-                      </>
-                    )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-gray-900 truncate">{request.sender.fullName}</div>
+                    <div className="text-xs text-gray-500">{request.sender.age} yrs • {request.sender.profession}</div>
+                    <div className="text-xs text-gray-500">{request.sender.city}</div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+
+              {/* Receiver */}
+              <div className="mb-4">
+                <div className="text-xs text-gray-500 mb-2">Receiver</div>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                    <img 
+                      src={getProfileImage(request.receiver)} 
+                      alt={request.receiver.fullName}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+                      }}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-gray-900 truncate">{request.receiver.fullName}</div>
+                    <div className="text-xs text-gray-500">{request.receiver.age} yrs • {request.receiver.profession}</div>
+                    <div className="text-xs text-gray-500">{request.receiver.city}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Date */}
+              <div className="text-xs text-gray-500 pt-3 border-t border-gray-200">
+                {formatDateTime(request.createdAt)}
+              </div>
+            </div>
+          ))}
         </div>
 
+        {/* Empty State */}
         {filteredRequests.length === 0 && !loading && (
-          <div className="bg-white rounded-2xl shadow-lg p-16 text-center border border-gray-100">
-            <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-              <MessageCircle className="w-12 h-12 text-gray-400" />
+          <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-3">No Interest Requests Found</h3>
-            <p className="text-gray-500 text-lg">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Requests Found</h3>
+            <p className="text-sm text-gray-500">
               {searchTerm || filterStatus !== 'all' 
-                ? 'Try adjusting your search or filter criteria' 
-                : 'No interest requests have been made yet'}
+                ? 'Try adjusting your filters' 
+                : 'No interest requests yet'}
             </p>
+          </div>
+        )}
+
+        {/* Results Count */}
+        {filteredRequests.length > 0 && (
+          <div className="mt-4 text-center text-sm text-gray-600">
+            Showing {filteredRequests.length} of {requests.length} requests
           </div>
         )}
       </div>
