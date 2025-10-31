@@ -550,22 +550,25 @@ const BioData: React.FC = () => {
                 >
                   {/* Image Section - Reduced Height */}
                   <div className="relative w-full overflow-hidden">
-  <div className="aspect-[3/4]">
-    {profile.imageSrc || profile.profilePhoto ? (
-      <img
-        src={profile.imageSrc || profile.profilePhoto}
-        alt={profile.fullName}
-        className={`w-full h-full object-cover transition-transform duration-500 hover:scale-110 ${
-          !isLoggedIn || !isPremiumUser ? 'brightness-75 blur-sm' : ''
-        }`}
-      />
-    ) : (
-      // 🧩 Show first letter when no photo
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-100 via-rose-100 to-orange-100 text-pink-600 text-5xl font-bold uppercase">
-        {profile.fullName?.charAt(0) || "?"}
-      </div>
-    )}
-  </div>
+ <div className="aspect-square flex items-center justify-center">
+  {profile.imageSrc || profile.profilePhoto ? (
+    <img
+      src={profile.imageSrc || profile.profilePhoto}
+      alt={profile.fullName}
+      className={`w-full h-full object-cover rounded-full transition-transform duration-500 hover:scale-110 ${
+        !isLoggedIn || !isPremiumUser ? "brightness-75 blur-sm" : ""
+      }`}
+    />
+  ) : (
+    // 🧩 Show first letter when no photo (clean circle)
+    <div className="w-28 h-28 flex items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-rose-500 text-white text-5xl font-[Pacifico] border-4 border-white shadow-md">
+      {profile.fullName?.charAt(0)?.toUpperCase() || "?"}
+    </div>
+  )}
+</div>
+
+
+
 
   {/* ❤️ Favorite Heart Button */}
   <button

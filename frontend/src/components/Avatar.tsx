@@ -30,14 +30,14 @@ const Avatar: React.FC<AvatarProps> = ({ name, photo, size = 36 }) => {
         width: size,
         height: size,
         borderRadius: "50%",
-        background: "linear-gradient(135deg, #d63384, #7c2d6b)",
+        background: "linear-gradient(135deg, #ff3366, #ff6699)",
         color: "white",
-        fontFamily: "'Brush Script MT', cursive",
+        fontFamily: "'Pacifico', cursive",
         fontSize: size * 0.5,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        textTransform: "capitalize",
+        border: "2px solid white",
       }}
     >
       {firstLetter}

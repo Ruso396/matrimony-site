@@ -148,8 +148,8 @@ const Header: React.FC = () => {
               key={link.name}
               to={link.path}
               className={`transition ${isTransparentPage && !isScrolled
-                  ? "hover:text-yellow-400"
-                  : "hover:text-pink-600"
+                ? "hover:text-yellow-400"
+                : "hover:text-pink-600"
                 }`}
             >
               {link.name}
@@ -165,8 +165,8 @@ const Header: React.FC = () => {
               <div className="relative">
                 <Bell
                   className={`w-5 h-5 cursor-pointer transition ${isTransparentPage && !isScrolled
-                      ? "text-white hover:text-yellow-400"
-                      : "text-pink-600 hover:text-pink-700"
+                    ? "text-white hover:text-yellow-400"
+                    : "text-pink-600 hover:text-pink-700"
                     }`}
                   onClick={() => navigate("/requestmanager")}
                 />
@@ -188,12 +188,13 @@ const Header: React.FC = () => {
                     : "text-pink-600  hover:text-pink-700"
                   }`}
               >
-               <Avatar
-  name={userName}
-  photo={localStorage.getItem("profilePhoto")}
-  size={36}
-/>
-<span>{userName}</span>
+                <Avatar
+                  name={userName}
+                  photo={localStorage.getItem("profilePhoto")}
+                  size={36}
+                />
+                <span>{userName}</span>
+
 
               </button>
 
@@ -233,8 +234,8 @@ const Header: React.FC = () => {
             <Link
               to="/login"
               className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
-                  ? "border-white text-white hover:bg-white hover:text-pink-700"
-                  : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
+                ? "border-white text-white hover:bg-white hover:text-pink-700"
+                : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
                 }`}
             >
               <LogIn className="w-4 h-4" /> Login
