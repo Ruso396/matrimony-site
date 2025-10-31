@@ -12,8 +12,8 @@ import {
   Trash2,
   BadgeCheck,
   Crown,
-  Lock,  // ✅ Import
-  Globe, // ✅ Import
+  Lock,  
+  Globe, 
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
