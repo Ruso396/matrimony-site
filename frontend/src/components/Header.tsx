@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Menu, X, LogIn, User, LogOut, Bell, Heart } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Avatar from "../components/Avatar";
+
 
 import logoWhite from "../components/assets/logowhite.png";
 import logoBlack from "../components/assets/logoblack.png";
@@ -186,13 +188,13 @@ const Header: React.FC = () => {
                     : "text-pink-600  hover:text-pink-700"
                   }`}
               >
-                <User
-                  className={`w-4 h-4 ${isTransparentPage && !isScrolled
-                      ? "text-white"
-                      : "text-pink-600"
-                    }`}
-                />
-                <span>{userName}</span>
+               <Avatar
+  name={userName}
+  photo={localStorage.getItem("profilePhoto")}
+  size={36}
+/>
+<span>{userName}</span>
+
               </button>
 
               {/* 🔽 Dropdown */}
