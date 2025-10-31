@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
 import { Op } from 'sequelize';
-
+import bcrypt from 'bcryptjs'; // ✅ add this line
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -14,7 +14,8 @@ export const registerUser = async (req: Request, res: Response) => {
       profileFor, fullName, gender, dob, age, religion, motherTongue, maritalStatus,
       caste, height, education, occupation, annualIncome, country, state, city,
       email, mobile, password,
-      rule1, rule2, rule3, rule4, rule5
+      rule1, rule2, rule3, rule4, rule5,
+      isPublic // ✅ Get new field
     } = req.body;
 
     const existing = await RegisterUser.findOne({ where: { email } });
@@ -23,16 +24,16 @@ export const registerUser = async (req: Request, res: Response) => {
     let profilePhoto = '';
     if (req.file) profilePhoto = req.file.filename;
 
-    // ✅ Convert string "true"/"false" to actual boolean
     const user = await RegisterUser.create({
       profileFor, fullName, gender, dob, age, religion, motherTongue, maritalStatus,
       caste, height, education, occupation, annualIncome, country, state, city,
       email, mobile, password, profilePhoto,
-      rule1: rule1 === 'true' || rule1 === true,  // ✅ Handle both string and boolean
+      rule1: rule1 === 'true' || rule1 === true,
       rule2: rule2 === 'true' || rule2 === true,
       rule3: rule3 === 'true' || rule3 === true,
       rule4: rule4 === 'true' || rule4 === true,
-      rule5: rule5 === 'true' || rule5 === true
+      rule5: rule5 === 'true' || rule5 === true,
+      isPublic: isPublic === 'true' || isPublic === true // ✅ Add to create
     });
 
     return res.status(201).json({ message: 'User registered successfully', user });
@@ -46,29 +47,20 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Check user exist
     const user = await RegisterUser.findOne({ where: { email } });
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // Check password
     const isValid = await user.validPassword(password);
     if (!isValid) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // JWT token create
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
 
-    // ✅ Return user details also
-
-    // ✅ Step 4: return token + user info
     return res.json({
-     
       message: 'Login successful',
-     
       token,
       userId: user.id,
       fullName: user.fullName,
       email: user.email,
-   
       user: {
         id: user.id,
         fullName: user.fullName,
@@ -76,15 +68,11 @@ export const loginUser = async (req: Request, res: Response) => {
         profilePhoto: user.profilePhoto ? `${req.protocol}://${req.get('host')}/uploads/${user.profilePhoto}` : null
       }
     });
-
-
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
   }
 };
-
-
 
 // ✅ Get all registered users
 export const getUsers = async (req: Request, res: Response) => {
@@ -113,15 +101,14 @@ export const getUsers = async (req: Request, res: Response) => {
         'profilePhoto',
         'status',
         'isPremium',
+        'isPublic', // ✅ Return privacy status
         'createdAt'
       ],
-      order: [['createdAt', 'DESC']] // Order by most recent first
+      order: [['createdAt', 'DESC']]
     });
 
-    // ✅ Build base URL dynamically (so it works on any host)
     const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
 
-    // ✅ Format each user’s profilePhoto to include the full path
     const formattedUsers = users.map((user: any) => ({
       ...user.dataValues,
       profilePhoto: user.profilePhoto
@@ -144,7 +131,6 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    // 🧩 Find user by primary key
     const user = await RegisterUser.findByPk(id, {
       attributes: [
         'id',
@@ -167,6 +153,7 @@ export const getUserById = async (req: Request, res: Response) => {
         'email',
         'mobile',
         'profilePhoto',
+        'isPublic', // ✅ Return privacy status
         'createdAt'
       ]
     });
@@ -175,7 +162,6 @@ export const getUserById = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // ✅ Build full image URL (same as in getUsers)
     const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
     const formattedUser = {
       ...user.dataValues,
@@ -195,7 +181,7 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Get related profiles from backend (same country, same gender)
+// ✅ Get related profiles from backend
 export const getRelatedProfiles = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -214,11 +200,10 @@ export const getRelatedProfiles = async (req: Request, res: Response) => {
       order: [['createdAt', 'DESC']],
     });
 
-    // ✅ Add full image URL
     const formattedProfiles = relatedUsers.map((user: any) => ({
       ...user.dataValues,
       profilePhoto: user.profilePhoto
-        ? `http://localhost:5000/uploads/${user.profilePhoto}` // 👈 Full URL
+        ? `http://localhost:5000/uploads/${user.profilePhoto}`
         : null,
     }));
 
@@ -240,32 +225,36 @@ export const updateUserProfile = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    // 🧩 Check if user exists
     const user = await RegisterUser.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // 🧾 Get body fields
     const {
       profileFor, fullName, gender, dob, age, religion, motherTongue,
       maritalStatus, caste, height, education, occupation, annualIncome,
-      country, state, city, email, mobile, password
+      country, state, city, email, mobile, password,
+      isPublic // ✅ Get new field
     } = req.body;
 
-    // 🖼️ Handle new profile photo
-    let profilePhoto = user.profilePhoto; // old photo
+    let profilePhoto = user.profilePhoto;
     if (req.file) {
-      // delete old photo (optional)
       if (user.profilePhoto) {
-        // uploads folder is under src/uploads
         const oldPath = path.join(__dirname, '../uploads', user.profilePhoto);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
       profilePhoto = req.file.filename;
     }
 
-    // 🧠 Update fields
+    // Handle password update separately - only hash if provided
+    let updatedPassword = user.password;
+    if (password) {
+        // You might want to check if password changed before rehashing
+        // This simple version re-hashes if any password string is sent
+        const salt = await bcrypt.genSalt(10);
+        updatedPassword = await bcrypt.hash(password, salt);
+    }
+
     await user.update({
       profileFor,
       fullName,
@@ -285,11 +274,11 @@ export const updateUserProfile = async (req: Request, res: Response) => {
       city,
       email,
       mobile,
-      password,
-      profilePhoto
+      password: updatedPassword, // Use the potentially updated password
+      profilePhoto,
+      isPublic: isPublic === 'true' || isPublic === true // ✅ Add to update
     });
 
-    // ✅ Build full URL for updated image
     const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
     const formattedUser = {
       ...user.dataValues,
@@ -311,13 +300,11 @@ export const deleteUserProfile = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    // 🔍 Find user first
     const user = await RegisterUser.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // 🖼️ Delete profile photo from uploads folder (if exists)
     if (user.profilePhoto) {
       const photoPath = path.join(__dirname, '../uploads', user.profilePhoto);
       if (fs.existsSync(photoPath)) {
@@ -325,7 +312,6 @@ export const deleteUserProfile = async (req: Request, res: Response) => {
       }
     }
 
-    // 🗑️ Delete user from database
     await user.destroy();
 
     return res.status(200).json({

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
     Mail, Phone, MapPin, Cake, Ruler, Briefcase, Heart,
     ChevronLeft, ChevronRight, GraduationCap, DollarSign, Globe,
-    Users, BookOpen, Clock
+    Users, BookOpen, Clock, Lock // ✅ Import Lock
 } from 'lucide-react';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-// Interface definitions remain the same
+// Interface definitions
 interface UserProfile {
     id: number;
     profileFor: string;
@@ -30,6 +30,7 @@ interface UserProfile {
     mobile: string;
     profilePhoto: string | null;
     createdAt: string;
+    isPublic: boolean; // ✅ ADD THIS
 }
 
 interface RelatedProfile {
@@ -78,16 +79,17 @@ const ProfileDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
-    // State management remains the same
+    // State management
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [isFavorite, setIsFavorite] = useState(false); // Unused, but kept for future functionality
-    const [showContactInfo, setShowContactInfo] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [showContactInfo, setShowContactInfo] = useState(false); // This state now means "user *clicked* reveal"
 
     const [relatedProfiles, setRelatedProfiles] = useState<RelatedProfile[]>([]);
     const [currentSlide, setCurrentSlide] = useState(0);
+    // ... (carousel state logic remains the same)
     const profilesPerView = 2; // For mobile
     const smProfilesPerView = 3; // For small screens
     const lgProfilesPerView = 4; // For large screens
@@ -97,6 +99,7 @@ const ProfileDetails: React.FC = () => {
         if (window.innerWidth >= 640) return smProfilesPerView;
         return profilesPerView;
     };
+
 
     const fetchProfileData = async () => {
         if (!id) return;
@@ -123,6 +126,7 @@ const ProfileDetails: React.FC = () => {
     useEffect(() => {
         fetchProfileData();
     }, [id]); // Re-fetch when ID changes
+
     const [requestStatus, setRequestStatus] = useState<string>("none");
 
     // ✅ Fetch current request status when profile loads
@@ -142,10 +146,18 @@ const ProfileDetails: React.FC = () => {
             }
         };
 
-        fetchStatus();
-    }, [id]);
+        // Only fetch status if the user profile is loaded and is private
+        if (user && !user.isPublic) {
+            fetchStatus();
+        } else if (user && user.isPublic) {
+            // If profile is public, we don't need the request status for contacts
+            setRequestStatus("n/a"); // Set a status to indicate not applicable
+        }
+    }, [id, user]); // ✅ Re-run when user data is loaded
 
     // Carousel controls
+    // ... (nextSlide, prevSlide, useEffect for resize remain the same)
+        // Carousel controls
     const nextSlide = () => {
         const currentPpv = getProfilesPerView();
         const maxIndex = relatedProfiles.length - currentPpv;
@@ -178,6 +190,7 @@ const ProfileDetails: React.FC = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+
     // Loader/Error States
     if (loading) return <div className="text-center py-20 text-lg text-gray-600">Loading professional profile...</div>;
     if (error) return <div className="text-center py-20 text-red-600 font-semibold">{error}</div>;
@@ -185,11 +198,10 @@ const ProfileDetails: React.FC = () => {
 
     // Determine card width for different screen sizes (Responsive Carousel)
     const getCardWidthStyle = () => {
+        // ... (remains the same)
         const ppv = getProfilesPerView();
-        // Calculate the percentage width for each card, minus a small margin (e.g., 10px) to account for gap-4
-        // The width is dynamically calculated based on the profilesPerView
         return {
-            width: `calc(${100 / ppv}% - ${((ppv - 1) * 4) / ppv}px)`, // Adjust for gap-4 (16px total margin for 4 cards, so 4px per card)
+            width: `calc(${100 / ppv}% - ${((ppv - 1) * 4) / ppv}px)`, 
         };
     };
 
@@ -225,56 +237,64 @@ const ProfileDetails: React.FC = () => {
                                 <MapPin className="w-4 h-4" />
                                 <span>{user.city}, {user.country}</span>
                             </div>
-                            <div className="flex items-center justify-center space-x-4 pt-2">
-                                {/* Action Buttons */}
-                                <div className="flex items-center justify-center space-x-4 pt-2">
-                                    {requestStatus === "none" || requestStatus === "rejected" ? (
-                                        <button
-                                            onClick={async () => {
-                                                try {
-                                                    const loggedInUserId = localStorage.getItem("userId");
-                                                    if (!loggedInUserId) {
-                                                        alert("Please log in to send a request.");
-                                                        return;
-                                                    }
+                           <div className="flex items-center justify-center space-x-4 pt-2">
+    {/* ✅ Show only if profile is Private */}
+    {!user.isPublic && (
+        <div className="flex items-center justify-center space-x-4 pt-2">
+            {requestStatus === "none" || requestStatus === "rejected" ? (
+                <button
+                    onClick={async () => {
+                        try {
+                            const loggedInUserId = localStorage.getItem("userId");
+                            if (!loggedInUserId) {
+                                alert("Please log in to send a request.");
+                                return;
+                            }
 
-                                                    const res = await axios.post("http://localhost:5000/api/request/send", {
-                                                        senderId: Number(loggedInUserId),
-                                                        receiverId: user.id,
-                                                    });
+                            const res = await axios.post("http://localhost:5000/api/request/send", {
+                                senderId: Number(loggedInUserId),
+                                receiverId: user.id,
+                            });
 
-                                                    alert(res.data.message);
-                                                    setRequestStatus("pending"); // immediately reflect UI
-                                                } catch (err: any) {
-                                                    if (err.response?.status === 403) {
-                                                        alert("Only premium members can send requests.");
-                                                    } else {
-                                                        alert("Failed to send request.");
-                                                    }
-                                                }
-                                            }}
-                                            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition"
-                                        >
-                                            Send Interest
-                                        </button>
-                                    ) : requestStatus === "pending" ? (
-                                        <button
-                                            disabled
-                                            className="flex-1 bg-yellow-400 text-white py-4 rounded-xl font-semibold cursor-not-allowed"
-                                        >
-                                            Pending...
-                                        </button>
-                                    ) : requestStatus === "accepted" ? (
-                                        <button
-                                            disabled
-                                            className="flex-1 bg-green-600 text-white py-4 rounded-xl font-semibold cursor-not-allowed"
-                                        >
-                                            Accepted 
-                                        </button>
-                                    ) : null}
-                                </div>
+                            alert(res.data.message);
+                            setRequestStatus("pending");
+                        } catch (err: any) {
+                            if (err.response?.status === 403) {
+                                alert("Only premium members can send requests.");
+                            } else {
+                                alert(err.response?.data?.message || "Failed to send request.");
+                            }
+                        }
+                    }}
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 
+                               text-white py-3 px-6 rounded-xl font-semibold shadow-lg shadow-orange-300/40 
+                               hover:scale-105 hover:shadow-xl hover:shadow-orange-400/50 active:scale-95 
+                               transition-all duration-300 ease-in-out group"
+                >
+                    <span className="group-hover:animate-pulse"></span>
+                    <span>Send Interest</span>
+                </button>
+            ) : requestStatus === "pending" ? (
+                <button
+                    disabled
+                    className="flex items-center justify-center gap-2 bg-yellow-400 text-white py-3 px-6 rounded-xl font-semibold 
+                               shadow-md cursor-not-allowed opacity-90"
+                >
+                     Pending...
+                </button>
+            ) : requestStatus === "accepted" ? (
+                <button
+                    disabled
+                    className="flex items-center justify-center gap-2 bg-green-600 text-white py-3 px-6 rounded-xl font-semibold 
+                               shadow-md cursor-not-allowed"
+                >
+                     Accepted
+                </button>
+            ) : null}
+        </div>
+    )}
+</div>
 
-                            </div>
                         </div>
 
                         {/* Right Side - Quick Info Cards & Contact (Cols 2-4) */}
@@ -284,15 +304,21 @@ const ProfileDetails: React.FC = () => {
                                     <span className="text-sm font-bold text-indigo-600 uppercase tracking-widest">
                                         {user.profileFor} Profile
                                     </span>
-
                                 </div>
-                                <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-                                    ✓ Verified
+                                {/* ✅ Show Public/Private Status Badge */}
+                                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                                    user.isPublic 
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
+                                }`}>
+                                    {user.isPublic ? <Globe className="w-3 h-3"/> : <Lock className="w-3 h-3"/>}
+                                    {user.isPublic ? "Public" : "Private"}
                                 </div>
                             </div>
 
                             {/* Quick Stats Grid */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                {/* ... (InfoCards remain the same) ... */}
                                 <InfoCard icon={Cake} label="Age" value={`${user.age} Years`} />
                                 <InfoCard icon={Ruler} label="Height" value={user.height} />
                                 <InfoCard icon={Briefcase} label="Status" value={user.maritalStatus} />
@@ -303,6 +329,7 @@ const ProfileDetails: React.FC = () => {
                             <div className="grid lg:grid-cols-2 gap-8">
                                 {/* Detailed Information Panel */}
                                 <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                    {/* ... (Detailed Info remains the same) ... */}
                                     <h3 className="text-lg font-bold text-gray-800 p-4 border-b bg-gray-50">Detailed Information</h3>
                                     <div className="divide-y divide-gray-100">
                                         <DetailItem icon={Users} label="Gender" value={user.gender} color="text-pink-600" />
@@ -314,11 +341,27 @@ const ProfileDetails: React.FC = () => {
                                     </div>
                                 </div>
 
-                                {/* Contact Info Panel */}
+                                {/* ✅ MODIFIED: Contact Info Panel */}
                                 <div className="border border-gray-200 rounded-lg overflow-hidden h-fit">
-                                    <h3 className="text-lg font-bold text-gray-800 p-4 border-b bg-gray-50">Private Contact Details</h3>
+                                    <h3 className="text-lg font-bold text-gray-800 p-4 border-b bg-gray-50">Contact Details</h3>
                                     <div className="p-4 space-y-4">
-                                        {showContactInfo ? (
+                                        
+                                        {/* CASE 1: Profile is Public */}
+                                        {user.isPublic ? (
+                                            <div className="space-y-3">
+                                                <div className="flex items-center gap-3 text-gray-700">
+                                                    <Phone className="w-5 h-5 text-indigo-600" />
+                                                    <span className="text-base font-medium">{user.mobile}</span>
+                                                </div>
+                                                <div className="flex items-center gap-3 text-gray-700">
+                                                    <Mail className="w-5 h-5 text-indigo-600" />
+                                                    <span className="text-base font-medium">{user.email}</span>
+                                                </div>
+                                                <p className="text-xs text-gray-500 mt-2 text-center">This profile is public. Contact details are visible.</p>
+                                            </div>
+                                        
+                                        /* CASE 2: Profile is Private, but request is accepted AND user clicked reveal */
+                                        ) : showContactInfo ? (
                                             <div className="space-y-3">
                                                 <div className="flex items-center gap-3 text-gray-700">
                                                     <Phone className="w-5 h-5 text-indigo-600" />
@@ -329,6 +372,8 @@ const ProfileDetails: React.FC = () => {
                                                     <span className="text-base font-medium">{user.email}</span>
                                                 </div>
                                             </div>
+
+                                        /* CASE 3: Profile is Private and details are hidden */
                                         ) : (
                                             <div className="space-y-4 text-center">
                                                 <div className="flex items-center justify-center gap-6">
@@ -342,12 +387,23 @@ const ProfileDetails: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <button
-                                                    onClick={() => setShowContactInfo(true)}
+                                                    onClick={() => {
+                                                        if (requestStatus === "accepted") {
+                                                            setShowContactInfo(true);
+                                                        } else {
+                                                            alert("This profile is private. You must send an interest request and have it accepted to view contact details.");
+                                                        }
+                                                    }}
                                                     className="w-full sm:w-auto px-6 py-2 bg-indigo-100 text-indigo-700 rounded-md font-semibold text-sm hover:bg-indigo-200 transition"
                                                 >
-                                                    Reveal Contact Information
+                                                    {requestStatus === 'accepted' ? 'Reveal Contact Information' : 'Reveal Contact'}
                                                 </button>
-                                                <p className="text-xs text-gray-500 mt-2">A small fee may apply to view full contact details.</p>
+                                                <p className="text-xs text-gray-500 mt-2">
+                                                    {requestStatus === 'accepted' 
+                                                        ? "Your request was accepted. Click to reveal."
+                                                        : "This profile is private. Send a request to view details."
+                                                    }
+                                                </p>
                                             </div>
                                         )}
                                     </div>
@@ -361,6 +417,7 @@ const ProfileDetails: React.FC = () => {
 
                 {/* Related Profiles Section */}
                 <div className="mt-16">
+                    {/* ... (Related Profiles section remains the same) ... */}
                     <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Similar Profiles</h2>
                     {relatedProfiles.length > 0 ? (
                         <div className="relative">
@@ -379,7 +436,7 @@ const ProfileDetails: React.FC = () => {
                                             key={profile.id}
                                             className="flex-shrink-0 bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition cursor-pointer"
                                             style={getCardWidthStyle()}
-                                            onClick={() => navigate(`/profiledetails/${profile.id}`)} // Navigate to the related profile
+                                            onClick={() => navigate(`/profiledetails/${profile.id}`)} // Updated to match BioData link
                                         >
                                             <div className="relative h-48 sm:h-56">
                                                 <img

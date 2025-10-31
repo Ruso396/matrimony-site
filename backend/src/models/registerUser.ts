@@ -26,12 +26,15 @@ export class RegisterUser extends Model {
   public profilePhoto!: string;
   public isPremium!: boolean;
 
-  // ✅ new fields for Rules section
+  // ✅ Rules fields
   public rule1!: boolean;
   public rule2!: boolean;
   public rule3!: boolean;
   public rule4!: boolean;
   public rule5!: boolean;
+
+  // ✅ NEW FIELD for public/private profiles
+  public isPublic!: boolean;
 
   public validPassword!: (password: string) => Promise<boolean>;
 }
@@ -69,6 +72,13 @@ RegisterUser.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+
+    // ✅ NEW FIELD for public/private profiles
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false, // Default to private
     },
 
     // ✅ Rules & Terms checkboxes
