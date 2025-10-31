@@ -31,13 +31,25 @@ const AdminHeader: React.FC = () => {
   ];
 
   return (
-    <header className={`${bgColor} text-white shadow-md relative`}>
+    <header
+      className={`${bgColor} ${bgColor.includes("purple") ? "text-black" : "text-white"
+        } shadow-md relative`}
+    >
+
       <div className="px-6 py-4 flex items-center justify-between">
         {/* Logo & Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-            <Heart className="w-6 h-6 text-white" />
+          <div
+            className={`w-10 h-10 ${["purple", "yellow", "amber", "lime", "sky", "fuchsia"].some(c =>
+              bgColor.includes(c)
+            )
+                ? "bg-black bg-opacity-10 text-black"
+                : "bg-white bg-opacity-20 text-white"
+              } rounded-lg flex items-center justify-center`}
+          >
+            <Heart className="w-6 h-6" />
           </div>
+
           <div>
             <h1 className="text-xl font-bold">Royal Delight</h1>
             <p className="text-xs opacity-90">Admin Dashboard</p>
@@ -88,9 +100,17 @@ const AdminHeader: React.FC = () => {
 
           {/* Profile */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${["purple", "yellow", "amber", "lime", "sky", "fuchsia"].some(c =>
+                bgColor.includes(c)
+              )
+                  ? "bg-black bg-opacity-10 text-black"
+                  : "bg-white bg-opacity-20 text-white"
+                }`}
+            >
               {adminName ? adminName.charAt(0).toUpperCase() : "A"}
             </div>
+
             <span className="text-sm">{adminName || "Admin"}</span>
           </div>
         </div>

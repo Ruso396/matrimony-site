@@ -117,13 +117,6 @@ const Dashboard: React.FC<DashboardProps> = ({ users, matches, stats }) => {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    user.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {user.status}
-                  </span>
                   <span className="text-[10px] text-gray-400">
                     {new Date(user.registeredDate).toLocaleDateString('en-US', {
                       month: 'short',
@@ -138,7 +131,7 @@ const Dashboard: React.FC<DashboardProps> = ({ users, matches, stats }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        {/* <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Recent Activity</h3>
             <span className="text-xs text-gray-500">Last {matches.length} matches</span>
@@ -171,7 +164,7 @@ const Dashboard: React.FC<DashboardProps> = ({ users, matches, stats }) => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Gender Distribution Chart could go here */}

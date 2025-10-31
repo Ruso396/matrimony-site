@@ -106,18 +106,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-                <p className="text-sm text-gray-500">Manage and monitor user profiles</p>
+                <h1 className="text-2xl font-bold Total Users-900">User Management</h1>
+                <p className="text-sm Total Users-500">Manage and monitor user profiles</p>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Export
-              </button>
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                Add User
-              </button>
             </div>
           </div>
         </div>
@@ -133,9 +124,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
               </div>
               <TrendingUp className="w-5 h-5 text-green-500" />
             </div>
-            <p className="text-sm text-gray-600 mb-1">Total Users</p>
-            <p className="text-3xl font-bold text-gray-900">{users.length}</p>
-            <p className="text-xs text-gray-500 mt-2">Active registered users</p>
+            <p className="text-sm Total Users-600 mb-1">Total Users</p>
+            <p className="text-3xl font-bold Total Users-900">{users.length}</p>
+            <p className="text-xs Total Users-500 mt-2">Active registered users</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
@@ -145,10 +136,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
               </div>
               <TrendingUp className="w-5 h-5 text-green-500" />
             </div>
-            <p className="text-sm text-gray-600 mb-1">Premium Members</p>
-            <p className="text-3xl font-bold text-gray-900">{premiumCount}</p>
-            <p className="text-xs text-gray-500 mt-2">
-              {users.length > 0 ? ((premiumCount/users.length)*100).toFixed(1) : '0'}% conversion
+            <p className="text-sm Total Users-600 mb-1">Premium Members</p>
+            <p className="text-3xl font-bold Total Users-900">{premiumCount}</p>
+            <p className="text-xs Total Users-500 mt-2">
+              {users.length > 0 ? ((premiumCount / users.length) * 100).toFixed(1) : '0'}% conversion
             </p>
           </div>
 
@@ -163,11 +154,11 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
                 <TrendingUp className="w-5 h-5 text-green-500" />
               )}
             </div>
-            <p className="text-sm text-gray-600 mb-1">Matches Made</p>
-            <p className="text-3xl font-bold text-gray-900">
+            <p className="text-sm Total Users-600 mb-1">Matches Made</p>
+            <p className="text-3xl font-bold Total Users-900">
               {loading ? '...' : matchesCount}
             </p>
-            <p className="text-xs text-gray-500 mt-2">Accepted connections</p>
+            <p className="text-xs Total Users-500 mt-2">Accepted connections</p>
           </div>
         </div>
 
@@ -175,7 +166,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 Total Users-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search by name, profession, or location..."
@@ -199,11 +190,11 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Contact</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Details</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold Total Users-600 uppercase tracking-wider">User</th>
+                  {/* <th className="px-6 py-4 text-left text-xs font-semibold Total Users-600 uppercase tracking-wider">Contact</th> */}
+                  <th className="px-6 py-4 text-left text-xs font-semibold Total Users-600 uppercase tracking-wider">Details</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold Total Users-600 uppercase tracking-wider">Location</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold Total Users-600 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -224,30 +215,35 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
                         )}
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">{user.name}</p>
+                            <p className="font-semibold Total Users-900">{user.name}</p>
                             {user.premium && (
                               <Crown className="w-4 h-4 text-amber-500" fill="currentColor" />
                             )}
                           </div>
-                          <p className="text-sm text-gray-500">ID: #{user.id}</p>
+                          {/* <p className="text-sm Total Users-500">ID: #{user.id}</p> */}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm">
-                        <p className="text-gray-900">{user.email}</p>
-                        <p className="text-gray-500">{user.mobile}</p>
+                        <p className="Total Users-900">{user.email}</p>
+                        <p className="Total Users-500">{user.mobile}</p>
+                      </div>
+                    </td> */}
+                    <td className="px-4 py-4 align-middle text-left">
+                      <div className="text-sm">
+                        <span className="Total Users-900">
+                          {user.age} yrs • {user.gender}
+                        </span>
+                        <span className="Total Users-500 ">
+                          {user.profession || "—"}
+                        </span>
                       </div>
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm">
-                        <p className="text-gray-900">{user.age} yrs • {user.gender}</p>
-                        <p className="text-gray-500">{user.profession}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 text-gray-400" />
+                      <div className="flex items-center gap-1 text-sm Total Users-600">
+                        <MapPin className="w-4 h-4 Total Users-400" />
                         {user.location}
                       </div>
                     </td>
@@ -277,9 +273,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
 
           {filteredUsers.length === 0 && (
             <div className="text-center py-12">
-              <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">No users found</h3>
-              <p className="text-gray-500">Try adjusting your search criteria</p>
+              <User className="w-16 h-16 Total Users-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold Total Users-700 mb-2">No users found</h3>
+              <p className="Total Users-500">Try adjusting your search criteria</p>
             </div>
           )}
         </div>
@@ -290,12 +286,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Profile Details</h2>
+              <h2 className="text-xl font-bold Total Users-900">Profile Details</h2>
               <button
                 onClick={() => setShowViewModal(false)}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 Total Users-500" />
               </button>
             </div>
 
@@ -314,7 +310,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
                 )}
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-2xl font-bold text-gray-900">{selectedUser.name}</h3>
+                    <h3 className="text-2xl font-bold Total Users-900">{selectedUser.name}</h3>
                     {selectedUser.premium && (
                       <span className="flex items-center gap-1 bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-semibold">
                         <Crown className="w-4 h-4" fill="currentColor" />
@@ -322,63 +318,63 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-600 mb-1">ID: #{selectedUser.id}</p>
-                  <p className="text-sm text-gray-500">{selectedUser.profession} • {selectedUser.location}</p>
+                  <p className="Total Users-600 mb-1">ID: #{selectedUser.id}</p>
+                  <p className="text-sm Total Users-500">{selectedUser.profession} • {selectedUser.location}</p>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold Total Users-900 mb-3 flex items-center gap-2">
                       <User className="w-4 h-4 text-indigo-600" />
                       Personal Information
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Profile For</span>
-                        <span className="font-medium text-gray-900">{selectedUser.profileFor || 'N/A'}</span>
+                        <span className="Total Users-600">Profile For</span>
+                        <span className="font-medium Total Users-900">{selectedUser.profileFor || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Gender</span>
-                        <span className="font-medium text-gray-900">{selectedUser.gender}</span>
+                        <span className="Total Users-600">Gender</span>
+                        <span className="font-medium Total Users-900">{selectedUser.gender}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Date of Birth</span>
-                        <span className="font-medium text-gray-900">{selectedUser.dob || 'N/A'}</span>
+                        <span className="Total Users-600">Date of Birth</span>
+                        <span className="font-medium Total Users-900">{selectedUser.dob || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Age</span>
-                        <span className="font-medium text-gray-900">{selectedUser.age} years</span>
+                        <span className="Total Users-600">Age</span>
+                        <span className="font-medium Total Users-900">{selectedUser.age} years</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Height</span>
-                        <span className="font-medium text-gray-900">{selectedUser.height || 'N/A'}</span>
+                        <span className="Total Users-600">Height</span>
+                        <span className="font-medium Total Users-900">{selectedUser.height || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">Marital Status</span>
-                        <span className="font-medium text-gray-900">{selectedUser.maritalStatus || 'N/A'}</span>
+                        <span className="Total Users-600">Marital Status</span>
+                        <span className="font-medium Total Users-900">{selectedUser.maritalStatus || 'N/A'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold Total Users-900 mb-3 flex items-center gap-2">
                       <Heart className="w-4 h-4 text-indigo-600" />
                       Religious Background
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Religion</span>
-                        <span className="font-medium text-gray-900">{selectedUser.religion || 'N/A'}</span>
+                        <span className="Total Users-600">Religion</span>
+                        <span className="font-medium Total Users-900">{selectedUser.religion || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Caste</span>
-                        <span className="font-medium text-gray-900">{selectedUser.caste || 'N/A'}</span>
+                        <span className="Total Users-600">Caste</span>
+                        <span className="font-medium Total Users-900">{selectedUser.caste || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">Mother Tongue</span>
-                        <span className="font-medium text-gray-900">{selectedUser.motherTongue || 'N/A'}</span>
+                        <span className="Total Users-600">Mother Tongue</span>
+                        <span className="font-medium Total Users-900">{selectedUser.motherTongue || 'N/A'}</span>
                       </div>
                     </div>
                   </div>
@@ -386,60 +382,60 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold Total Users-900 mb-3 flex items-center gap-2">
                       <Briefcase className="w-4 h-4 text-indigo-600" />
                       Professional Details
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Education</span>
-                        <span className="font-medium text-gray-900">{selectedUser.education || 'N/A'}</span>
+                        <span className="Total Users-600">Education</span>
+                        <span className="font-medium Total Users-900">{selectedUser.education || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Occupation</span>
-                        <span className="font-medium text-gray-900">{selectedUser.profession}</span>
+                        <span className="Total Users-600">Occupation</span>
+                        <span className="font-medium Total Users-900">{selectedUser.profession}</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">Annual Income</span>
-                        <span className="font-medium text-gray-900">{selectedUser.annualIncome || 'N/A'}</span>
+                        <span className="Total Users-600">Annual Income</span>
+                        <span className="font-medium Total Users-900">{selectedUser.annualIncome || 'N/A'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold Total Users-900 mb-3 flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-indigo-600" />
                       Location Details
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Country</span>
-                        <span className="font-medium text-gray-900">{selectedUser.country || 'N/A'}</span>
+                        <span className="Total Users-600">Country</span>
+                        <span className="font-medium Total Users-900">{selectedUser.country || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">State</span>
-                        <span className="font-medium text-gray-900">{selectedUser.state || 'N/A'}</span>
+                        <span className="Total Users-600">State</span>
+                        <span className="font-medium Total Users-900">{selectedUser.state || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">City</span>
-                        <span className="font-medium text-gray-900">{selectedUser.city || 'N/A'}</span>
+                        <span className="Total Users-600">City</span>
+                        <span className="font-medium Total Users-900">{selectedUser.city || 'N/A'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold Total Users-900 mb-3 flex items-center gap-2">
                       <Phone className="w-4 h-4 text-indigo-600" />
                       Contact Information
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-gray-600">Email</span>
-                        <span className="font-medium text-gray-900">{selectedUser.email}</span>
+                        <span className="Total Users-600">Email</span>
+                        <span className="font-medium Total Users-900">{selectedUser.email}</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">Mobile</span>
-                        <span className="font-medium text-gray-900">{selectedUser.mobile}</span>
+                        <span className="Total Users-600">Mobile</span>
+                        <span className="font-medium Total Users-900">{selectedUser.mobile}</span>
                       </div>
                     </div>
                   </div>
@@ -450,7 +446,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
             <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end gap-3">
               <button
                 onClick={() => setShowViewModal(false)}
-                className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="px-6 py-2.5 bg-white border border-gray-300 Total Users-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 Close
               </button>
@@ -467,8 +463,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Trash2 className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Delete User</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold Total Users-900 mb-2">Delete User</h3>
+              <p className="Total Users-600">
                 Are you sure you want to delete <strong>{userToDelete.name}</strong>?
               </p>
               <p className="text-sm text-red-600 mt-2">This action cannot be undone.</p>
@@ -480,7 +476,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
                   setShowDeleteModal(false);
                   setUserToDelete(null);
                 }}
-                className="flex-1 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="flex-1 px-4 py-2.5 bg-white border border-gray-300 Total Users-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 Cancel
               </button>

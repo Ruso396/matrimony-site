@@ -15,6 +15,8 @@ import ProfilePage from "./pages/profilePage";
 import AdminPage from "./pages/Admin/admin";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminRoute from './components/AdminRoute';
+import RequestManager from "./pages/Request";
+import MyConnected from "./pages/MyConnected";
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -43,6 +45,9 @@ const App: React.FC = () => {
             <Route path="/profilePage" element={<ProfilePage />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/requestmanager" element={<RequestManager />} />
+            <Route path="/myconnected" element={<MyConnected />} />
+
             <Route
               path="/admin"
               element={

@@ -255,7 +255,7 @@ const ProfileDetails: React.FC = () => {
                                             }}
                                             className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition"
                                         >
-                                            Send Request
+                                            Send Interest
                                         </button>
                                     ) : requestStatus === "pending" ? (
                                         <button
@@ -269,7 +269,7 @@ const ProfileDetails: React.FC = () => {
                                             disabled
                                             className="flex-1 bg-green-600 text-white py-4 rounded-xl font-semibold cursor-not-allowed"
                                         >
-                                            Accepted ✅
+                                            Accepted 
                                         </button>
                                     ) : null}
                                 </div>
@@ -379,7 +379,7 @@ const ProfileDetails: React.FC = () => {
                                             key={profile.id}
                                             className="flex-shrink-0 bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition cursor-pointer"
                                             style={getCardWidthStyle()}
-                                            onClick={() => navigate(`/profile/${profile.id}`)} // Navigate to the related profile
+                                            onClick={() => navigate(`/profiledetails/${profile.id}`)} // Navigate to the related profile
                                         >
                                             <div className="relative h-48 sm:h-56">
                                                 <img

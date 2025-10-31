@@ -33,6 +33,7 @@ export const sendInterestRequest = async (req: Request, res: Response) => {
     }
 
     // ✅ Check if a request already exists (either direction)
+    // ✅ Check if a request already exists (either direction)
     const existingRequest = await InterestRequest.findOne({
       where: {
         [Op.or]: [
@@ -43,17 +44,29 @@ export const sendInterestRequest = async (req: Request, res: Response) => {
     });
 
     if (existingRequest) {
-      return res.status(400).json({
-        message: `Request already ${existingRequest.status}.`,
-      });
+      if (existingRequest.status === "pending" || existingRequest.status === "accepted") {
+        return res.status(400).json({
+          message: `Request already ${existingRequest.status}.`,
+        });
+      }
+
+      if (existingRequest.status === "rejected") {
+        // ♻️ Just reactivate old request instead of creating new one
+        await existingRequest.update({ status: "pending" });
+
+        return res.status(200).json({
+          message: "Request re-sent successfully.",
+        });
+      }
     }
 
-    // ✅ Save new request (pending)
+    // ✅ If no previous request exists, create a new one
     const newRequest = await InterestRequest.create({
       senderId,
       receiverId,
       status: "pending",
     });
+
 
     const requestId = newRequest.getDataValue("id");
 
@@ -257,3 +270,33 @@ export const getAllMutualMatches = async (req: Request, res: Response) => {
   }
 };
 
+// ✅ Get requests received by a specific user
+export const getReceivedRequests = async (req: Request, res: Response) => {
+  try {
+    const userId = Number(req.params.userId);
+
+    if (!userId) return res.status(400).json({ message: "Missing userId" });
+
+    const receivedRequests = await InterestRequest.findAll({
+      where: { receiverId: userId },
+      include: [
+        {
+          model: RegisterUser,
+          as: "sender",
+          attributes: ["id", "fullName", "age", "occupation", "city", "profilePhoto"],
+        },
+        {
+          model: RegisterUser,
+          as: "receiver",
+          attributes: ["id", "fullName"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(200).json({ success: true, data: receivedRequests });
+  } catch (err) {
+    console.error("❌ Error fetching received requests:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
