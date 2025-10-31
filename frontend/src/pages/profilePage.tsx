@@ -12,8 +12,8 @@ import {
   Trash2,
   BadgeCheck,
   Crown,
-  Lock,  // ✅ Import
-  Globe, // ✅ Import
+  Lock,  
+  Globe, 
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -229,31 +229,40 @@ const ProfileCard = ({
         {/* left cluster */}
         <div className="flex items-center gap-3 sm:gap-5 min-w-0">
           {/* avatar – always perfectly round */}
-          <div className="relative shrink-0">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white shadow-md">
-              <img
-                src={
-                  selectedFile
-                    ? URL.createObjectURL(selectedFile)
-                    : getPhotoUrl(profile.profilePhoto) ?? "https://via.placeholder.com/300"
-                }
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
+        <div className="relative shrink-0">
+  <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white shadow-md flex items-center justify-center bg-gradient-to-br from-pink-500 to-rose-600 text-white">
+    {selectedFile ? (
+      <img
+        src={URL.createObjectURL(selectedFile)}
+        alt="Profile"
+        className="w-full h-full object-cover"
+      />
+    ) : profile.profilePhoto ? (
+      <img
+        src={getPhotoUrl(profile.profilePhoto)}
+        alt="Profile"
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <span className="text-4xl sm:text-5xl font-[cursive]">
+        {profile.fullName?.charAt(0).toUpperCase()}
+      </span>
+    )}
+  </div>
 
-            {isEditing && (
-              <label className="absolute -bottom-1 -right-1 bg-white/95 rounded-full p-1.5 cursor-pointer shadow">
-                <Camera className="text-rose-600 w-5 h-5" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            )}
-          </div>
+  {isEditing && (
+    <label className="absolute -bottom-1 -right-1 bg-white/95 rounded-full p-1.5 cursor-pointer shadow">
+      <Camera className="text-rose-600 w-5 h-5" />
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+    </label>
+  )}
+</div>
+
 
           {/* name + meta — allow wrap, prevent cut */}
           <div className="min-w-0">

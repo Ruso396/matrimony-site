@@ -4,6 +4,8 @@ import { RegisterUser } from "../models/registerUser";
 import { PremiumPayment } from "../models/PremiumPaymentModel";
 import { InterestRequest } from "../models/InterestRequestModel";
 import { Op } from "sequelize";
+import { sequelize } from "../config/db";
+
 
 const BASE_URL = "http://localhost:5000"; // 🔁 Change if deployed
 
@@ -22,15 +24,16 @@ export const sendInterestRequest = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
 
     // ✅ Check if receiver is premium
-    const receiverPremium = await PremiumPayment.findOne({
-      where: { userId: receiverId, status: "success" },
-    });
+   // ✅ Check if receiver is premium
+const receiverPremium = await PremiumPayment.findOne({
+  where: { userId: receiverId, status: "success" },
+});
 
-    if (!receiverPremium) {
-      return res.status(403).json({
-        message: "You can send requests only to Premium members.",
-      });
-    }
+if (!receiverPremium) {
+  return res.status(403).json({
+    message: "You can send requests only to Premium members.", // 🚩 THE PROBLEM
+  });
+}
 
     // ✅ Check if a request already exists (either direction)
     // ✅ Check if a request already exists (either direction)
@@ -298,5 +301,42 @@ export const getReceivedRequests = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("❌ Error fetching received requests:", err);
     return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+// ✅ Get pending notification count (received interests)
+// ✅ Get pending notification count (received interests)
+export const getNotificationCount = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const [rows]: any = await sequelize.query(
+      "SELECT COUNT(*) AS count FROM interest_requests WHERE receiverId = ? AND status = 'pending'",
+      { replacements: [userId] }
+    );
+
+    const count = rows[0]?.count || 0;
+    res.json({ count });
+  } catch (err) {
+    console.error("❌ Error fetching notification count:", err);
+    res.status(500).json({ message: "Error fetching notifications" });
+  }
+};
+
+
+export const getSentInterestCount = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    // Only count PENDING sent requests
+    const [rows]: any = await sequelize.query(
+      "SELECT COUNT(*) AS count FROM interest_requests WHERE senderId = ? AND status = 'pending'",
+      { replacements: [userId] }
+    );
+
+    const count = rows[0]?.count || 0;
+    res.json({ count });
+  } catch (err) {
+    console.error("❌ Error fetching sent interest count:", err);
+    res.status(500).json({ message: "Error fetching sent interest count" });
   }
 };

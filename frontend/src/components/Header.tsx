@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, LogIn, User, LogOut, Heart } from "lucide-react";
+import { Menu, X, LogIn, User, LogOut, Bell, Heart } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Avatar from "../components/Avatar";
+
+
 import logoWhite from "../components/assets/logowhite.png";
 import logoBlack from "../components/assets/logoblack.png";
 import { useAuth } from "../context/AuthContext";
+
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +16,9 @@ const Header: React.FC = () => {
   const [menuAnim, setMenuAnim] = useState<"in" | "out">("in");
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [sentCount, setSentCount] = useState(0);
+
   const location = useLocation();
   const navigate = useNavigate();
   const { userName, setUserName } = useAuth();
@@ -28,7 +36,33 @@ const Header: React.FC = () => {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isTransparentPage, location.pathname]);
+  // Add this in your Header.tsx useEffect for fetching counts
 
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+
+      try {
+        const [notifRes, sentRes] = await Promise.all([
+          axios.get(`http://localhost:5000/api/request/notifications/${userId}`),
+          axios.get(`http://localhost:5000/api/request/sentcount/${userId}`),
+        ]);
+
+        console.log("📊 Notification Count (Received):", notifRes.data.count);
+        console.log("📊 Sent Interest Count:", sentRes.data.count);
+
+        setNotificationCount(notifRes.data.count);
+        setSentCount(sentRes.data.count);
+      } catch (err) {
+        console.error("Error fetching counts:", err);
+      }
+    };
+
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 10000);
+    return () => clearInterval(interval);
+  }, []);
   const handleLogout = () => {
     try {
       localStorage.removeItem("token");
@@ -114,8 +148,8 @@ const Header: React.FC = () => {
               key={link.name}
               to={link.path}
               className={`transition ${isTransparentPage && !isScrolled
-                  ? "hover:text-yellow-400"
-                  : "hover:text-pink-600"
+                ? "hover:text-yellow-400"
+                : "hover:text-pink-600"
                 }`}
             >
               {link.name}
@@ -126,8 +160,25 @@ const Header: React.FC = () => {
         {/* Right Side - Login/User */}
         <div className="hidden md:flex items-center gap-4 relative">
           {userName ? (
-            <div className="relative">
-              {/* ✅ Added dynamic style for transparent vs scrolled */}
+            <div className="relative flex items-center gap-3">
+              {/* 🔔 Notification Icon */}
+              <div className="relative">
+                <Bell
+                  className={`w-5 h-5 cursor-pointer transition ${isTransparentPage && !isScrolled
+                    ? "text-white hover:text-yellow-400"
+                    : "text-pink-600 hover:text-pink-700"
+                    }`}
+                  onClick={() => navigate("/requestmanager")}
+                />
+                {notificationCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
+                    {notificationCount}
+                  </span>
+                )}
+              </div>
+
+
+              {/* 👤 User + Name */}
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
@@ -137,20 +188,20 @@ const Header: React.FC = () => {
                     : "text-pink-600  hover:text-pink-700"
                   }`}
               >
-                {/* ✅ Added User icon before name */}
-                <User
-                  className={`w-4 h-4 ${isTransparentPage && !isScrolled
-                      ? "text-white"
-                      : "text-pink-600"
-                    }`}
+                <Avatar
+                  name={userName}
+                  photo={localStorage.getItem("profilePhoto")}
+                  size={36}
                 />
                 <span>{userName}</span>
+
+
               </button>
 
-              {/* Dropdown */}
+              {/* 🔽 Dropdown */}
               {showDropdown && (
                 <div
-                  className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg py-2 z-50"
+                  className="absolute right-0 top-full mt-1 w-44 bg-white border rounded-lg shadow-lg py-2 z-50"
                   onMouseEnter={() => setShowDropdown(true)}
                   onMouseLeave={() => setShowDropdown(false)}
                 >
@@ -178,15 +229,18 @@ const Header: React.FC = () => {
               )}
             </div>
           ) : (
+
+
             <Link
               to="/login"
               className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
-                  ? "border-white text-white hover:bg-white hover:text-pink-700"
-                  : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
+                ? "border-white text-white hover:bg-white hover:text-pink-700"
+                : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
                 }`}
             >
               <LogIn className="w-4 h-4" /> Login
             </Link>
+
           )}
         </div>
 
