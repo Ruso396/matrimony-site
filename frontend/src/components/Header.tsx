@@ -166,7 +166,7 @@ const Header: React.FC = () => {
                       ? "text-white hover:text-yellow-400"
                       : "text-pink-600 hover:text-pink-700"
                     }`}
-                  onClick={() => navigate("/notifications")}
+                  onClick={() => navigate("/requestmanager")}
                 />
                 {notificationCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
@@ -180,10 +180,10 @@ const Header: React.FC = () => {
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
-                className={`flex items-center gap-2 px-4 py-2 cursor-pointer transition font-semibold
-        ${isTransparentPage && !isScrolled
-                    ? " text-white hover:text-pink-700"
-                    : "text-pink-600 hover:text-pink-700"
+                className={`flex items-center gap-2 px-4 py-2  cursor-pointer transition font-semibold
+                  ${isTransparentPage && !isScrolled
+                    ? " text-white  hover:text-pink-700"
+                    : "text-pink-600  hover:text-pink-700"
                   }`}
               >
                 <User
@@ -211,15 +211,10 @@ const Header: React.FC = () => {
                   </Link>
                   <Link
                     to="/requestmanager"
-                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition relative"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
                     onClick={() => setShowDropdown(false)}
                   >
-                    <Heart className="w-4 h-4 text-pink-600" /> Sent Requests
-                    {sentCount > 0 && (
-                      <span className="ml-auto bg-pink-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
-                        {sentCount}
-                      </span>
-                    )}
+                    <Heart className="w-4 h-4 text-pink-600" /> Requests
                   </Link>
                   <button
                     onClick={handleLogout}

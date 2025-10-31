@@ -12,6 +12,8 @@ import {
   Trash2,
   BadgeCheck,
   Crown,
+  Lock,  // ✅ Import
+  Globe, // ✅ Import
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -76,8 +78,60 @@ const EditableField = ({
   </div>
 );
 
+// ✅ New Component for Privacy Toggle
+const PrivacyToggle = ({ isPublic, editing, onChange }: any) => (
+  <div className="flex items-start justify-between border-b pb-2">
+    <span className="text-gray-600 font-medium flex items-center gap-2 text-[12px] sm:text-[13px]">
+      {isPublic ? (
+        <Globe className="w-4 h-4 text-green-600" />
+      ) : (
+        <Lock className="w-4 h-4 text-red-600" />
+      )}
+      Profile Status
+    </span>
+    {editing ? (
+      <button
+        onClick={() => onChange({ target: { name: "isPublic", value: !isPublic } })}
+        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
+          isPublic ? "bg-green-600" : "bg-gray-400"
+        }`}
+      >
+        <span
+          className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${
+            isPublic ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    ) : (
+      <span
+        className={`font-semibold text-right text-[12px] sm:text-[13px] ${
+          isPublic ? "text-green-600" : "text-red-600"
+        }`}
+      >
+        {isPublic ? "Public" : "Private"}
+      </span>
+    )}
+  </div>
+);
+
 /* -------------------- Options -------------------- */
-const fieldOptions = {
+// profilePage.tsx
+
+// ... (lines 1 - 104)
+
+/* -------------------- Options -------------------- */
+// **FIX: Explicitly define the type for fieldOptions to resolve TS2339 errors**
+type FieldOptionsType = {
+  profileFor: string[];
+  genders: string[];
+  religions: string[];
+  motherTongues: string[];
+  maritalStatuses: string[];
+  heights: string[];
+  countries: string[];
+};
+
+const fieldOptions: FieldOptionsType = {
   profileFor: ["Self", "Son", "Daughter", "Brother", "Sister", "Relative", "Friend"],
   genders: ["Male", "Female"],
   religions: ["Hindu", "Christian", "Muslim", "Sikh", "Buddhist", "Jain", "Other"],
@@ -102,7 +156,10 @@ const fieldOptions = {
 };
 
 /* -------------------- Device Frames (larger laptop screen, stable inner scroll) -------------------- */
+// ... (rest of the file)
+/* -------------------- Device Frames -------------------- */
 const DeviceLaptop: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  // ... (no changes)
   <div className="hidden md:flex flex-col items-center">
     {/* bezel + screen */}
     <div className="relative bg-neutral-900 rounded-[1.75rem] p-3 shadow-2xl ring-1 ring-black/10 w-[1080px] max-w-[96vw]">
@@ -122,6 +179,7 @@ const DeviceLaptop: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 );
 
 const DevicePhone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  // ... (no changes)
   <div className="md:hidden flex items-center justify-center">
     {/* compact phone for 320/375/420/475 */}
     <div className="relative bg-neutral-900 rounded-[2.2rem] p-3 shadow-2xl ring-1 ring-black/10 w-[300px] sm:w-[340px]">
@@ -167,6 +225,7 @@ const ProfileCard = ({
       
       {/* header */}
       <div className="bg-gradient-to-r from-rose-500 to-pink-600 text-white px-3 sm:px-6 py-4 sm:py-6 flex items-center justify-between">
+        {/* ... (header content no changes) ... */}
         {/* left cluster */}
         <div className="flex items-center gap-3 sm:gap-5 min-w-0">
           {/* avatar – always perfectly round */}
@@ -237,6 +296,7 @@ const ProfileCard = ({
 
       {/* stepper */}
       <div className="px-3 sm:px-6 pt-3">
+        {/* ... (stepper buttons no changes) ... */}
         <div className="w-full flex flex-wrap items-center justify-center gap-2">
           <button
             onClick={() => setStep(1)}
@@ -267,6 +327,12 @@ const ProfileCard = ({
             {/* 👉 two columns on laptop; one on mobile */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
               <div className="space-y-4">
+                {/* ✅ ADD THE PRIVACY TOGGLE HERE */}
+                <PrivacyToggle
+                  isPublic={tempProfile.isPublic}
+                  editing={isEditing}
+                  onChange={handleChange}
+                />
                 <EditableField label="Profile For" name="profileFor" value={tempProfile.profileFor} editing={isEditing} onChange={handleChange} options={fieldOptions.profileFor} />
                 <EditableField label="Gender" name="gender" value={tempProfile.gender} editing={isEditing} onChange={handleChange} options={fieldOptions.genders} />
                 <EditableField label="DOB" name="dob" value={tempProfile.dob} editing={isEditing} onChange={handleChange} type="date" />
@@ -286,6 +352,7 @@ const ProfileCard = ({
             <SectionTitle icon={<Briefcase />} title="Professional & Contact" />
             {/* 👉 two columns on laptop; one on mobile */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+              {/* ... (step 2 content no changes) ... */}
               <div className="space-y-4">
                 <EditableField label="Education" name="education" value={tempProfile.education} editing={isEditing} onChange={handleChange} />
                 <EditableField label="Occupation" name="occupation" value={tempProfile.occupation} editing={isEditing} onChange={handleChange} />
@@ -304,6 +371,7 @@ const ProfileCard = ({
 
         {/* completion + action buttons */}
         <div className="mt-6 sm:mt-8">
+          {/* ... (completion bar no changes) ... */}
           <div className="mb-3 flex items-center justify-between">
             <span className="text-xs sm:text-sm text-gray-600">Completion</span>
             <span className="text-xs sm:text-sm font-semibold text-gray-800">{completion}%</span>
@@ -313,6 +381,7 @@ const ProfileCard = ({
           </div>
 
           <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
+            {/* ... (action buttons no changes) ... */}
             {isEditing ? (
               <>
                 <button
@@ -349,6 +418,7 @@ const ProfileCard = ({
 
         {/* premium block for mobile */}
         <div className="sm:hidden mt-6 sm:mt-8 flex flex-col items-center gap-3">
+          {/* ... (no changes) ... */}
           <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full text-amber-700 text-sm">
             <Crown className="w-4 h-4" /> Premium Member
           </div>
@@ -420,6 +490,7 @@ const ProfilePage = () => {
       );
 
       setProfile(res.data.user);
+      setTempProfile(res.data.user); // ✅ Sync tempProfile with saved data
       setIsEditing(false);
       setSelectedFile(null);
 
@@ -456,6 +527,7 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* ... (background and titles no changes) ... */}
       <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-pink-50" />
       <div className="relative max-w-[1400px] mx-auto px-4 py-8 md:py-14 flex flex-col items-center gap-6">
         {/* title */}
@@ -501,6 +573,7 @@ const ProfilePage = () => {
 
       {/* Delete confirmation popup */}
       {showDeletePopup && (
+        // ... (no changes)
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
             <h2 className="text-lg font-semibold text-gray-800 mb-3">
@@ -526,6 +599,7 @@ const ProfilePage = () => {
 
       {/* Success popup */}
       {showSuccessPopup && (
+        // ... (no changes)
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-96 text-center shadow-2xl">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
