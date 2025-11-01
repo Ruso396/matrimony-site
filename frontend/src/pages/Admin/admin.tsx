@@ -25,13 +25,13 @@ const AdminPage: React.FC = () => {
         return hashTab;
       }
     }
-    
+
     // Second, check localStorage
     const savedTab = localStorage.getItem('adminActiveTab');
     if (savedTab && ['dashboard', 'users', 'matches', 'settings', 'interestRequestsPage'].includes(savedTab)) {
       return savedTab;
     }
-    
+
     // Default to dashboard
     return 'dashboard';
   };
@@ -120,11 +120,21 @@ const AdminPage: React.FC = () => {
   return (
     <AdminProvider>
       <ThemeProvider>
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-          <AdminHeader />
-          <div className="flex">
-            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-            <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-800 min-h-screen transition-colors duration-200">
+        <div className="flex flex-col h-screen overflow-hidden">
+          {/* Fixed Header */}
+          <div className="flex-shrink-0 z-50">
+            <AdminHeader />
+          </div>
+
+          {/* Sidebar + Scrollable Content */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Fixed Sidebar */}
+            <div className="flex-shrink-0">
+              <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+
+            {/* Scrollable main content */}
+            <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 transition-colors duration-200 p-4 sm:p-6 lg:p-8">
               {loading ? (
                 <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
                   <div className="relative">
@@ -137,15 +147,8 @@ const AdminPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="animate-fadeIn">
-                  {activeTab === 'dashboard' && (
-                    <Dashboard users={users} matches={matches} stats={stats} />
-                  )}
-                  {activeTab === 'users' && (
-                    <UserManagement
-                      users={users as any}
-                      deleteUser={deleteUser}
-                    />
-                  )}
+                  {activeTab === 'dashboard' && <Dashboard users={users} matches={matches} stats={stats} />}
+                  {activeTab === 'users' && <UserManagement users={users as any} deleteUser={deleteUser} />}
                   {activeTab === 'matches' && <MatchManagement />}
                   {activeTab === 'interestRequestsPage' && <InterestRequests />}
                   {activeTab === 'settings' && <Settings />}
@@ -157,6 +160,7 @@ const AdminPage: React.FC = () => {
       </ThemeProvider>
     </AdminProvider>
   );
+
 };
 
 export default AdminPage;
