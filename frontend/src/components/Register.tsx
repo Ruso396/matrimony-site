@@ -733,4 +733,5 @@ const ModernRegister = () => {
   );
 };
 
+
 export default ModernRegister;
