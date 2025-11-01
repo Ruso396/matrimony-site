@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, LogIn, User, LogOut, Bell, Heart } from "lucide-react";
+import { Menu, X, LogIn, User, LogOut, Bell, Heart, Trophy } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Avatar from "../components/Avatar";
@@ -155,18 +155,38 @@ const Header: React.FC = () => {
               {link.name}
             </Link>
           ))}
+
+          {/* 🏆 Trophy icon now inside nav, next to FAQ */}
+          <Link to="/successStory" className="flex items-center">
+            <Trophy
+              size={22}
+              className={`${isTransparentPage && !isScrolled
+                  ? "text-white hover:text-yellow-400"
+                  : "text-gray-700 hover:text-yellow-500"
+                } transition-transform duration-200 hover:scale-110`}
+            />
+          </Link>
         </nav>
+
+        <div className="hidden md:flex items-center gap-5">
+
+
+
+        </div>
 
         {/* Right Side - Login/User */}
         <div className="hidden md:flex items-center gap-4 relative">
           {userName ? (
             <div className="relative flex items-center gap-3">
+
+
+
               {/* 🔔 Notification Icon */}
               <div className="relative">
                 <Bell
                   className={`w-5 h-5 cursor-pointer transition ${isTransparentPage && !isScrolled
-                    ? "text-white hover:text-yellow-400"
-                    : "text-pink-600 hover:text-pink-700"
+                      ? "text-white hover:text-yellow-400"
+                      : "text-pink-600 hover:text-pink-700"
                     }`}
                   onClick={() => navigate("/requestmanager")}
                 />
@@ -177,15 +197,14 @@ const Header: React.FC = () => {
                 )}
               </div>
 
-
               {/* 👤 User + Name */}
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
-                className={`flex items-center gap-2 px-4 py-2  cursor-pointer transition font-semibold
-                  ${isTransparentPage && !isScrolled
-                    ? " text-white  hover:text-pink-700"
-                    : "text-pink-600  hover:text-pink-700"
+                className={`flex items-center gap-2 px-4 py-2 cursor-pointer transition font-semibold
+          ${isTransparentPage && !isScrolled
+                    ? "text-white hover:text-pink-700"
+                    : "text-pink-600 hover:text-pink-700"
                   }`}
               >
                 <Avatar
@@ -194,8 +213,6 @@ const Header: React.FC = () => {
                   size={36}
                 />
                 <span>{userName}</span>
-
-
               </button>
 
               {/* 🔽 Dropdown */}
@@ -212,6 +229,7 @@ const Header: React.FC = () => {
                   >
                     <User className="w-4 h-4 text-pink-600" /> Profile
                   </Link>
+
                   <Link
                     to="/requestmanager"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
@@ -219,6 +237,7 @@ const Header: React.FC = () => {
                   >
                     <Heart className="w-4 h-4 text-pink-600" /> Requests
                   </Link>
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition text-left"
@@ -229,20 +248,18 @@ const Header: React.FC = () => {
               )}
             </div>
           ) : (
-
-
             <Link
               to="/login"
               className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
-                ? "border-white text-white hover:bg-white hover:text-pink-700"
-                : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
+                  ? "border-white text-white hover:bg-white hover:text-pink-700"
+                  : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
                 }`}
             >
               <LogIn className="w-4 h-4" /> Login
             </Link>
-
           )}
         </div>
+
 
         {/* Mobile menu toggle */}
         <button onClick={toggleMenu} className="md:hidden focus:outline-none p-1">
