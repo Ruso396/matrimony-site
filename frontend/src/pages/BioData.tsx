@@ -588,7 +588,7 @@ px-2 py-0.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold shadow-lg">
 
 
                     {/* Premium Blur Overlay */}
-                    {(!isLoggedIn || !isPremiumUser) && (
+                    {/* {(!isLoggedIn || !isPremiumUser) && (
                       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 to-black/20">
                         <div className="text-center text-white px-4">
                           <div className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-3 py-1 rounded-full text-[10px] font-bold mb-1 inline-block">
@@ -597,7 +597,7 @@ px-2 py-0.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold shadow-lg">
                           <p className="text-[10px] font-medium">Unlock to view</p>
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   {/* Content Section - Compact */}
