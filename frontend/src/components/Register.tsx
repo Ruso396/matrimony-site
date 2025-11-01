@@ -160,69 +160,69 @@ const ModernRegister = () => {
   };
 
 
-  const handleSubmit = async () => {
-    // First validate step 3
-    if (!validateStep(3)) return;
+ const handleSubmit = async () => {
+  // First validate step 3
+  if (!validateStep(3)) return;
 
-    // Then check if all rules are accepted
-    const newErrors: FormErrors = {};
+  // Then check if all rules are accepted
+  const newErrors: FormErrors = {};
 
-    if (!formData.rule1 || !formData.rule2 || !formData.rule3 || !formData.rule4 || !formData.rule5) {
-      newErrors.rulesAccepted = 'Please accept all rules and regulations to proceed';
-      setErrors(newErrors);
-      return;
-    }
+  if (!formData.rule1 || !formData.rule2 || !formData.rule3 || !formData.rule4 || !formData.rule5) {
+    newErrors.rulesAccepted = 'Please accept all rules and regulations to proceed';
+    setErrors(newErrors);
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const formDataToSend = new FormData();
+  try {
+    const formDataToSend = new FormData();
 
-      // Append all form fields EXCEPT rules
-      Object.keys(formData).forEach((key) => {
-        if (key !== 'profilePhoto' && key !== 'termsAccepted' &&
+    // Append all form fields EXCEPT rules
+    Object.keys(formData).forEach((key) => {
+      if (key !== 'profilePhoto' && key !== 'termsAccepted' &&
           key !== 'rule1' && key !== 'rule2' && key !== 'rule3' &&
           key !== 'rule4' && key !== 'rule5') {
-          formDataToSend.append(key, formData[key as keyof typeof formData] as string);
-        }
-      });
-
-      // ✅ Append rules as boolean strings explicitly
-      formDataToSend.append('rule1', formData.rule1.toString());
-      formDataToSend.append('rule2', formData.rule2.toString());
-      formDataToSend.append('rule3', formData.rule3.toString());
-      formDataToSend.append('rule4', formData.rule4.toString());
-      formDataToSend.append('rule5', formData.rule5.toString());
-
-      // Append profile photo if exists
-      if (formData.profilePhoto) {
-        formDataToSend.append('profilePhoto', formData.profilePhoto);
+        formDataToSend.append(key, formData[key as keyof typeof formData] as string);
       }
+    });
 
-      const response = await fetch('http://localhost:5000/api/register/register', {
-        method: 'POST',
-        body: formDataToSend,
-      });
+    // ✅ Append rules as boolean strings explicitly
+    formDataToSend.append('rule1', formData.rule1.toString());
+    formDataToSend.append('rule2', formData.rule2.toString());
+    formDataToSend.append('rule3', formData.rule3.toString());
+    formDataToSend.append('rule4', formData.rule4.toString());
+    formDataToSend.append('rule5', formData.rule5.toString());
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Show success popup
-        setIsSuccess(true);
-        // Automatically redirect to login after 3 seconds
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 3000);
-      } else {
-        setErrors({ submit: data.message || 'Registration failed. Please try again.' });
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      setErrors({ submit: 'Network error. Please check your connection and try again.' });
-    } finally {
-      setIsLoading(false);
+    // Append profile photo if exists
+    if (formData.profilePhoto) {
+      formDataToSend.append('profilePhoto', formData.profilePhoto);
     }
-  };
+
+    const response = await fetch('http://localhost:5000/api/register/register', {
+      method: 'POST',
+      body: formDataToSend,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Show success popup
+      setIsSuccess(true);
+      // Automatically redirect to login after 3 seconds
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 3000);
+    } else {
+      setErrors({ submit: data.message || 'Registration failed. Please try again.' });
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    setErrors({ submit: 'Network error. Please check your connection and try again.' });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const inputClass = (field: keyof FormErrors) => `
     w-full px-4 py-3 rounded-lg border bg-gray-50 transition-all outline-none text-gray-800
@@ -321,8 +321,8 @@ const ModernRegister = () => {
                 <React.Fragment key={step.num}>
                   <div className="flex flex-col items-center">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all border-2 ${currentStep >= step.num
-                      ? 'bg-rose-600 text-white border-rose-600'
-                      : 'bg-white text-gray-400 border-gray-300'
+                        ? 'bg-rose-600 text-white border-rose-600'
+                        : 'bg-white text-gray-400 border-gray-300'
                       }`}>
                       {currentStep > step.num ? <Check className="w-6 h-6" /> : <step.icon className="w-5 h-5" />}
                     </div>
@@ -462,45 +462,22 @@ const ModernRegister = () => {
                     <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-rose-500 transition-colors bg-gray-50">
                       {photoPreview ? (
                         <div className="relative inline-block">
-                          <img
-                            src={photoPreview}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded-full mx-auto border-4 border-white shadow-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={removePhoto}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 shadow-lg"
-                          >
+                          <img src={photoPreview} alt="Preview" className="w-32 h-32 object-cover rounded-full mx-auto border-4 border-white shadow-lg" />
+                          <button type="button" onClick={removePhoto}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 shadow-lg">
                             <X className="w-4 h-4" />
                           </button>
                         </div>
-                      ) : formData.fullName ? (
-                        // 🟢 Show first letter of name if profile photo is missing
-                        <div className="w-32 h-32 flex items-center justify-center rounded-full mx-auto border-4 border-white shadow-lg text-white text-3xl font-bold bg-gradient-to-br from-rose-500 to-pink-500">
-                          {formData.fullName.charAt(0).toUpperCase()}
-                        </div>
                       ) : (
-                        // Default camera icon if no name typed yet
                         <>
                           <Camera className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handlePhotoChange}
-                            className="hidden"
-                            id="photo-upload"
-                          />
-                          <label
-                            htmlFor="photo-upload"
-                            className="cursor-pointer text-rose-600 font-semibold hover:text-rose-700"
-                          >
+                          <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" id="photo-upload" />
+                          <label htmlFor="photo-upload" className="cursor-pointer text-rose-600 font-semibold hover:text-rose-700">
                             Choose Photo
                           </label>
                           <p className="text-xs text-gray-500 mt-1">Max size: 5MB</p>
                         </>
                       )}
-
                     </div>
                     {errors.profilePhoto && <p className="text-red-600 text-xs mt-1">{errors.profilePhoto}</p>}
                   </div>
@@ -732,6 +709,5 @@ const ModernRegister = () => {
     </div>
   );
 };
-
 
 export default ModernRegister;

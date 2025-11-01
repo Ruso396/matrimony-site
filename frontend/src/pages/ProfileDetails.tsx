@@ -6,7 +6,8 @@ import {
 } from 'lucide-react';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
-
+import Swal from 'sweetalert2'; // 🌟 Import SweetAlert2
+import 'sweetalert2/dist/sweetalert2.min.css';
 // Interface definitions
 interface UserProfile {
     id: number;
@@ -96,6 +97,26 @@ const ProfileDetails: React.FC = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [requestStatus, setRequestStatus] = useState<string>("none");
 
+
+    const handleRevealContact = () => {
+  if (requestStatus === "accepted") {
+    setShowContactInfo(true);
+    Swal.fire({
+      icon: 'success',
+      title: 'Contact Unlocked 🔓',
+      text: 'You can now view contact details!',
+      confirmButtonColor: '#22c55e'
+    });
+  } else {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Access Restricted',
+      text: 'This profile is private. You must send an interest request and have it accepted to view contact details.',
+      confirmButtonColor: '#f43f5e'
+    });
+  }
+};
+
     // Responsive profiles per view
     const getProfilesPerView = () => {
         if (typeof window === 'undefined') return 2;
@@ -183,11 +204,17 @@ const ProfileDetails: React.FC = () => {
     }, []);
 
     // Send Interest Handler
-    const handleSendInterest = async () => {
+   const handleSendInterest = async () => {
         try {
             const loggedInUserId = localStorage.getItem("userId");
             if (!loggedInUserId) {
-                alert("Please log in to send a request.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please log in to send a request!',
+                    confirmButtonColor: '#f43f5e',
+                    confirmButtonText: 'Go to Login'
+                }).then(() => navigate('/login'));
                 return;
             }
 
@@ -196,16 +223,32 @@ const ProfileDetails: React.FC = () => {
                 receiverId: user!.id,
             });
 
-            alert(res.data.message);
+            Swal.fire({
+                icon: 'success',
+                title: 'Interest Sent 💌',
+                text: res.data.message,
+                confirmButtonColor: '#10b981'
+            });
             setRequestStatus("pending");
         } catch (err: any) {
             if (err.response?.status === 403) {
-                alert("You can only send requests to premium members.");
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Premium Members Only 💎',
+                    text: 'You can only send requests to premium members.',
+                    confirmButtonColor: '#f97316'
+                });
             } else {
-                alert(err.response?.data?.message || "Failed to send request.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Send',
+                    text: err.response?.data?.message || "Something went wrong.",
+                    confirmButtonColor: '#ef4444'
+                });
             }
         }
     };
+
 
     // Loading/Error States
     if (loading) return (
@@ -425,23 +468,18 @@ const ProfileDetails: React.FC = () => {
                                                         <span className="text-xs sm:text-sm font-mono">••••••••</span>
                                                     </div>
                                                 </div>
-                                                <button
-                                                    onClick={() => {
-                                                        if (requestStatus === "accepted") {
-                                                            setShowContactInfo(true);
-                                                        } else {
-                                                            alert("This profile is private. You must send an interest request and have it accepted to view contact details.");
-                                                        }
-                                                    }}
-                                                    className="w-full px-4 py-2 sm:py-2.5 
-                                                             bg-gradient-to-r from-pink-500 to-rose-600 
-                                                             text-white rounded-lg font-semibold text-xs sm:text-sm 
-                                                             hover:from-pink-600 hover:to-rose-700 
-                                                             shadow-md hover:shadow-lg
-                                                             transition-all duration-300"
-                                                >
-                                                    {requestStatus === 'accepted' ? ' Reveal Contact' : ' Contact Locked'}
-                                                </button>
+                                               <button
+  onClick={handleRevealContact}
+  className="w-full px-4 py-2 sm:py-2.5 
+           bg-gradient-to-r from-pink-500 to-rose-600 
+           text-white rounded-lg font-semibold text-xs sm:text-sm 
+           hover:from-pink-600 hover:to-rose-700 
+           shadow-md hover:shadow-lg
+           transition-all duration-300"
+>
+  {requestStatus === 'accepted' ? ' Reveal Contact' : ' Contact Locked'}
+</button>
+
                                                 <p className="text-[10px] sm:text-xs text-gray-500">
                                                     {requestStatus === 'accepted'
                                                         ? "Request accepted! Click to reveal."

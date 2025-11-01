@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Heart, Filter, X, ChevronDown, Search } from 'lucide-react';
 import { useNavigate, useLocation } from "react-router-dom";
-
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 interface UserProfile {
   id: number;
   fullName: string;
@@ -198,37 +199,56 @@ const BioData: React.FC = () => {
     }
   };
 
-  // Handle view details
-  const handleViewDetails = async (id: number) => {
-    const token = localStorage.getItem('token');
-    const currentUserId = userIdFromUrl || userId;
+// Example usage inside your function
+const handleViewDetails = async (id: number) => {
+  const token = localStorage.getItem('token');
+  const currentUserId = userIdFromUrl || userId;
 
-    if (!currentUserId || !token) {
-      alert("Please log in to view profile details.");
-      navigate('/login');
-      return;
+  if (!currentUserId || !token) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Login Required',
+      text: 'Please log in to view profile details!',
+      confirmButtonColor: '#ec4899',
+      confirmButtonText: 'Go to Login',
+      background: '#fffafc',
+    }).then(() => navigate('/login'));
+    return;
+  }
+
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/api/premiumpayment/status/${currentUserId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const isPremium = response.data?.user?.isPremium || false;
+
+    if (isPremium) {
+      navigate(`/profiledetails/${id}?userId=${currentUserId}`);
+    } else {
+      Swal.fire({
+        icon: 'info',
+        title: 'Premium Members Only 💎',
+        text: 'Only Premium users can view detailed profiles.',
+        confirmButtonColor: '#f43f5e',
+        confirmButtonText: 'Upgrade Now',
+        showCancelButton: true,
+        cancelButtonText: 'Maybe Later',
+        background: '#fffafc',
+      }).then((result) => {
+        if (result.isConfirmed) navigate(`/premiumpayment?userId=${currentUserId}`);
+      });
     }
-
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/premiumpayment/status/${currentUserId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const isPremium = response.data?.user?.isPremium || false;
-
-      if (isPremium) {
-        navigate(`/profiledetails/${id}?userId=${currentUserId}`);
-      } else {
-        alert("Only Premium members can view detailed profiles.");
-        navigate(`/premiumpayment?userId=${currentUserId}`);
-      }
-    } catch (error) {
-      console.error("Error verifying premium status:", error);
-      alert("Please complete your Premium payment to access profile details.");
-      navigate(`/premiumpayment?userId=${currentUserId}`);
-    }
-  };
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Access Denied',
+      text: 'Please complete your Premium payment to access profile details.',
+      confirmButtonColor: '#ef4444',
+    }).then(() => navigate(`/premiumpayment?userId=${currentUserId}`));
+  }
+};
 
   // Reset all filters
   const handleResetFilters = () => {
