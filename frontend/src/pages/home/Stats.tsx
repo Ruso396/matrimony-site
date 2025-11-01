@@ -1,15 +1,26 @@
 import React from "react";
 import { MessageCircle, UserCircle, Heart, Crown, ArrowRight } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
-import bannerImg from "../../components/assets/generated-image2.png";
+import bannerImgDesktop from "../../components/assets/generated-image2.png";
+import bannerImgMobile from "../../components/assets/mobilebanner.jpg";
 
 const Banner: React.FC = () => {
   const navigate = useNavigate();
+  
   return (
-    <section
-      className="relative min-h-[90vh] sm:min-h-[85vh] md:min-h-[90vh] flex items-center justify-end md:justify-center bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${bannerImg})` }}
-    >
+    <section className="relative min-h-[90vh] sm:min-h-[85vh] md:min-h-[90vh] flex items-center justify-end md:justify-center bg-cover bg-center overflow-hidden">
+      {/* Mobile Background Image (320px, 375px, 425px) */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center md:hidden"
+        style={{ backgroundImage: `url(${bannerImgMobile})` }}
+      ></div>
+      
+      {/* Desktop Background Image (768px and above) */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center hidden md:block"
+        style={{ backgroundImage: `url(${bannerImgDesktop})` }}
+      ></div>
+
       <style>{`
         @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }

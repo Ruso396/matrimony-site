@@ -552,4 +552,5 @@ const ProfileDetails: React.FC = () => {
     );
 };
 
+
 export default ProfileDetails;
