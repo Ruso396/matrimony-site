@@ -17,12 +17,14 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
+
 /* -------------------- Small helpers -------------------- */
 const SectionTitle = ({ icon, title }: { icon: any; title: string }) => (
   <h2 className="text-base md:text-xl font-semibold text-gray-800 border-b pb-2 flex items-center gap-2">
     <span className="text-rose-500">{icon}</span> {title}
   </h2>
 );
+
 
 // EditableField supports optional select & date
 const EditableField = ({
@@ -78,6 +80,7 @@ const EditableField = ({
   </div>
 );
 
+
 // ✅ Updated Privacy Toggle Component (OFF = Public, ON = Private)
 const PrivacyToggle = ({ isPublic, editing, onChange, onToggle }: any) => (
   <div className="flex items-start justify-between border-b pb-2">
@@ -114,6 +117,7 @@ const PrivacyToggle = ({ isPublic, editing, onChange, onToggle }: any) => (
   </div>
 );
 
+
 /* -------------------- Options -------------------- */
 type FieldOptionsType = {
   profileFor: string[];
@@ -124,6 +128,7 @@ type FieldOptionsType = {
   heights: string[];
   countries: string[];
 };
+
 
 const fieldOptions: FieldOptionsType = {
   profileFor: ["Self", "Son", "Daughter", "Brother", "Sister", "Relative", "Friend"],
@@ -148,6 +153,7 @@ const fieldOptions: FieldOptionsType = {
   ],
   countries: ["India", "USA", "UK", "Canada", "Australia", "Other"],
 };
+
 
 /* -------------------- Device Frames -------------------- */
 const DeviceLaptop: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -189,6 +195,7 @@ const DeviceLaptop: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   </div>
 );
 
+
 const DevicePhone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="md:hidden flex items-center justify-center">
     <div className="relative bg-neutral-900 rounded-[2.2rem] p-3 shadow-2xl ring-1 ring-black/10 w-[300px] sm:w-[340px]">
@@ -227,6 +234,7 @@ const DevicePhone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
+
 /* -------------------- Profile Card -------------------- */
 const ProfileCard = ({
   profile,
@@ -242,15 +250,8 @@ const ProfileCard = ({
   setShowDeletePopup,
   handlePrivacyToggle,
 }: any) => {
-  const keysToCheck = [
-    "fullName","profileFor","gender","dob","age","religion","motherTongue",
-    "maritalStatus","caste","height","education","occupation","annualIncome",
-    "country","state","city","email","mobile",
-  ];
-  const filled = keysToCheck.filter((k) => !!(tempProfile?.[k] ?? "")).length;
-  const completion = Math.round((filled / keysToCheck.length) * 100);
-
   const [step, setStep] = useState<1 | 2>(1);
+
 
   return (
     <div className="relative">
@@ -277,6 +278,7 @@ const ProfileCard = ({
               )}
             </div>
 
+
             {isEditing && (
               <label className="absolute -bottom-1 -right-1 bg-white/95 rounded-full p-1.5 cursor-pointer shadow">
                 <Camera className="text-rose-600 w-5 h-5" />
@@ -290,6 +292,7 @@ const ProfileCard = ({
             )}
           </div>
 
+
           <div className="min-w-0">
             {isEditing ? (
               <input
@@ -300,7 +303,7 @@ const ProfileCard = ({
                 className="text-lg sm:text-2xl md:text-3xl font-bold bg-white/20 border-b border-white/50 focus:outline-none px-2 rounded-md w-full"
               />
             ) : (
-              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold flex items-center gap-2 leading-tight break-words">
+              <h1 className="text-sm sm:text-2xl md:text-3xl font-bold flex items-center gap-2 leading-tight break-words">
                 <span className="truncate max-w-[160px] sm:max-w-[260px] md:max-w-none">
                   {profile.fullName}
                 </span>
@@ -316,16 +319,16 @@ const ProfileCard = ({
           </div>
         </div>
 
+
         <div className="hidden sm:flex flex-col items-end gap-3">
           <div className="flex items-center gap-2 bg-amber-100/20 px-3 py-1 rounded-full">
             <Crown className="w-4 h-4 text-yellow-300" />
-            <span className="text-sm">Premium Member</span>
+            <span className="text-sm">Subscription Member</span>
           </div>
-          <button className="bg-white text-rose-600 hover:bg-rose-50 px-4 py-2 rounded-full font-semibold shadow">
-            Contact Now
-          </button>
+          
         </div>
       </div>
+
 
       <div className="px-3 sm:px-6 pt-3">
         <div className="w-full flex flex-wrap items-center justify-center gap-2">
@@ -349,6 +352,7 @@ const ProfileCard = ({
           </button>
         </div>
       </div>
+
 
       <div className="px-3 sm:px-6 pb-6 sm:pb-8 pt-4">
         {step === 1 ? (
@@ -396,49 +400,41 @@ const ProfileCard = ({
           </>
         )}
 
-        <div className="mt-6 sm:mt-8">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-xs sm:text-sm text-gray-600">Completion</span>
-            <span className="text-xs sm:text-sm font-semibold text-gray-800">{completion}%</span>
-          </div>
-          <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-full bg-rose-500" style={{ width: `${completion}%` }} />
-          </div>
 
-          <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={handleSave}
-                  className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-md text-white flex items-center gap-2 text-sm"
-                >
-                  <Check className="w-4 h-4" /> Save
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md text-gray-900 flex items-center gap-2 text-sm"
-                >
-                  <X className="w-4 h-4" /> Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="bg-rose-600 hover:bg-rose-700 px-4 py-2 rounded-md text-white flex items-center gap-2 text-sm"
-                >
-                  <Pencil className="w-4 h-4" /> Edit
-                </button>
-                <button
-                  onClick={() => setShowDeletePopup(true)}
-                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-white flex items-center gap-2 text-sm"
-                >
-                  <Trash2 className="w-4 h-4" /> Delete
-                </button>
-              </>
-            )}
-          </div>
+        <div className="mt-5 sm:mt-6 flex flex-row gap-2 sm:gap-3 sm:justify-end">
+          {isEditing ? (
+            <>
+              <button
+                onClick={handleSave}
+                className="bg-emerald-600 hover:bg-emerald-700 px-3 sm:px-4 py-2 rounded-md text-white flex items-center justify-center gap-1.5 text-xs sm:text-sm flex-1 sm:flex-none"
+              >
+                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Save
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-gray-200 hover:bg-gray-300 px-3 sm:px-4 py-2 rounded-md text-gray-900 flex items-center justify-center gap-1.5 text-xs sm:text-sm flex-1 sm:flex-none"
+              >
+                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Cancel
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-rose-600 hover:bg-rose-700 px-3 sm:px-4 py-2 rounded-md text-white flex items-center justify-center gap-1.5 text-xs sm:text-sm flex-1 sm:flex-none"
+              >
+                <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Edit
+              </button>
+              <button
+                onClick={() => setShowDeletePopup(true)}
+                className="bg-red-600 hover:bg-red-700 px-3 sm:px-4 py-2 rounded-md text-white flex items-center justify-center gap-1.5 text-xs sm:text-sm flex-1 sm:flex-none"
+              >
+                <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Delete
+              </button>
+            </>
+          )}
         </div>
+
 
         <div className="sm:hidden mt-6 sm:mt-8 flex flex-col items-center gap-3">
           <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full text-amber-700 text-sm">
@@ -453,6 +449,7 @@ const ProfileCard = ({
   );
 };
 
+
 /* =========================================================
    MAIN PAGE
    ========================================================= */
@@ -466,6 +463,7 @@ const ProfilePage = () => {
   const [showPrivacyConfirm, setShowPrivacyConfirm] = useState(false);
   const userId = localStorage.getItem("userId");
   const { setUserName } = useAuth();
+
 
   useEffect(() => {
     if (userId) {
@@ -484,6 +482,7 @@ const ProfilePage = () => {
     }
   }, [userId]);
 
+
   const getPhotoUrl = (photo: string | null | undefined): string | undefined => {
     if (!photo) return undefined;
     if (photo.startsWith("http://") || photo.startsWith("https://"))
@@ -491,18 +490,22 @@ const ProfilePage = () => {
     return `http://localhost:5000/uploads/${photo}?t=${Date.now()}`;
   };
 
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setTempProfile({ ...tempProfile, [name]: value });
   };
 
+
   const handleFileChange = (e: any) => setSelectedFile(e.target.files[0]);
+
 
   const handleCancel = () => {
     setTempProfile(profile);
     setIsEditing(false);
     setSelectedFile(null);
   };
+
 
   // ✅ Handle Privacy Toggle with Confirmation (OFF = Public, ON = Private)
   const handlePrivacyToggle = () => {
@@ -515,10 +518,12 @@ const ProfilePage = () => {
     }
   };
 
+
   const confirmPrivacyChange = () => {
     setTempProfile({ ...tempProfile, isPublic: false });
     setShowPrivacyConfirm(false);
   };
+
 
   const handleSave = async () => {
     try {
@@ -528,16 +533,19 @@ const ProfilePage = () => {
       );
       if (selectedFile) formData.append("profilePhoto", selectedFile);
 
+
       const res = await axios.put(
         `http://localhost:5000/api/register/update/${userId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
+
       setProfile(res.data.user);
       setTempProfile(res.data.user);
       setIsEditing(false);
       setSelectedFile(null);
+
 
       const newName = res.data.user.fullName;
       if (newName) {
@@ -548,13 +556,15 @@ const ProfilePage = () => {
         } catch (e) {}
       }
 
+
       setShowSuccessPopup(true);
-      setTimeout(() => setShowSuccessPopup(false), 2500);
+      setTimeout(() => setShowSuccessPopup(false), 2000);
     } catch (err) {
       console.error(err);
       alert("Error updating profile.");
     }
   };
+
 
   const handleDeleteAccount = async () => {
     try {
@@ -568,7 +578,9 @@ const ProfilePage = () => {
     }
   };
 
+
   if (!profile) return <div className="text-center mt-10">Loading profile...</div>;
+
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -579,6 +591,7 @@ const ProfilePage = () => {
             Your Matrimony Profile
           </h1>
         </div>
+
 
         <DeviceLaptop>
           <ProfileCard
@@ -597,6 +610,7 @@ const ProfilePage = () => {
           />
         </DeviceLaptop>
 
+
         <DevicePhone>
           <ProfileCard
             profile={profile}
@@ -614,6 +628,7 @@ const ProfilePage = () => {
           />
         </DevicePhone>
       </div>
+
 
       {/* Privacy Confirmation Popup */}
       {showPrivacyConfirm && (
@@ -646,6 +661,7 @@ const ProfilePage = () => {
         </div>
       )}
 
+
       {/* Delete confirmation popup */}
       {showDeletePopup && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
@@ -671,7 +687,8 @@ const ProfilePage = () => {
         </div>
       )}
 
-      {/* Success popup */}
+
+      {/* Success popup - Auto closes after 2 seconds */}
       {showSuccessPopup && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-96 text-center shadow-2xl">
@@ -681,22 +698,15 @@ const ProfilePage = () => {
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
               Profile Updated
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600">
               Your profile was updated successfully.
             </p>
-            <div className="flex justify-center">
-              <button
-                onClick={() => setShowSuccessPopup(false)}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-              >
-                OK
-              </button>
-            </div>
           </div>
         </div>
       )}
     </div>
   );
 };
+
 
 export default ProfilePage;
