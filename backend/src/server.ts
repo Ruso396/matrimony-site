@@ -29,25 +29,23 @@ if (!fs.existsSync(uploadDir)) {
 // ✅ Serve uploaded images
 app.use('/uploads', express.static(uploadDir));
 
-app.use('/api/register', registerRoutes); // <- registration endpoints
+app.use('/api/register', registerRoutes); 
 app.use('/api/premiumpayment', premiumRoutes);
-// ✅ API routes
-app.use('/api/register', registerRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/favorites', favoriteRoutes);
-app.use("/api/request", requestRoutes);
-
-// Admin routes
+app.use('/api/request', requestRoutes);
 app.use('/api/admin', adminRoutes);
 
 // ✅ Health check route
 app.get('/', (req, res) => res.send('Soulmate API is running!'));
 
-// ✅ Start server after syncing database
+// ✅ Start server after DB connection and syncing
 const PORT = process.env.PORT || 5000;
 
-sequelize.sync().then(() => {
+// 👇 Add this line to log successful DB connection
+connectDB();  // ✅ This triggers your console log from db.ts
 
+sequelize.sync().then(() => {
   console.log('Database synced!');
   app.listen(PORT, () =>
     console.log(`Server running on http://localhost:${PORT}`)
