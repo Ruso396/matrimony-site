@@ -74,11 +74,11 @@ RegisterUser.init(
       defaultValue: false,
     },
 
-    // ✅ NEW FIELD for public/private profiles
+    // ✅ CHANGED: Default to PUBLIC (true) instead of private (false)
     isPublic: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false, // Default to private
+      defaultValue: true, // ✅ Changed from false to true
     },
 
     // ✅ Rules & Terms checkboxes

@@ -67,6 +67,7 @@ const ModernRegister = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  
   const options = {
     profileFor: ['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend'],
     genders: ['Male', 'Female'],
@@ -84,16 +85,45 @@ const ModernRegister = () => {
     }
   }, [isSuccess]);
 
+  // ✅ Automatic Age Calculation Function
+  const calculateAge = (dob: string): string => {
+    if (!dob) return '';
+    
+    const birthDate = new Date(dob);
+    const today = new Date();
+    
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    // If birthday hasn't occurred this year yet, subtract 1
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age.toString();
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // ✅ Auto-calculate age when DOB changes
+    if (name === 'dob' && value) {
+      const calculatedAge = calculateAge(value);
+      setFormData(prev => ({
+        ...prev,
+        dob: value,
+        age: calculatedAge
+      }));
+    }
+    
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
-
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -150,79 +180,71 @@ const ModernRegister = () => {
   const handleNext = () => {
     if (validateStep(currentStep)) {
       setCurrentStep(prev => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const handlePrev = () => {
     setCurrentStep(prev => prev - 1);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleSubmit = async () => {
+    if (!validateStep(3)) return;
 
- const handleSubmit = async () => {
-  // First validate step 3
-  if (!validateStep(3)) return;
+    const newErrors: FormErrors = {};
 
-  // Then check if all rules are accepted
-  const newErrors: FormErrors = {};
+    if (!formData.rule1 || !formData.rule2 || !formData.rule3 || !formData.rule4 || !formData.rule5) {
+      newErrors.rulesAccepted = 'Please accept all rules and regulations to proceed';
+      setErrors(newErrors);
+      return;
+    }
 
-  if (!formData.rule1 || !formData.rule2 || !formData.rule3 || !formData.rule4 || !formData.rule5) {
-    newErrors.rulesAccepted = 'Please accept all rules and regulations to proceed';
-    setErrors(newErrors);
-    return;
-  }
+    setIsLoading(true);
 
-  setIsLoading(true);
+    try {
+      const formDataToSend = new FormData();
 
-  try {
-    const formDataToSend = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (key !== 'profilePhoto' && key !== 'termsAccepted' &&
+            key !== 'rule1' && key !== 'rule2' && key !== 'rule3' &&
+            key !== 'rule4' && key !== 'rule5') {
+          formDataToSend.append(key, formData[key as keyof typeof formData] as string);
+        }
+      });
 
-    // Append all form fields EXCEPT rules
-    Object.keys(formData).forEach((key) => {
-      if (key !== 'profilePhoto' && key !== 'termsAccepted' &&
-          key !== 'rule1' && key !== 'rule2' && key !== 'rule3' &&
-          key !== 'rule4' && key !== 'rule5') {
-        formDataToSend.append(key, formData[key as keyof typeof formData] as string);
+      formDataToSend.append('rule1', formData.rule1.toString());
+      formDataToSend.append('rule2', formData.rule2.toString());
+      formDataToSend.append('rule3', formData.rule3.toString());
+      formDataToSend.append('rule4', formData.rule4.toString());
+      formDataToSend.append('rule5', formData.rule5.toString());
+
+      if (formData.profilePhoto) {
+        formDataToSend.append('profilePhoto', formData.profilePhoto);
       }
-    });
 
-    // ✅ Append rules as boolean strings explicitly
-    formDataToSend.append('rule1', formData.rule1.toString());
-    formDataToSend.append('rule2', formData.rule2.toString());
-    formDataToSend.append('rule3', formData.rule3.toString());
-    formDataToSend.append('rule4', formData.rule4.toString());
-    formDataToSend.append('rule5', formData.rule5.toString());
+      const response = await fetch('http://localhost:5000/api/register/register', {
+        method: 'POST',
+        body: formDataToSend,
+      });
 
-    // Append profile photo if exists
-    if (formData.profilePhoto) {
-      formDataToSend.append('profilePhoto', formData.profilePhoto);
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3000);
+      } else {
+        setErrors({ submit: data.message || 'Registration failed. Please try again.' });
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setErrors({ submit: 'Network error. Please check your connection and try again.' });
+    } finally {
+      setIsLoading(false);
     }
-
-    const response = await fetch('http://localhost:5000/api/register/register', {
-      method: 'POST',
-      body: formDataToSend,
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      // Show success popup
-      setIsSuccess(true);
-      // Automatically redirect to login after 3 seconds
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 3000);
-    } else {
-      setErrors({ submit: data.message || 'Registration failed. Please try again.' });
-    }
-  } catch (error) {
-    console.error('Registration error:', error);
-    setErrors({ submit: 'Network error. Please check your connection and try again.' });
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const inputClass = (field: keyof FormErrors) => `
     w-full px-4 py-3 rounded-lg border bg-gray-50 transition-all outline-none text-gray-800
@@ -280,7 +302,6 @@ const ModernRegister = () => {
 
   return (
     <div className="min-h-screen flex bg-white mt-20">
-      {/* Left Side - Image */}
       <div
         className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center bg-no-repeat"
         style={{
@@ -303,7 +324,6 @@ const ModernRegister = () => {
         </div>
       </div>
 
-      {/* Right Side - Register Form */}
       <div className="w-full lg:w-1/2 overflow-y-auto p-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
@@ -314,7 +334,6 @@ const ModernRegister = () => {
             <p className="text-gray-600">Join thousands of happy couples</p>
           </div>
 
-          {/* Step Indicators */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
               {steps.map((step, idx) => (
@@ -376,9 +395,18 @@ const ModernRegister = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Age *</label>
-                    <input type="number" name="age" value={formData.age} onChange={handleChange}
-                      className={inputClass('age')} placeholder="Enter your age" min="18" max="80" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Age * (Auto-calculated)</label>
+                    <input 
+                      type="number" 
+                      name="age" 
+                      value={formData.age} 
+                      onChange={handleChange}
+                      className={`${inputClass('age')} bg-gray-100`} 
+                      placeholder="Will auto-fill from DOB" 
+                      min="18" 
+                      max="80"
+                      readOnly
+                    />
                     {errors.age && <p className="text-red-600 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.age}</p>}
                   </div>
 
