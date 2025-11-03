@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Eye, Trash2, Crown, X, Heart, MapPin, Briefcase, Phone, Mail, Calendar, User, Award, Filter, ChevronDown, Users, TrendingUp, Download, MoreVertical } from 'lucide-react';
+import { deleteUserById } from '../api/adminApi'; // adjust path if needed
 
 interface UserType {
   id: number;
@@ -81,12 +82,20 @@ const UserManagement: React.FC<UserManagementProps> = ({ users: propUsers = [], 
   };
 
   const confirmDelete = async () => {
-    if (userToDelete) {
-      deleteUser(userToDelete.id);
+  if (userToDelete) {
+    try {
+      await deleteUserById(userToDelete.id); // 🔥 Call backend API
+      deleteUser(userToDelete.id); // Optional — remove from local state
       setShowDeleteModal(false);
       setUserToDelete(null);
+      alert('User deleted successfully!');
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('Failed to delete user');
     }
-  };
+  }
+};
+
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
