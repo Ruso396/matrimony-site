@@ -24,7 +24,7 @@ const BioData: React.FC = () => {
   const navigate = useNavigate();
 
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
-  const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
+  const [ageRange, setAgeRange] = useState<[number, number]>([18, 80]);
   const [biodataType, setBiodataType] = useState<string>("All");
   const [division, setDivision] = useState<string>("All");
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
@@ -252,7 +252,7 @@ const handleViewDetails = async (id: number) => {
 
   // Reset all filters
   const handleResetFilters = () => {
-    setAgeRange([18, 60]);
+    setAgeRange([18, 80]);
     setBiodataType("All");
     setDivision("All");
   };
@@ -380,7 +380,7 @@ const handleViewDetails = async (id: number) => {
               <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Filter size={18} className="relative z-10" />
               <span className="hidden sm:inline relative z-10">Filters</span>
-              {(biodataType !== "All" || division !== "All" || ageRange[0] !== 18 || ageRange[1] !== 60) && (
+              {(biodataType !== "All" || division !== "All" || ageRange[0] !== 18 || ageRange[1] !== 80) && (
                 <span className="bg-white text-pink-600 rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold relative z-10 animate-pulse">
                   !
                 </span>
@@ -464,7 +464,7 @@ const handleViewDetails = async (id: number) => {
                   <input
                     type="range"
                     min="18"
-                    max="60"
+                    max="80"
                     value={ageRange[0]}
                     onChange={(e) => setAgeRange([parseInt(e.target.value), ageRange[1]])}
                     className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
@@ -482,7 +482,7 @@ const handleViewDetails = async (id: number) => {
                   <input
                     type="range"
                     min="18"
-                    max="60"
+                    max="80"
                     value={ageRange[1]}
                     onChange={(e) => setAgeRange([ageRange[0], parseInt(e.target.value)])}
                     className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
@@ -492,7 +492,7 @@ const handleViewDetails = async (id: number) => {
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span className="font-semibold text-pink-600">{ageRange[1]}</span>
-                    <span>60</span>
+                    <span>80</span>
                   </div>
                 </div>
               </div>

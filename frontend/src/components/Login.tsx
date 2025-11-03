@@ -75,7 +75,7 @@ const Login = () => {
       : 'border-gray-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-100'}`;
 
   return (
-    <div className="min-h-screen w-full flex bg-white">
+    <div className="min-h-screen w-full flex bg-white mt-10">
       {/* Left Side - Image */}
      <div
   className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center bg-no-repeat"

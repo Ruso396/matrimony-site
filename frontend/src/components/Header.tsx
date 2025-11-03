@@ -128,18 +128,14 @@ const Header: React.FC = () => {
 
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         {/* LOGO */}
-        <Link to="/" className="flex items-center">
-          <img
-            src={
-              isTransparentPage && !isScrolled ? logoWhite : logoBlack
-            }
-            alt="Royal Delight"
-            className="
-              h-8 w-auto object-contain transition-all duration-300
-              sm:h-9 md:h-10 lg:h-11 xl:h-12
-            "
-          />
-        </Link>
+<img
+  src={isTransparentPage && !isScrolled ? logoWhite : logoBlack}
+  alt="Royal Delight"
+  className="
+    h-5 w-auto object-contain transition-all duration-300
+    sm:h-7 md:h-8 lg:h-9 xl:h-10
+  "
+/>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">

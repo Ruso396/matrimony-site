@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
 import { Op } from 'sequelize';
-import bcrypt from 'bcryptjs'; // ✅ add this line
+import bcrypt from 'bcryptjs';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -15,7 +15,7 @@ export const registerUser = async (req: Request, res: Response) => {
       caste, height, education, occupation, annualIncome, country, state, city,
       email, mobile, password,
       rule1, rule2, rule3, rule4, rule5,
-      isPublic // ✅ Get new field
+      isPublic
     } = req.body;
 
     const existing = await RegisterUser.findOne({ where: { email } });
@@ -33,7 +33,8 @@ export const registerUser = async (req: Request, res: Response) => {
       rule3: rule3 === 'true' || rule3 === true,
       rule4: rule4 === 'true' || rule4 === true,
       rule5: rule5 === 'true' || rule5 === true,
-      isPublic: isPublic === 'true' || isPublic === true // ✅ Add to create
+      // ✅ CHANGED: Default to true if not provided
+      isPublic: isPublic !== undefined ? (isPublic === 'true' || isPublic === true) : true
     });
 
     return res.status(201).json({ message: 'User registered successfully', user });
@@ -65,7 +66,8 @@ export const loginUser = async (req: Request, res: Response) => {
         id: user.id,
         fullName: user.fullName,
         email: user.email,
-        profilePhoto: user.profilePhoto ? `${req.protocol}://${req.get('host')}/uploads/${user.profilePhoto}` : null
+        profilePhoto: user.profilePhoto ? `${req.protocol}://${req.get('host')}/uploads/${user.profilePhoto}` : null,
+        isPublic: user.isPublic // ✅ Return privacy status
       }
     });
   } catch (err) {
@@ -101,7 +103,7 @@ export const getUsers = async (req: Request, res: Response) => {
         'profilePhoto',
         'status',
         'isPremium',
-        'isPublic', // ✅ Return privacy status
+        'isPublic',
         'createdAt'
       ],
       order: [['createdAt', 'DESC']]
@@ -153,7 +155,7 @@ export const getUserById = async (req: Request, res: Response) => {
         'email',
         'mobile',
         'profilePhoto',
-        'isPublic', // ✅ Return privacy status
+        'isPublic',
         'createdAt'
       ]
     });
@@ -196,6 +198,7 @@ export const getRelatedProfiles = async (req: Request, res: Response) => {
         country: currentUser.country,
         gender: currentUser.gender,
         id: { [Op.ne]: id },
+        isPublic: true, // ✅ Only fetch public profiles
       },
       order: [['createdAt', 'DESC']],
     });
@@ -234,7 +237,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
       profileFor, fullName, gender, dob, age, religion, motherTongue,
       maritalStatus, caste, height, education, occupation, annualIncome,
       country, state, city, email, mobile, password,
-      isPublic // ✅ Get new field
+      isPublic
     } = req.body;
 
     let profilePhoto = user.profilePhoto;
@@ -246,11 +249,8 @@ export const updateUserProfile = async (req: Request, res: Response) => {
       profilePhoto = req.file.filename;
     }
 
-    // Handle password update separately - only hash if provided
     let updatedPassword = user.password;
     if (password) {
-        // You might want to check if password changed before rehashing
-        // This simple version re-hashes if any password string is sent
         const salt = await bcrypt.genSalt(10);
         updatedPassword = await bcrypt.hash(password, salt);
     }
@@ -274,9 +274,9 @@ export const updateUserProfile = async (req: Request, res: Response) => {
       city,
       email,
       mobile,
-      password: updatedPassword, // Use the potentially updated password
+      password: updatedPassword,
       profilePhoto,
-      isPublic: isPublic === 'true' || isPublic === true // ✅ Add to update
+      isPublic: isPublic === 'true' || isPublic === true
     });
 
     const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;

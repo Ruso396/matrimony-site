@@ -78,8 +78,8 @@ const EditableField = ({
   </div>
 );
 
-// ✅ New Component for Privacy Toggle
-const PrivacyToggle = ({ isPublic, editing, onChange }: any) => (
+// ✅ Updated Privacy Toggle Component (OFF = Public, ON = Private)
+const PrivacyToggle = ({ isPublic, editing, onChange, onToggle }: any) => (
   <div className="flex items-start justify-between border-b pb-2">
     <span className="text-gray-600 font-medium flex items-center gap-2 text-[12px] sm:text-[13px]">
       {isPublic ? (
@@ -91,14 +91,14 @@ const PrivacyToggle = ({ isPublic, editing, onChange }: any) => (
     </span>
     {editing ? (
       <button
-        onClick={() => onChange({ target: { name: "isPublic", value: !isPublic } })}
+        onClick={onToggle}
         className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
-          isPublic ? "bg-green-600" : "bg-gray-400"
+          !isPublic ? "bg-red-600" : "bg-gray-400"
         }`}
       >
         <span
           className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${
-            isPublic ? "translate-x-6" : "translate-x-1"
+            !isPublic ? "translate-x-6" : "translate-x-1"
           }`}
         />
       </button>
@@ -115,12 +115,6 @@ const PrivacyToggle = ({ isPublic, editing, onChange }: any) => (
 );
 
 /* -------------------- Options -------------------- */
-// profilePage.tsx
-
-// ... (lines 1 - 104)
-
-/* -------------------- Options -------------------- */
-// **FIX: Explicitly define the type for fieldOptions to resolve TS2339 errors**
 type FieldOptionsType = {
   profileFor: string[];
   genders: string[];
@@ -155,43 +149,81 @@ const fieldOptions: FieldOptionsType = {
   countries: ["India", "USA", "UK", "Canada", "Australia", "Other"],
 };
 
-/* -------------------- Device Frames (larger laptop screen, stable inner scroll) -------------------- */
-// ... (rest of the file)
 /* -------------------- Device Frames -------------------- */
 const DeviceLaptop: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  // ... (no changes)
   <div className="hidden md:flex flex-col items-center">
-    {/* bezel + screen */}
     <div className="relative bg-neutral-900 rounded-[1.75rem] p-3 shadow-2xl ring-1 ring-black/10 w-[1080px] max-w-[96vw]">
-      {/* camera dot */}
       <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-neutral-800 rounded-full" />
       <div className="bg-black rounded-[1.25rem] p-2">
         <div className="bg-white rounded-xl overflow-hidden">
-          {/* taller screen — scroll inside only */}
-          <div className="h-[720px] overflow-y-auto">{children}</div>
-          
+          <div 
+            className="h-[720px] overflow-y-auto custom-scrollbar"
+          >
+            {children}
+          </div>
         </div>
       </div>
     </div>
-    {/* base/keyboard */}
     <div className="h-6 w-[900px] max-w-[78vw] bg-neutral-900 rounded-b-[1.5rem] mt-1 shadow-xl" />
+    
+    <style>{`
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #fce7f3;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #fb7185;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #f43f5e;
+      }
+      .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #fb7185 #fce7f3;
+      }
+    `}</style>
   </div>
 );
 
 const DevicePhone: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  // ... (no changes)
   <div className="md:hidden flex items-center justify-center">
-    {/* compact phone for 320/375/420/475 */}
     <div className="relative bg-neutral-900 rounded-[2.2rem] p-3 shadow-2xl ring-1 ring-black/10 w-[300px] sm:w-[340px]">
-      {/* notch */}
       <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-24 h-5 bg-neutral-900 rounded-b-2xl" />
       <div className="bg-black rounded-[1.7rem] p-2 overflow-hidden">
         <div className="bg-white rounded-xl overflow-hidden">
-          {/* fixed height — phone frame always visible */}
-          <div className="h-[600px] overflow-y-auto">{children}</div>
+          <div 
+            className="h-[600px] overflow-y-auto custom-scrollbar"
+          >
+            {children}
+          </div>
         </div>
       </div>
     </div>
+    
+    <style>{`
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #fce7f3;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #fb7185;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #f43f5e;
+      }
+      .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #fb7185 #fce7f3;
+      }
+    `}</style>
   </div>
 );
 
@@ -208,6 +240,7 @@ const ProfileCard = ({
   handleSave,
   handleCancel,
   setShowDeletePopup,
+  handlePrivacyToggle,
 }: any) => {
   const keysToCheck = [
     "fullName","profileFor","gender","dob","age","religion","motherTongue",
@@ -217,54 +250,46 @@ const ProfileCard = ({
   const filled = keysToCheck.filter((k) => !!(tempProfile?.[k] ?? "")).length;
   const completion = Math.round((filled / keysToCheck.length) * 100);
 
-  // stepper (1: personal, 2: professional)
   const [step, setStep] = useState<1 | 2>(1);
 
   return (
     <div className="relative">
-      
-      {/* header */}
       <div className="bg-gradient-to-r from-rose-500 to-pink-600 text-white px-3 sm:px-6 py-4 sm:py-6 flex items-center justify-between">
-        {/* ... (header content no changes) ... */}
-        {/* left cluster */}
         <div className="flex items-center gap-3 sm:gap-5 min-w-0">
-          {/* avatar – always perfectly round */}
-        <div className="relative shrink-0">
-  <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white shadow-md flex items-center justify-center bg-gradient-to-br from-pink-500 to-rose-600 text-white">
-    {selectedFile ? (
-      <img
-        src={URL.createObjectURL(selectedFile)}
-        alt="Profile"
-        className="w-full h-full object-cover"
-      />
-    ) : profile.profilePhoto ? (
-      <img
-        src={getPhotoUrl(profile.profilePhoto)}
-        alt="Profile"
-        className="w-full h-full object-cover"
-      />
-    ) : (
-      <span className="text-4xl sm:text-5xl font-[cursive]">
-        {profile.fullName?.charAt(0).toUpperCase()}
-      </span>
-    )}
-  </div>
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white shadow-md flex items-center justify-center bg-gradient-to-br from-pink-500 to-rose-600 text-white">
+              {selectedFile ? (
+                <img
+                  src={URL.createObjectURL(selectedFile)}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : profile.profilePhoto ? (
+                <img
+                  src={getPhotoUrl(profile.profilePhoto)}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-4xl sm:text-5xl font-[cursive]">
+                  {profile.fullName?.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
 
-  {isEditing && (
-    <label className="absolute -bottom-1 -right-1 bg-white/95 rounded-full p-1.5 cursor-pointer shadow">
-      <Camera className="text-rose-600 w-5 h-5" />
-      <input
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleFileChange}
-      />
-    </label>
-  )}
-</div>
+            {isEditing && (
+              <label className="absolute -bottom-1 -right-1 bg-white/95 rounded-full p-1.5 cursor-pointer shadow">
+                <Camera className="text-rose-600 w-5 h-5" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </label>
+            )}
+          </div>
 
-
-          {/* name + meta — allow wrap, prevent cut */}
           <div className="min-w-0">
             {isEditing ? (
               <input
@@ -291,7 +316,6 @@ const ProfileCard = ({
           </div>
         </div>
 
-        {/* right cta (hide on tiny) */}
         <div className="hidden sm:flex flex-col items-end gap-3">
           <div className="flex items-center gap-2 bg-amber-100/20 px-3 py-1 rounded-full">
             <Crown className="w-4 h-4 text-yellow-300" />
@@ -303,9 +327,7 @@ const ProfileCard = ({
         </div>
       </div>
 
-      {/* stepper */}
       <div className="px-3 sm:px-6 pt-3">
-        {/* ... (stepper buttons no changes) ... */}
         <div className="w-full flex flex-wrap items-center justify-center gap-2">
           <button
             onClick={() => setStep(1)}
@@ -328,19 +350,17 @@ const ProfileCard = ({
         </div>
       </div>
 
-      {/* content */}
       <div className="px-3 sm:px-6 pb-6 sm:pb-8 pt-4">
         {step === 1 ? (
           <>
             <SectionTitle icon={<User />} title="Personal Info" />
-            {/* 👉 two columns on laptop; one on mobile */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
               <div className="space-y-4">
-                {/* ✅ ADD THE PRIVACY TOGGLE HERE */}
                 <PrivacyToggle
                   isPublic={tempProfile.isPublic}
                   editing={isEditing}
                   onChange={handleChange}
+                  onToggle={handlePrivacyToggle}
                 />
                 <EditableField label="Profile For" name="profileFor" value={tempProfile.profileFor} editing={isEditing} onChange={handleChange} options={fieldOptions.profileFor} />
                 <EditableField label="Gender" name="gender" value={tempProfile.gender} editing={isEditing} onChange={handleChange} options={fieldOptions.genders} />
@@ -359,9 +379,7 @@ const ProfileCard = ({
         ) : (
           <>
             <SectionTitle icon={<Briefcase />} title="Professional & Contact" />
-            {/* 👉 two columns on laptop; one on mobile */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-              {/* ... (step 2 content no changes) ... */}
               <div className="space-y-4">
                 <EditableField label="Education" name="education" value={tempProfile.education} editing={isEditing} onChange={handleChange} />
                 <EditableField label="Occupation" name="occupation" value={tempProfile.occupation} editing={isEditing} onChange={handleChange} />
@@ -378,9 +396,7 @@ const ProfileCard = ({
           </>
         )}
 
-        {/* completion + action buttons */}
         <div className="mt-6 sm:mt-8">
-          {/* ... (completion bar no changes) ... */}
           <div className="mb-3 flex items-center justify-between">
             <span className="text-xs sm:text-sm text-gray-600">Completion</span>
             <span className="text-xs sm:text-sm font-semibold text-gray-800">{completion}%</span>
@@ -390,7 +406,6 @@ const ProfileCard = ({
           </div>
 
           <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
-            {/* ... (action buttons no changes) ... */}
             {isEditing ? (
               <>
                 <button
@@ -425,9 +440,7 @@ const ProfileCard = ({
           </div>
         </div>
 
-        {/* premium block for mobile */}
         <div className="sm:hidden mt-6 sm:mt-8 flex flex-col items-center gap-3">
-          {/* ... (no changes) ... */}
           <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full text-amber-700 text-sm">
             <Crown className="w-4 h-4" /> Premium Member
           </div>
@@ -450,6 +463,7 @@ const ProfilePage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showPrivacyConfirm, setShowPrivacyConfirm] = useState(false);
   const userId = localStorage.getItem("userId");
   const { setUserName } = useAuth();
 
@@ -458,8 +472,13 @@ const ProfilePage = () => {
       axios
         .get(`http://localhost:5000/api/register/users/${userId}`)
         .then((res) => {
-          setProfile(res.data.user);
-          setTempProfile(res.data.user);
+          // ✅ Default to Public (true) if isPublic is not set
+          const userData = {
+            ...res.data.user,
+            isPublic: res.data.user.isPublic !== false, // Default to true
+          };
+          setProfile(userData);
+          setTempProfile(userData);
         })
         .catch((err) => console.error("Error fetching profile:", err));
     }
@@ -476,12 +495,29 @@ const ProfilePage = () => {
     const { name, value } = e.target;
     setTempProfile({ ...tempProfile, [name]: value });
   };
+
   const handleFileChange = (e: any) => setSelectedFile(e.target.files[0]);
 
   const handleCancel = () => {
     setTempProfile(profile);
     setIsEditing(false);
     setSelectedFile(null);
+  };
+
+  // ✅ Handle Privacy Toggle with Confirmation (OFF = Public, ON = Private)
+  const handlePrivacyToggle = () => {
+    // If currently Public (isPublic = true), ask confirmation to make Private
+    if (tempProfile.isPublic) {
+      setShowPrivacyConfirm(true);
+    } else {
+      // If currently Private, directly make it Public
+      setTempProfile({ ...tempProfile, isPublic: true });
+    }
+  };
+
+  const confirmPrivacyChange = () => {
+    setTempProfile({ ...tempProfile, isPublic: false });
+    setShowPrivacyConfirm(false);
   };
 
   const handleSave = async () => {
@@ -499,7 +535,7 @@ const ProfilePage = () => {
       );
 
       setProfile(res.data.user);
-      setTempProfile(res.data.user); // ✅ Sync tempProfile with saved data
+      setTempProfile(res.data.user);
       setIsEditing(false);
       setSelectedFile(null);
 
@@ -536,17 +572,14 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* ... (background and titles no changes) ... */}
       <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-pink-50" />
       <div className="relative max-w-[1400px] mx-auto px-4 py-8 md:py-14 flex flex-col items-center gap-6">
-        {/* title */}
         <div className="text-center space-y-2 mt-18">
           <h1 className="text-xl md:text-3xl font-extrabold text-gray-900">
             Your Matrimony Profile
           </h1>
         </div>
 
-        {/* DEVICE: Laptop on md+, Phone on mobile */}
         <DeviceLaptop>
           <ProfileCard
             profile={profile}
@@ -560,6 +593,7 @@ const ProfilePage = () => {
             handleSave={handleSave}
             handleCancel={handleCancel}
             setShowDeletePopup={setShowDeletePopup}
+            handlePrivacyToggle={handlePrivacyToggle}
           />
         </DeviceLaptop>
 
@@ -576,13 +610,44 @@ const ProfilePage = () => {
             handleSave={handleSave}
             handleCancel={handleCancel}
             setShowDeletePopup={setShowDeletePopup}
+            handlePrivacyToggle={handlePrivacyToggle}
           />
         </DevicePhone>
       </div>
 
+      {/* Privacy Confirmation Popup */}
+      {showPrivacyConfirm && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-80 sm:w-96 text-center animate-scaleIn">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8 text-red-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 mb-3">
+              Make Profile Private?
+            </h2>
+            <p className="text-gray-600 mb-6 text-sm">
+              Your profile will be hidden from public searches. Only you can see it.
+            </p>
+            <div className="flex justify-center gap-3">
+              <button
+                onClick={confirmPrivacyChange}
+                className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-semibold"
+              >
+                Yes, Make Private
+              </button>
+              <button
+                onClick={() => setShowPrivacyConfirm(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg font-semibold"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete confirmation popup */}
       {showDeletePopup && (
-        // ... (no changes)
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
             <h2 className="text-lg font-semibold text-gray-800 mb-3">
@@ -608,7 +673,6 @@ const ProfilePage = () => {
 
       {/* Success popup */}
       {showSuccessPopup && (
-        // ... (no changes)
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-96 text-center shadow-2xl">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -634,6 +698,5 @@ const ProfilePage = () => {
     </div>
   );
 };
-
 
 export default ProfilePage;
