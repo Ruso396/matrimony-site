@@ -128,15 +128,11 @@ const Header: React.FC = () => {
 
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         {/* LOGO */}
-<img
-  src={isTransparentPage && !isScrolled ? logoWhite : logoBlack}
-  alt="Royal Delight"
-  className="
-    h-5 w-auto object-contain transition-all duration-300
-    sm:h-7 md:h-8 lg:h-9 xl:h-10
-  "
-/>
-
+        <Link to="/" className="flex items-center">
+          <img src={isTransparentPage && !isScrolled ? logoWhite : logoBlack}
+            alt="WedAura"
+            className=" h-8 w-auto object-contain transition-all duration-300 sm:h-9 md:h-10 lg:h-11 xl:h-12 " />
+        </Link>
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
@@ -157,8 +153,8 @@ const Header: React.FC = () => {
             <Trophy
               size={22}
               className={`${isTransparentPage && !isScrolled
-                  ? "text-white hover:text-yellow-400"
-                  : "text-gray-700 hover:text-yellow-500"
+                ? "text-white hover:text-yellow-400"
+                : "text-gray-700 hover:text-yellow-500"
                 } transition-transform duration-200 hover:scale-110`}
             />
           </Link>
@@ -181,8 +177,8 @@ const Header: React.FC = () => {
               <div className="relative">
                 <Bell
                   className={`w-5 h-5 cursor-pointer transition ${isTransparentPage && !isScrolled
-                      ? "text-white hover:text-yellow-400"
-                      : "text-pink-600 hover:text-pink-700"
+                    ? "text-white hover:text-yellow-400"
+                    : "text-pink-600 hover:text-pink-700"
                     }`}
                   onClick={() => navigate("/requestmanager")}
                 />
@@ -247,8 +243,8 @@ const Header: React.FC = () => {
             <Link
               to="/login"
               className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
-                  ? "border-white text-white hover:bg-white hover:text-pink-700"
-                  : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
+                ? "border-white text-white hover:bg-white hover:text-pink-700"
+                : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
                 }`}
             >
               <LogIn className="w-4 h-4" /> Login

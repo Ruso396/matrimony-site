@@ -44,12 +44,12 @@ const Footer: React.FC = () => {
             <div className="flex items-center space-x-3">
                 <img
     src={logo}
-    alt="Royal Delight"
+    alt="WedAura"
     className="h-10 w-auto object-contain"
   />
             </div>
             <p className="text-gray-400 leading-relaxed text-sm pr-4">
-              Your Journey to Love Starts with Royal Delight. We connect hearts with traditional values and modern technology.
+              Your Journey to Love Starts with WedAura. We connect hearts with traditional values and modern technology.
             </p>
           </div>
 
@@ -94,8 +94,8 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 flex-shrink-0 animate-float text-pink-500" />
-                <a href="mailto:info@royaldelightmatrimony.com" className="hover:text-pink-300 transition-colors">
-                  info@royaldelightmatrimony.com
+                <a href="mailto:info@wedauramatrimony.com" className="hover:text-pink-300 transition-colors">
+                  info@wedauramatrimony.com
                 </a>
               </div>
             </div>
@@ -132,7 +132,7 @@ const Footer: React.FC = () => {
         {/* ===== Footer Bottom (Copyright) ===== */}
         <div className="border-t border-gray-700 mt-12 pt-6 text-center text-gray-500 text-sm">
           <p>
-            &copy; {new Date().getFullYear()} **Royal Delight**. All rights reserved. | Developed by [Your Company Name]
+            &copy; {new Date().getFullYear()} **WedAura**. All rights reserved. | Developed by [Your Company Name]
           </p>
         </div>
       </div>

@@ -68,7 +68,7 @@ const AdminHeader: React.FC = () => {
           <div className="h-12 w-auto flex items-center">
             <img 
               src={isLightTheme ? logoBlack : logoWhite} 
-              alt="Royal Delight Logo" 
+              alt="WedAura Logo" 
               className="h-full w-auto object-contain"
               style={{ maxHeight: '48px' }}
             />

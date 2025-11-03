@@ -7,7 +7,7 @@ const categories = [
     title: "Getting Started",
     faqs: [
       {
-        q: "How do I register on Royal Delight Matrimony?",
+        q: "How do I register on WedAura Matrimony?",
         a: "Click the 'Register Now' button on the homepage and fill in your basic details. Once submitted, your profile will be created instantly.",
       },
       {
@@ -53,7 +53,7 @@ const categories = [
     title: "Payments & Subscription",
     faqs: [
       {
-        q: "Is Royal Delight Matrimony free to use?",
+        q: "Is WedAura Matrimony free to use?",
         a: "Basic registration is free. Premium plans unlock contact details and interest messages.",
       },
       {
@@ -104,7 +104,7 @@ const categories = [
     faqs: [
       {
         q: "How do I contact support?",
-        a: "Email support@royaldelightmatrimony.com or use Live Chat on the Contact page.",
+        a: "Email support@wedauramatrimony.com or use Live Chat on the Contact page.",
       },
       {
         q: "What are support hours?",
@@ -128,10 +128,10 @@ export default function FaqPage() {
         {/* Text Section */}
         <div className="max-w-xl text-center lg:text-left order-2 lg:order-1 mt-4 lg:mt-0">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-800 mb-2 sm:mb-4 tracking-tight">
-            Royal Delight <span className="text-rose-600">FAQ Center</span>
+            WedAura <span className="text-rose-600">FAQ Center</span>
           </h1>
           <p className="text-gray-600 text-xs sm:text-base mb-3 sm:mb-6 px-1 sm:px-0">
-            If you’re new to Royal Delight or want to understand our features better, this guide helps you learn more about how our matrimony platform works.
+            If you’re new to WedAura or want to understand our features better, this guide helps you learn more about how our matrimony platform works.
           </p>
           <p className="text-gray-500 text-xs sm:text-base px-1 sm:px-0 flex items-center justify-center lg:justify-start">
             Already have an account? Visit your{" "}

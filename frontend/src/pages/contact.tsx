@@ -71,7 +71,7 @@ export default function MatrimonyContact() {
             </div>
             <div className="flex items-center gap-3">
               <Mail className="text-pink-500" size={20} />
-              <p>info@royaldelight matrimony.com</p>
+              <p>info@wedaura matrimony.com</p>
             </div>
             <div className="flex items-center gap-3">
               <MapPin className="text-pink-500" size={20} />

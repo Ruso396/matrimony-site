@@ -11,7 +11,7 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
     });
 
     await transporter.sendMail({
-      from: `"Royal Delight" <${process.env.EMAIL_USER}>`,
+      from: `"WedAura" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text,
