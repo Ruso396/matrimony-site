@@ -33,7 +33,7 @@ app.use('/api/register', registerRoutes); // <- registration endpoints
 app.use('/api/premiumpayment', premiumRoutes);
 // ✅ API routes
 app.use('/api/register', registerRoutes);
-app.use('/api/stories', storyRoutes);
+app.use("/api/stories", storyRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use("/api/request", requestRoutes);
 

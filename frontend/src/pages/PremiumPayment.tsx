@@ -221,7 +221,7 @@ const PremiumPayment = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-amber-500 rounded-2xl mb-3 sm:mb-4">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-pink-500 rounded-2xl mb-3 sm:mb-4">
             <Crown className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
@@ -238,7 +238,7 @@ const PremiumPayment = () => {
             {/* Pricing Card */}
             <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-6 md:p-8">
               <div className="text-center mb-4 sm:mb-6">
-                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-amber-500 rounded-2xl mb-3 sm:mb-4">
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-pink-500 rounded-2xl mb-3 sm:mb-4">
                   <Crown className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Premium Membership</h2>

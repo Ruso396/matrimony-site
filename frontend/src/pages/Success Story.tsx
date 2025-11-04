@@ -1,19 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import {
-  Heart, Quote, Calendar, MapPin, Star, Share2,
-  Facebook, Instagram, MessageCircle, Upload, X, Medal, Send
-} from 'lucide-react';
-import couple1 from '../components/assets/couple2.png';
-
-// ✅ Add Google Fonts for cursive headings
-const style = document.createElement('style');
-style.textContent = `
-  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Caveat:wght@400;700&display=swap');
-  .font-cursive { font-family: 'Dancing Script', cursive; }
-  .font-cursive-alt { font-family: 'Caveat', cursive; }
-`;
-document.head.appendChild(style);
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Star, Quote, Share2, Upload, X, Send, Edit2, Trash2, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Story {
   id: number;
@@ -21,354 +9,535 @@ interface Story {
   location: string;
   marriedDate: string;
   story: string;
-  testimonial: string;
   image: string;
-  isFeatured?: boolean;
-  color: string;
+  createdAt: string;
+  userId?: number;
 }
 
-// ✅ FormData Type
-interface FormDataType {
-  names: string;
-  email: string;
-  location: string;
-  date: string;
-  story: string;
-  imagePreview: string;
-  imageFile: File | null;
-}
-
-const SuccessStory: React.FC = () => {
-  const [showSubmitForm, setShowSubmitForm] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [formData, setFormData] = useState<FormDataType>({
-    names: '',
-    email: '',
-    location: '',
-    date: '',
-    story: '',
-    imagePreview: '',
-    imageFile: null
-  });
+const Testimonials: React.FC = () => {
+  const navigate = useNavigate();
   const [stories, setStories] = useState<Story[]>([]);
+  const [userStories, setUserStories] = useState<Story[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingStory, setEditingStory] = useState<Story | null>(null);
+  const [formData, setFormData] = useState({
+    names: "",
+    location: "",
+    date: "",
+    story: "",
+    imageFile: null as File | null,
+    imagePreview: "",
+  });
+  const [formError, setFormError] = useState("");
+  
+  // Get the actual logged-in user ID from localStorage
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
-  const heroBannerImages = [
-    "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=1920&h=1080&fit=crop"
-  ];
-
-  // ✅ Auto-slide hero background
+  // Fetch current user ID from localStorage
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroBannerImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // ✅ Fetch stories from backend
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/stories/getstories');
-        setStories(res.data || []);
-      } catch (err) {
-        console.error("Error fetching stories:", err);
+    const getUserId = () => {
+      const storedUserId = localStorage.getItem("userId");
+      if (storedUserId) {
+        setCurrentUserId(parseInt(storedUserId));
+      } else {
+        setCurrentUserId(null);
       }
     };
-    fetchStories();
+    getUserId();
   }, []);
 
-  const colors = [
-    "from-rose-500 to-pink-600",
-    "from-purple-500 to-indigo-600",
-    "from-orange-500 to-red-600",
-    "from-teal-500 to-cyan-600",
-    "from-violet-500 to-purple-600",
-    "from-emerald-500 to-green-600"
-  ];
+  // Fetch stories whenever currentUserId changes
+  useEffect(() => {
+    if (currentUserId !== null) {
+      fetchStories();
+    }
+  }, [currentUserId]);
 
-  // ✅ Handle Image Upload
+  // Fetch stories function
+  const fetchStories = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/stories/getstories");
+      const allStories = res.data || [];
+      
+      if (currentUserId !== null) {
+        // Separate user's own stories and others' stories based on userId
+        const userOwned = allStories.filter((s: Story) => s.userId === currentUserId);
+        const othersStories = allStories.filter((s: Story) => s.userId !== currentUserId);
+        
+        setUserStories(userOwned);
+        setStories(othersStories);
+      } else {
+        // If no user is logged in, show all stories in "Real Stories" section
+        setUserStories([]);
+        setStories(allStories);
+      }
+    } catch (err) {
+      console.error("Error fetching stories:", err);
+    }
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/placeholder-image.jpg";
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+    const cleanPath = imagePath.startsWith("/") ? imagePath.substring(1) : imagePath;
+    return `http://localhost:5000/${cleanPath}`;
+  };
+
+  // Count characters in story
+  const countCharacters = (text: string): number => {
+    return text.trim().length;
+  };
+
+  // Validate story (minimum 164 characters)
+  const validateStory = (text: string): boolean => {
+    const chars = countCharacters(text);
+    if (chars < 164) {
+      setFormError(`Story must have at least 164 characters. You have ${chars} character(s).`);
+      return false;
+    }
+    setFormError("");
+    return true;
+  };
+
+  // Truncate story to 164 characters
+  const truncateStory = (text: string, maxChars: number = 164): string => {
+    if (text.length <= maxChars) return text;
+    return text.substring(0, maxChars) + '...';
+  };
+
+  // Check if story needs "View More"
+  const needsViewMore = (text: string): boolean => {
+    return text.length > 164;
+  };
+
+  // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, imageFile: file }));
+      setFormData((prev) => ({ ...prev, imageFile: file }));
       const reader = new FileReader();
-      reader.onloadend = () => setFormData(prev => ({ ...prev, imagePreview: reader.result as string }));
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, imagePreview: reader.result as string }));
+      };
       reader.readAsDataURL(file);
     }
   };
 
-  // ✅ Submit story to backend API
+  // Open edit form
+  const handleEdit = (story: Story) => {
+    setEditingStory(story);
+    setFormData({
+      names: story.names,
+      location: story.location,
+      date: story.marriedDate,
+      story: story.story,
+      imageFile: null,
+      imagePreview: getImageUrl(story.image),
+    });
+    setFormError("");
+    setShowForm(true);
+  };
+
+  // Delete story with confirmation
+  const handleDelete = async (storyId: number) => {
+    // Show confirmation dialog
+    const confirmDelete = window.confirm("Are you sure you want to delete this story? This action cannot be undone.");
+    
+    if (!confirmDelete) {
+      return; // User clicked "Cancel" or "No"
+    }
+    
+    if (currentUserId === null) {
+      alert("❌ You must be logged in to delete a story.");
+      return;
+    }
+    
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/stories/deletestory/${storyId}`,
+        {
+          data: { userId: currentUserId }
+        }
+      );
+      
+      if (response.status === 200) {
+        // Remove from userStories state
+        setUserStories(userStories.filter(s => s.id !== storyId));
+        alert("✅ Story deleted successfully!");
+      }
+    } catch (err: any) {
+      console.error("Error deleting story:", err);
+      const errorMsg = err.response?.data?.message || "Failed to delete story.";
+      alert(`❌ ${errorMsg}`);
+    }
+  };
+
+  // View full story
+  const handleViewStory = (story: Story) => {
+    navigate(`/story/${story.id}`, { state: { story } });
+  };
+
+  // Submit or update story
   const handleSubmit = async () => {
     if (!formData.names || !formData.location || !formData.story) {
-      alert('Please fill in all required fields (Names, Location, Story)!');
+      alert("❌ Please fill in all required fields.");
+      return;
+    }
+
+    if (currentUserId === null) {
+      alert("❌ You must be logged in to submit a story.");
+      return;
+    }
+
+    // Validate story has minimum 164 characters
+    if (!validateStory(formData.story)) {
       return;
     }
 
     try {
       const form = new FormData();
-      form.append('names', formData.names);
-      form.append('location', formData.location);
-      form.append('date', formData.date);
-      form.append('story', formData.story);
+      form.append("names", formData.names);
+      form.append("location", formData.location);
+      form.append("date", formData.date);
+      form.append("story", formData.story);
+      form.append("userId", currentUserId.toString());
       if (formData.imageFile) {
-        form.append('image', formData.imageFile);
+        form.append("image", formData.imageFile);
       }
 
-      const res = await axios.post('http://localhost:5000/api/stories/submitstory', form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      if (editingStory) {
+        // Update existing story
+        const res = await axios.put(
+          `http://localhost:5000/api/stories/updatestory/${editingStory.id}`,
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        
+        if (res.status === 200) {
+          const updatedStory = res.data.story;
+          updatedStory.userId = currentUserId;
+          // Update in userStories
+          setUserStories(userStories.map(s => s.id === editingStory.id ? updatedStory : s));
+          alert("✅ Story updated successfully!");
+        }
+      } else {
+        // Create new story
+        const res = await axios.post(
+          "http://localhost:5000/api/stories/submitstory",
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+
+        if (res.status === 201) {
+          const newStory = res.data.story;
+          newStory.userId = currentUserId;
+          setUserStories([newStory, ...userStories]);
+          alert("🎉 Story submitted successfully!");
+        }
+      }
+
+      // Close form and reset
+      setShowForm(false);
+      setEditingStory(null);
+      setFormData({
+        names: "",
+        location: "",
+        date: "",
+        story: "",
+        imageFile: null,
+        imagePreview: "",
       });
-
-      if (res.status === 201) {
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 4000);
-        alert('🎉 Thank you for sharing your story!');
-        setStories([res.data.story, ...stories]);
-        setShowSubmitForm(false);
-        setFormData({
-          names: '',
-          email: '',
-          location: '',
-          date: '',
-          story: '',
-          imagePreview: '',
-          imageFile: null
-        });
-      }
-    } catch (err) {
-      console.error('Error submitting story:', err);
-      alert('Failed to submit story. Please try again.');
+      setFormError("");
+    } catch (err: any) {
+      console.error("Error submitting story:", err);
+      const errorMsg = err.response?.data?.message || "Failed to submit. Try again later.";
+      alert(`❌ ${errorMsg}`);
     }
   };
 
-  // ✅ Featured story (first one)
-  const featuredStory = {
-  names: "Michael & Angel",
-  location: "Chennai, Tamil Nadu",
-  marriedDate: "January 2025",
-  story: "We matched and instantly felt the spark...",
-  testimonial: "Thanks to this platform, I met my soulmate!",
-  image: couple1,
-  color: "from-rose-500 to-pink-600",
-  isFeatured: true,
-};
+  // Story Card Component
+  const StoryCard = ({ story, isUserStory }: { story: Story; isUserStory: boolean }) => (
+    <div className="relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border border-slate-100 p-5 sm:p-6 shadow-md hover:shadow-2xl transform transition-all duration-500 hover:-translate-y-2">
+      <div className="absolute -top-12 -right-12 w-36 h-36 bg-accent-200/30 rounded-full blur-3xl" />
+
+      <div className="flex items-start gap-3 xs:gap-4">
+        {/* Profile Image */}
+        <div className="w-14 h-14 xs:w-16 xs:h-16 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+          <img
+            src={getImageUrl(story.image)}
+            alt={story.names}
+            className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder-image.jpg";
+            }}
+          />
+        </div>
+
+        {/* Text */}
+        <div className="flex-1">
+          <div className="flex items-center gap-1.5">
+            {[...Array(5)].map((_, idx) => (
+              <Star key={idx} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+            ))}
+          </div>
+          <p className="mt-2 text-gray-600 text-sm leading-relaxed">
+            {truncateStory(story.story)}
+          </p>
+          
+          {needsViewMore(story.story) && (
+            <button
+              onClick={() => handleViewStory(story)}
+              className="mt-2 text-brand-600 hover:text-brand-700 text-sm font-medium flex items-center gap-1"
+            >
+              <Eye className="w-4 h-4" />
+              View More
+            </button>
+          )}
+
+          <div className="mt-2 font-semibold text-gray-900 text-sm">{story.names}</div>
+          {story.location && <div className="text-xs text-gray-500">{story.location}</div>}
+          {story.marriedDate && <div className="mt-1 text-xs text-gray-400">{story.marriedDate}</div>}
+
+          {/* User Actions - Only show for story owner */}
+          {isUserStory && currentUserId !== null && story.userId === currentUserId && (
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => handleEdit(story)}
+                className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-medium hover:bg-blue-100 transition"
+              >
+                <Edit2 className="w-3 h-3" />
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(story.id)}
+                className="flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition"
+              >
+                <Trash2 className="w-3 h-3" />
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Quote Icon */}
+        <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-full bg-brand-50 flex items-center justify-center">
+          <Quote className="w-4 h-4 text-brand-600" />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 py-20">
-      
-      {/* ✅ Confetti Animation */}
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-          {[...Array(100)].map((_, i) => {
-            const colors = ['#ff69b4', '#ffd700', '#ff6347', '#9370db', '#00ced1'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            const randomX = Math.random() * 100;
-            const randomDelay = Math.random() * 0.5;
-            const randomDuration = 2 + Math.random() * 2;
-            return (
-              <div
-                key={i}
-                className="absolute w-3 h-3 animate-confetti"
-                style={{
-                  left: `${randomX}%`,
-                  top: '-20px',
-                  backgroundColor: randomColor,
-                  animationDelay: `${randomDelay}s`,
-                  animationDuration: `${randomDuration}s`
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
+    <section className="mt-10 relative py-16 sm:py-20 px-3 xs:px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden">
+      {/* Inline Animations */}
       <style>{`
-        @keyframes confetti {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        @keyframes fadeUp {
+          0% { opacity: 0; transform: translateY(30px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
-        .animate-confetti { animation: confetti linear forwards; }
+        @keyframes float {
+          0%,100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
+        @keyframes glow {
+          0%,100% { box-shadow: 0 0 0 rgba(255,120,180,0); }
+          50% { box-shadow: 0 0 15px rgba(255,120,180,.3); }
+        }
+        @keyframes fadeIn {
+          0% { opacity: 0; transform: scale(0.9); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-fadeUp { animation: fadeUp 1s ease-out both; }
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        .animate-glow { animation: glow 2s ease-in-out infinite; }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out both; }
       `}</style>
 
-      {/* ✅ Hero Section */}
-      <div className="relative overflow-hidden py-24 min-h-[600px]">
-        {heroBannerImages.map((img, idx) => (
-          <div key={idx} className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
-            <img src={img} className="w-full h-full object-cover" alt="" />
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-600/60 to-purple-600/60"></div>
+      {/* Decorative Blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-24 top-0 w-64 h-64 bg-pink-200/40 rounded-full blur-3xl opacity-60 animate-float" />
+        <div className="absolute right-0 bottom-0 w-80 h-80 bg-indigo-200/40 rounded-full blur-3xl opacity-60 animate-float" />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Share Story Button */}
+        {currentUserId !== null && (
+          <div className="text-center mb-8">
+            <button
+              onClick={() => {
+                setEditingStory(null);
+                setFormData({
+                  names: "",
+                  location: "",
+                  date: "",
+                  story: "",
+                  imageFile: null,
+                  imagePreview: "",
+                });
+                setFormError("");
+                setShowForm(true);
+              }}
+              className="px-6 py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm sm:text-base shadow-md hover:shadow-2xl transition-all hover:scale-105 animate-float flex items-center gap-2 mx-auto"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Share Your Story</span>
+            </button>
           </div>
-        ))}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight font-cursive">
-            Success Stories from Our <br />
-            <span className="text-yellow-300">Happy Couples</span>
-          </h1>
-          <p className="text-lg text-white">
-            Every love story deserves to be celebrated. Here are couples who found their perfect match.
-          </p>
+        )}
+
+        {/* Your Stories Section - Only show if user is logged in and has stories */}
+        {currentUserId !== null && userStories.length > 0 && (
+          <div className="mb-16">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">
+                Your Stories
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-8">
+              {userStories.map((story) => (
+                <StoryCard key={story.id} story={story} isUserStory={true} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Others' Stories Section */}
+        {stories.length > 0 && (
+          <>
+            <div className="text-center animate-fadeUp mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs sm:text-sm font-semibold shadow-sm animate-glow">
+                Hear from Couples
+              </div>
+              <h2 className="mt-4 text-[1.8rem] xs:text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-brand-400 to-accent-500 bg-clip-text text-transparent">
+                Real Stories — Real Matches
+              </h2>
+              <p className="mt-3 max-w-2xl mx-auto text-gray-600 text-sm xs:text-base leading-relaxed">
+                Our verified members have shared these beautiful stories that began on our platform.
+              </p>
+            </div>
+
+            {/* Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-8">
+              {stories.map((story) => (
+                <StoryCard key={story.id} story={story} isUserStory={false} />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Bottom Call-to-Action */}
+        <div className="mt-12 text-center animate-fadeUp">
+          <div className="inline-flex items-center gap-3 bg-white/90 px-4 py-2.5 rounded-full shadow-sm text-sm sm:text-base">
+            <div className="text-gray-600">Trusted by</div>
+            <div className="font-bold text-brand-600">50,000+</div>
+            <div className="text-gray-600">verified members</div>
+          </div>
         </div>
       </div>
 
-      {/* ✅ Featured Story */}
-    <div className="max-w-4xl mx-auto py-16 px-6">
-  {/* Title Section */}
-  <div className="text-center mb-10">
-    <div className="inline-flex items-center bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-2.5 rounded-full shadow-md text-sm font-semibold tracking-wide transition-transform duration-300 hover:scale-105">
-      <Medal className="w-4 h-4 mr-2" /> COUPLE OF THE MONTH
-    </div>
-  </div>
-
-  {/* Main Card */}
-  <div
-    className="group relative bg-white rounded-3xl shadow-lg overflow-hidden grid md:grid-cols-2 border border-transparent 
-    hover:border-pink-400 hover:shadow-2xl transition-all duration-500"
-  >
-    {/* Gradient border glow */}
-    <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-pink-300 via-rose-300 to-yellow-300 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700"></div>
-
-    {/* Left Image */}
-    <img
-      src={featuredStory.image}
-      alt={featuredStory.names}
-      className="object-cover w-full h-64 md:h-full transform group-hover:scale-105 transition-transform duration-700"
-    />
-
-    {/* Right Content */}
-    <div className="relative p-8 md:p-10 flex flex-col justify-center bg-white/90 backdrop-blur-sm z-10 animate-fadeIn">
-      <h3 className="text-3xl font-cursive text-pink-600 mb-3 tracking-wide">
-        {featuredStory.names}
-      </h3>
-
-      {/* Location & Date */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <div
-          className={`px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${featuredStory.color} text-white flex items-center shadow-sm`}
-        >
-          <MapPin className="w-3.5 h-3.5 mr-1" />
-          {featuredStory.location}
-        </div>
-
-        <div className="px-3 py-1.5 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold flex items-center shadow-sm">
-          <Calendar className="w-3.5 h-3.5 mr-1" /> {featuredStory.marriedDate}
-        </div>
-      </div>
-
-      {/* Story & Testimonial */}
-      <p className="text-gray-600 italic text-sm mb-3 leading-relaxed">
-        "{featuredStory.story}"
-      </p>
-      <p className="text-gray-900 font-semibold text-sm">{featuredStory.testimonial}</p>
-    </div>
-  </div>
-</div>
-
-
-      {/* ✅ Stories Grid */}
-     {/* ✅ Stories Section */}
-<div className="max-w-7xl mx-auto px-6 py-20">
-  <h2 className="text-3xl font-cursive text-center text-pink-600 mb-10">
-    More Love Stories ❤️
-  </h2>
-
-  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-    {stories.map((story) => (
-      <div key={story.id} className="bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-3 transition">
-<img
-  src={story.image.startsWith('http') ? story.image : `http://localhost:5000/${story.image}`}
-  alt={story.names}
-  className="w-full h-72 object-cover"
-/>
-        <div className="p-6">
-          <h3 className="text-2xl font-cursive text-pink-600">{story.names}</h3>
-          <p className="text-gray-600 text-sm mb-2">{story.location}</p>
-          <p className="text-gray-700 text-sm line-clamp-3">{story.story}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-
-
-      {/* ✅ CTA */}
-      <div className="bg-gradient-to-br from-pink-600 to-purple-600 text-center py-20 text-white">
-        <h2 className="text-4xl font-cursive mb-6">Share Your Love Story ❤️</h2>
-        <button
-          onClick={() => setShowSubmitForm(true)}
-          className="bg-white text-pink-600 px-10 py-4 rounded-full font-black hover:scale-105 transition">
-          <Upload className="inline w-6 h-6 mr-2" /> Submit Your Story
-        </button>
-      </div>
-
-      {/* ✅ Submit Form Modal */}
-      {showSubmitForm && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowSubmitForm(false)}>
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-8" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-3xl font-cursive text-pink-600">Share Your Story</h3>
-              <button onClick={() => setShowSubmitForm(false)} className="bg-gray-200 p-2 rounded-full">
-                <X className="w-5 h-5" />
+      {/* Submit/Edit Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl animate-fadeIn max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">
+                {editingStory ? "Edit Your Story" : "Share Your Story"}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingStory(null);
+                  setFormError("");
+                }}
+                className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition"
+              >
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <input
                 type="text"
-                placeholder="Your Names *"
+                placeholder="Couple Names *"
                 value={formData.names}
                 onChange={(e) => setFormData({ ...formData, names: e.target.value })}
-                className="w-full border px-4 py-3 rounded-xl"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full border px-4 py-3 rounded-xl"
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition"
               />
               <input
                 type="text"
                 placeholder="City, State *"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="w-full border px-4 py-3 rounded-xl"
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition"
               />
               <input
                 type="text"
                 placeholder="Marriage Date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full border px-4 py-3 rounded-xl"
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition"
               />
-              <textarea
-                placeholder="Your Love Story *"
-                rows={4}
-                value={formData.story}
-                onChange={(e) => setFormData({ ...formData, story: e.target.value })}
-                className="w-full border px-4 py-3 rounded-xl resize-none"
-              />
+              <div>
+                <textarea
+                  placeholder="Your Story * (Minimum 164 characters required)"
+                  rows={8}
+                  value={formData.story}
+                  onChange={(e) => {
+                    setFormData({ ...formData, story: e.target.value });
+                    validateStory(e.target.value);
+                  }}
+                  className={`w-full border ${formError ? 'border-red-500' : 'border-gray-300'} px-4 py-2 rounded-lg resize-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition`}
+                />
+                {formError && (
+                  <p className="text-red-500 text-xs mt-1">{formError}</p>
+                )}
+                <p className={`text-xs mt-1 ${countCharacters(formData.story) >= 164 ? 'text-green-600' : 'text-gray-500'}`}>
+                  Current characters: {countCharacters(formData.story)} / 164 minimum
+                </p>
+              </div>
               <div className="text-center">
-                <input type="file" id="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                <label htmlFor="file" className="cursor-pointer inline-block bg-pink-100 px-6 py-3 rounded-xl hover:bg-pink-200">
-                  {formData.imagePreview ? 'Change Image' : 'Upload Image'}
+                <input
+                  type="file"
+                  id="upload"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="upload"
+                  className="cursor-pointer inline-flex items-center gap-2 bg-brand-50 px-4 py-2 rounded-lg border border-brand-200 text-brand-700 hover:bg-brand-100 transition font-medium"
+                >
+                  <Upload className="w-4 h-4" />
+                  {formData.imagePreview ? "Change Image" : "Upload Image"}
                 </label>
                 {formData.imagePreview && (
-                  <img src={formData.imagePreview} alt="preview" className="w-32 h-32 mx-auto mt-4 rounded-xl object-cover" />
+                  <img
+                    src={formData.imagePreview}
+                    alt="preview"
+                    className="w-24 h-24 mx-auto mt-3 rounded-xl object-cover shadow-md"
+                  />
                 )}
               </div>
               <button
                 onClick={handleSubmit}
-                className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-4 rounded-full font-black flex justify-center items-center gap-2">
-                <Send className="w-5 h-5" /> Submit
+                disabled={countCharacters(formData.story) < 164}
+                className="w-full py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-bold flex items-center justify-center gap-2 hover:scale-105 transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                <Send className="w-5 h-5" />
+                {editingStory ? "Update Story" : "Submit Story"}
               </button>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 
-export default SuccessStory;
+export default Testimonials;

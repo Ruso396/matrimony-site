@@ -18,6 +18,7 @@ import AdminRoute from './components/AdminRoute';
 import RequestManager from "./pages/Request";
 import MyConnected from "./pages/MyConnected";
 import SuccessStory from "./pages/Success Story";
+import StoryDetail from "./pages/StoryDetail-Page";
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -49,6 +50,7 @@ const App: React.FC = () => {
             <Route path="/requestmanager" element={<RequestManager />} />
             <Route path="/myconnected" element={<MyConnected />} />
             <Route path="/successStory" element={<SuccessStory/>}/>
+             <Route path="/story/:id" element={<StoryDetail />} />
             <Route
               path="/admin"
               element={
