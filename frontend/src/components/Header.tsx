@@ -218,13 +218,13 @@ const Header: React.FC = () => {
                     <User className="w-4 h-4 text-pink-600" /> Profile
                   </Link>
 
-                  <Link
+                  {/* <Link
                     to="/requestmanager"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
                     onClick={() => setShowDropdown(false)}
                   >
                     <Heart className="w-4 h-4 text-pink-600" /> Requests
-                  </Link>
+                  </Link> */}
 
                   <button
                     onClick={handleLogout}
