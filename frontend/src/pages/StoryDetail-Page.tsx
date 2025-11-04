@@ -21,12 +21,12 @@ const StoryDetail: React.FC = () => {
 
   if (!story) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white via-slate-50 to-white">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Story not found</h2>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center px-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Story not found</h2>
           <button
             onClick={() => navigate(-1)}
-            className="px-6 py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold hover:scale-105 transition"
+            className="px-6 py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition"
           >
             Go Back
           </button>
@@ -53,189 +53,170 @@ const StoryDetail: React.FC = () => {
   };
 
   return (
-    <section className="min-h-screen relative py-12 sm:py-16 px-3 xs:px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden">
-      {/* Inline Animations */}
+    <section className="min-h-screen bg-gray-50 py-4 sm:py-8 lg:py-12 mt-16">
+      {/* Animations */}
       <style>{`
-        @keyframes fadeUp {
-          0% { opacity: 0; transform: translateY(30px); }
-          100% { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes float {
-          0%,100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-        @keyframes slideInLeft {
-          0% { opacity: 0; transform: translateX(-40px); }
-          100% { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInRight {
-          0% { opacity: 0; transform: translateX(40px); }
-          100% { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes scaleIn {
-          0% { opacity: 0; transform: scale(0.9); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-        .animate-fadeUp { animation: fadeUp 0.8s ease-out both; }
-        .animate-float { animation: float 4s ease-in-out infinite; }
-        .animate-slideInLeft { animation: slideInLeft 0.8s ease-out both; }
-        .animate-slideInRight { animation: slideInRight 0.8s ease-out both; }
-        .animate-scaleIn { animation: scaleIn 0.6s ease-out both; }
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out both; }
+        .animate-slideIn { animation: slideIn 0.6s ease-out both; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
       `}</style>
 
-      {/* Decorative Blobs */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-0 w-96 h-96 bg-pink-200/30 rounded-full blur-3xl opacity-60 animate-float" />
-        <div className="absolute right-0 bottom-0 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl opacity-60 animate-float" style={{ animationDelay: '1s' }} />
-      </div>
-
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
-          className="mb-8 flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 text-gray-700 font-medium animate-fadeUp"
+          className="mb-4 sm:mb-6 flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all text-gray-700 font-medium text-sm sm:text-base animate-fadeIn"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Stories
+          <span>Back</span>
         </button>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Left: Image */}
-          <div className="animate-slideInLeft">
-            <div className="sticky top-8">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/5] bg-gradient-to-br from-brand-100 to-accent-100">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
+          {/* Left: Image Section - 5 columns */}
+          <div className="lg:col-span-5 animate-slideIn">
+            <div className="lg:sticky lg:top-6">
+              {/* Image Container */}
+              <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-lg bg-gray-200 aspect-[4/5] sm:aspect-[3/4]">
                 <img
                   src={getImageUrl(story.image)}
                   alt={story.names}
-                  className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-105"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = "/placeholder-image.jpg";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 
-                {/* Floating Hearts */}
-                <div className="absolute top-6 right-6 animate-float">
-                  <div className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
-                    <Heart className="w-6 h-6 text-red-500 fill-red-500" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Image Caption */}
-              <div className="mt-6 text-center animate-fadeUp" style={{ animationDelay: '0.2s' }}>
-                <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent">
-                  {story.names}
-                </h3>
-                <div className="mt-3 flex items-center justify-center gap-4 text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-brand-500" />
-                    <span className="text-sm">{story.location}</span>
-                  </div>
-                  {story.date && (
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-accent-500" />
-                      <span className="text-sm">{story.date}</span>
+                {/* Simple Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                
+                {/* Names on Image */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3">
+                    {story.names}
+                  </h2>
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-white/90 text-xs sm:text-sm">
+                    <div className="flex items-center gap-1.5 ">
+                      <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <span>{story.location}</span>
                     </div>
-                  )}
+                    {story.date && (
+                      <>
+                        <span className="text-white/50">•</span>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span>{story.date}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right: Story Content */}
-          <div className="animate-slideInRight">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl">
-              {/* Header Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-brand-100 to-accent-100 text-brand-700 text-sm font-semibold mb-6 animate-scaleIn">
-                <Heart className="w-4 h-4 fill-current" />
-                Love Story
+          {/* Right: Content Section - 7 columns */}
+          <div className="lg:col-span-7 animate-fadeIn delay-200">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+              
+              {/* Header */}
+              <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
+                <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-pink-700 text-white text-xs sm:text-sm font-semibold w-fit">
+                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
+                  <span>Love Story</span>
+                </div>
+                
+                {story.createdAt && (
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500">
+                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span className="line-clamp-1">{formatDateTime(story.createdAt)}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Story Title */}
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 leading-tight animate-fadeUp" style={{ animationDelay: '0.1s' }}>
+              {/* Title */}
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
                 Our Journey Together
               </h1>
 
+              {/* Divider */}
+              <div className="h-px bg-gray-200 mb-6 sm:mb-8" />
+
               {/* Story Content */}
-              <div className="prose prose-lg max-w-none animate-fadeUp" style={{ animationDelay: '0.2s' }}>
-                <div className="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg space-y-4">
-                  {story.story.split('\n').map((paragraph, idx) => (
-                    paragraph.trim() && (
-                      <p key={idx} className="mb-4">
-                        {paragraph}
-                      </p>
-                    )
-                  ))}
-                </div>
+              <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-5">
+                {story.story.split('\n').map((paragraph, idx) => (
+                  paragraph.trim() && (
+                    <p key={idx} className="text-sm sm:text-base lg:text-lg text-gray-700 leading-relaxed">
+                      {paragraph}
+                    </p>
+                  )
+                ))}
               </div>
 
-              {/* Divider */}
-              <div className="my-8 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+              {/* Quote Section */}
+              {/* <div className="my-6 sm:my-8 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl bg-gray-900 text-white">
+                <div className="text-3xl sm:text-4xl font-serif mb-2 opacity-50">"</div>
+                <p className="text-sm sm:text-base lg:text-lg italic leading-relaxed mb-3 sm:mb-4">
+                  Every love story is beautiful, but ours is my favorite.
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="h-0.5 w-8 sm:w-12 bg-white/30" />
+                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
+                </div>
+              </div> */}
 
-              {/* Story Metadata */}
-              <div className="space-y-4 animate-fadeUp" style={{ animationDelay: '0.3s' }}>
-                <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-brand-50 to-accent-50 rounded-xl">
-                  <MapPin className="w-5 h-5 text-brand-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="text-xs font-semibold text-brand-700 uppercase tracking-wide">Location</div>
-                    <div className="text-gray-800 font-medium mt-1">{story.location}</div>
+              {/* Metadata Cards */}
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                <div className="rounded-lg sm:rounded-xl bg-gray-50 p-4 sm:p-5 border border-gray-200">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-pink-700 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Location</div>
+                      <div className="text-sm sm:text-base text-gray-900 font-semibold truncate">{story.location}</div>
+                    </div>
                   </div>
                 </div>
 
                 {story.date && (
-                  <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-accent-50 to-pink-50 rounded-xl">
-                    <Calendar className="w-5 h-5 text-accent-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-semibold text-accent-700 uppercase tracking-wide">Marriage Date</div>
-                      <div className="text-gray-800 font-medium mt-1">{story.date}</div>
+                  <div className="rounded-lg sm:rounded-xl bg-gray-50 p-4 sm:p-5 border border-gray-200">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gray-900 flex items-center justify-center flex-shrink-0">
+                        <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Date</div>
+                        <div className="text-sm sm:text-base text-gray-900 font-semibold truncate">{story.date}</div>
+                      </div>
                     </div>
                   </div>
                 )}
-
-                {story.createdAt && (
-                  <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl">
-                    <Clock className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Shared On</div>
-                      <div className="text-gray-800 font-medium mt-1">{formatDateTime(story.createdAt)}</div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Decorative Quote */}
-              <div className="mt-8 p-6 bg-gradient-to-br from-brand-500 to-accent-500 rounded-2xl text-white animate-scaleIn" style={{ animationDelay: '0.4s' }}>
-                <div className="text-4xl font-serif mb-2">"</div>
-                <p className="text-lg italic leading-relaxed">
-                  Every love story is beautiful, but ours is my favorite.
-                </p>
-                <div className="text-4xl font-serif text-right">"</div>
               </div>
 
               {/* Action Button */}
-              <div className="mt-8 text-center animate-fadeUp" style={{ animationDelay: '0.5s' }}>
-                <button
-                  onClick={() => navigate(-1)}
-                  className="px-8 py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-bold text-base shadow-lg hover:shadow-2xl transition-all hover:scale-105 inline-flex items-center gap-2"
-                >
-                  <Heart className="w-5 h-5" />
-                  Read More Stories
-                </button>
-              </div>
+              <button
+                onClick={() => navigate(-1)}
+                className="w-full px-5 sm:px-6 py-3 sm:py-4 bg-pink-700 text-white rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base shadow-md hover:bg-gray-800 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3"
+              >
+                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>Read More Stories</span>
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Bottom Decorative Section */}
-        <div className="mt-16 text-center animate-fadeUp" style={{ animationDelay: '0.6s' }}>
-          <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-md">
-            <Heart className="w-5 h-5 text-red-500 fill-red-500 animate-float" />
-            <span className="text-gray-700 font-medium">Made with love on our platform</span>
-            <Heart className="w-5 h-5 text-red-500 fill-red-500 animate-float" style={{ animationDelay: '0.5s' }} />
-          </div>
-        </div>
+        {/* Footer */}
       </div>
     </section>
   );
