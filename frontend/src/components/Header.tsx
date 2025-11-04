@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, LogIn, User, LogOut, Bell, Heart, Trophy } from "lucide-react";
+import { Menu, X, LogIn, User, LogOut, Bell, Heart, Trophy, Home, Users, Phone, HelpCircle } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Avatar from "../components/Avatar";
 
-
 import logoWhite from "../components/assets/logowhite.png";
 import logoBlack from "../components/assets/logoblack.png";
 import { useAuth } from "../context/AuthContext";
-
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,7 +34,6 @@ const Header: React.FC = () => {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isTransparentPage, location.pathname]);
-  // Add this in your Header.tsx useEffect for fetching counts
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -63,12 +60,13 @@ const Header: React.FC = () => {
     const interval = setInterval(fetchCounts, 10000);
     return () => clearInterval(interval);
   }, []);
+
   const handleLogout = () => {
     try {
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
       localStorage.removeItem("userName");
-    } catch (e) { }
+    } catch (e) {}
     setUserName(null);
     setShowDropdown(false);
     window.dispatchEvent(new Event("userLoginChange"));
@@ -76,10 +74,10 @@ const Header: React.FC = () => {
   };
 
   const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Brides/Grooms", path: "/biodata" },
-    { name: "Contact Us", path: "/contact" },
-    { name: "FAQ", path: "/faq" },
+    { name: "Home", path: "/", icon: Home },
+    { name: "Brides/Grooms", path: "/biodata", icon: Users },
+    { name: "Contact Us", path: "/contact", icon: Phone },
+    { name: "FAQ", path: "/faq", icon: HelpCircle },
   ];
 
   const headerStyle = isTransparentPage
@@ -129,20 +127,24 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         {/* LOGO */}
         <Link to="/" className="flex items-center">
-          <img src={isTransparentPage && !isScrolled ? logoWhite : logoBlack}
+          <img
+            src={isTransparentPage && !isScrolled ? logoWhite : logoBlack}
             alt="WedAura"
-            className=" h-8 w-auto object-contain transition-all duration-300 sm:h-9 md:h-10 lg:h-11 xl:h-12 " />
+            className="h-8 w-auto object-contain transition-all duration-300 sm:h-9 md:h-10 lg:h-11 xl:h-12"
+          />
         </Link>
+
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               to={link.path}
-              className={`transition ${isTransparentPage && !isScrolled
-                ? "hover:text-yellow-400"
-                : "hover:text-pink-600"
-                }`}
+              className={`transition ${
+                isTransparentPage && !isScrolled
+                  ? "hover:text-yellow-400"
+                  : "hover:text-pink-600"
+              }`}
             >
               {link.name}
             </Link>
@@ -151,35 +153,28 @@ const Header: React.FC = () => {
           {/* 🏆 Trophy icon now inside nav, next to FAQ */}
           <Link to="/successStory" className="flex items-center">
             <Trophy
-              size={22}
-              className={`${isTransparentPage && !isScrolled
-                ? "text-white hover:text-yellow-400"
-                : "text-gray-700 hover:text-yellow-500"
-                } transition-transform duration-200 hover:scale-110`}
+              size={18}
+              className={`${
+                isTransparentPage && !isScrolled
+                  ? "text-white hover:text-yellow-400"
+                  : "text-gray-700 hover:text-pink-600"
+              } transition-transform duration-200 hover:scale-110`}
             />
           </Link>
         </nav>
-
-        <div className="hidden md:flex items-center gap-5">
-
-
-
-        </div>
 
         {/* Right Side - Login/User */}
         <div className="hidden md:flex items-center gap-4 relative">
           {userName ? (
             <div className="relative flex items-center gap-3">
-
-
-
               {/* 🔔 Notification Icon */}
               <div className="relative">
                 <Bell
-                  className={`w-5 h-5 cursor-pointer transition ${isTransparentPage && !isScrolled
-                    ? "text-white hover:text-yellow-400"
-                    : "text-pink-600 hover:text-pink-700"
-                    }`}
+                  className={`w-5 h-5 cursor-pointer transition ${
+                    isTransparentPage && !isScrolled
+                      ? "text-white hover:text-yellow-400"
+                      : "text-pink-600 hover:text-pink-700"
+                  }`}
                   onClick={() => navigate("/requestmanager")}
                 />
                 {notificationCount > 0 && (
@@ -194,9 +189,10 @@ const Header: React.FC = () => {
                 onClick={() => setShowDropdown(!showDropdown)}
                 onMouseEnter={() => setShowDropdown(true)}
                 className={`flex items-center gap-2 px-4 py-2 cursor-pointer transition font-semibold
-          ${isTransparentPage && !isScrolled
-                    ? "text-white hover:text-pink-700"
-                    : "text-pink-600 hover:text-pink-700"
+                  ${
+                    isTransparentPage && !isScrolled
+                      ? "text-white hover:text-pink-700"
+                      : "text-pink-600 hover:text-pink-700"
                   }`}
               >
                 <Avatar
@@ -242,28 +238,30 @@ const Header: React.FC = () => {
           ) : (
             <Link
               to="/login"
-              className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${isTransparentPage && !isScrolled
-                ? "border-white text-white hover:bg-white hover:text-pink-700"
-                : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
-                }`}
+              className={`flex items-center gap-1 px-4 py-2 border rounded-full transition ${
+                isTransparentPage && !isScrolled
+                  ? "border-white text-white hover:bg-white hover:text-pink-700"
+                  : "border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
+              }`}
             >
               <LogIn className="w-4 h-4" /> Login
             </Link>
           )}
         </div>
 
-
         {/* Mobile menu toggle */}
         <button onClick={toggleMenu} className="md:hidden focus:outline-none p-1">
           {isMenuOpen ? (
             <X
-              className={`w-6 h-6 ${isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
-                }`}
+              className={`w-6 h-6 ${
+                isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
+              }`}
             />
           ) : (
             <Menu
-              className={`w-6 h-6 ${isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
-                }`}
+              className={`w-6 h-6 ${
+                isTransparentPage && !isScrolled ? "text-white" : "text-gray-800"
+              }`}
             />
           )}
         </button>
@@ -272,12 +270,14 @@ const Header: React.FC = () => {
       {/* Mobile panel */}
       {menuVisible && (
         <div
-          className={`md:hidden fixed top-0 left-0 h-screen z-40 bg-white text-gray-800 ${menuAnim === "in" ? "anim-slide-in" : "anim-slide-out"
-            }`}
+          className={`md:hidden fixed top-0 left-0 h-screen z-40 bg-white text-gray-800 ${
+            menuAnim === "in" ? "anim-slide-in" : "anim-slide-out"
+          }`}
           style={{ width: "100%", paddingTop: "64px" }}
         >
-          <div className="px-6 py-4 space-y-3">
-            <div className="flex items-center justify-start">
+          <div className="px-6 py-4 space-y-4">
+            {/* Close Button */}
+            <div className="flex items-start justify-start">
               <button
                 onClick={toggleMenu}
                 className="p-2 rounded-md focus:outline-none"
@@ -286,49 +286,88 @@ const Header: React.FC = () => {
               </button>
             </div>
 
-            <nav className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  onClick={closeMenuWithAnimation}
-                  className="block w-full py-3 text-lg"
-                >
-                  {link.name}
-                </Link>
-              ))}
+            {/* Navigation Links with Icons - Left Aligned */}
+            <nav className="flex flex-col gap-1">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={closeMenuWithAnimation}
+                    className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
+                  >
+                    <Icon className="w-5 h-5 text-gray-600" />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              })}
+
+              {/* Trophy - Success Stories */}
+              <Link
+                to="/successStory"
+                onClick={closeMenuWithAnimation}
+                className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
+              >
+                <Trophy className="w-5 h-5 text-gray-600" />
+                <span>Success Stories</span>
+              </Link>
+
+              {/* Request Manager with Badge */}
+              <Link
+                to="/requestmanager"
+                onClick={closeMenuWithAnimation}
+                className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition relative"
+              >
+                <div className="relative">
+                  <Heart className="w-5 h-5 text-gray-600" />
+                  {notificationCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 min-w-[18px] h-[18px] flex items-center justify-center">
+                      {notificationCount}
+                    </span>
+                  )}
+                </div>
+                <span>Requests</span>
+              </Link>
             </nav>
 
+            {/* Divider */}
+            <div className="border-t border-gray-200 my-2"></div>
+
+            {/* User Section - Left Aligned */}
             <div className="pt-2">
               {userName ? (
-                <>
-                  <div className="pb-2 text-center font-semibold text-pink-600">
-                    Hi, {userName.split(" ")[0]}
-                  </div>
+                <div className="space-y-2">
+                  {/* Profile Link */}
                   <Link
                     to="/profilePage"
                     onClick={closeMenuWithAnimation}
-                    className="block w-full py-3 text-center border border-pink-600 rounded-full text-pink-600 hover:bg-pink-600 hover:text-white transition"
+                    className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
                   >
-                    Profile
+                    <User className="w-5 h-5 text-gray-600" />
+                    <span>Profile</span>
                   </Link>
+
+                  {/* Logout */}
                   <button
                     onClick={() => {
                       handleLogout();
                       closeMenuWithAnimation();
                     }}
-                    className="mt-3 block w-full py-3 text-center border border-pink-600 rounded-full text-pink-600 hover:bg-pink-600 hover:text-white transition"
+                    className="w-full flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
                   >
-                    Logout
+                    <LogOut className="w-5 h-5 text-gray-600" />
+                    <span>Logout</span>
                   </button>
-                </>
+                </div>
               ) : (
                 <Link
                   to="/login"
                   onClick={closeMenuWithAnimation}
-                  className="block w-full py-3 text-center border border-pink-600 text-pink-600 rounded-full hover:bg-pink-600 hover:text-white transition"
+                  className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
                 >
-                  Login
+                  <LogIn className="w-5 h-5 text-gray-600" />
+                  <span>Login</span>
                 </Link>
               )}
             </div>
@@ -338,6 +377,5 @@ const Header: React.FC = () => {
     </header>
   );
 };
-
 
 export default Header;
