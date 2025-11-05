@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Star, Quote, Share2, Upload, X, Send, Edit2, Trash2, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 
 interface Story {
   id: number;
@@ -13,6 +15,7 @@ interface Story {
   createdAt: string;
   userId?: number;
 }
+
 
 const Testimonials: React.FC = () => {
   const navigate = useNavigate();
@@ -33,6 +36,7 @@ const Testimonials: React.FC = () => {
   // Get the actual logged-in user ID from localStorage
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
+
   // Fetch current user ID from localStorage
   useEffect(() => {
     const getUserId = () => {
@@ -46,12 +50,14 @@ const Testimonials: React.FC = () => {
     getUserId();
   }, []);
 
+
   // Fetch stories whenever currentUserId changes
   useEffect(() => {
     if (currentUserId !== null) {
       fetchStories();
     }
   }, [currentUserId]);
+
 
   // Fetch stories function
   const fetchStories = async () => {
@@ -76,6 +82,7 @@ const Testimonials: React.FC = () => {
     }
   };
 
+
   // Helper function to get correct image URL
   const getImageUrl = (imagePath: string) => {
     if (!imagePath) return "/placeholder-image.jpg";
@@ -86,10 +93,12 @@ const Testimonials: React.FC = () => {
     return `http://localhost:5000/${cleanPath}`;
   };
 
+
   // Count characters in story
   const countCharacters = (text: string): number => {
     return text.trim().length;
   };
+
 
   // Validate story (minimum 164 characters)
   const validateStory = (text: string): boolean => {
@@ -102,16 +111,19 @@ const Testimonials: React.FC = () => {
     return true;
   };
 
-  // Truncate story to 164 characters
-  const truncateStory = (text: string, maxChars: number = 164): string => {
+
+  // Truncate story to 50 characters
+  const truncateStory = (text: string, maxChars: number = 50): string => {
     if (text.length <= maxChars) return text;
-    return text.substring(0, maxChars) + '...';
+    return text.substring(0, maxChars);
   };
+
 
   // Check if story needs "View More"
   const needsViewMore = (text: string): boolean => {
-    return text.length > 164;
+    return text.length > 50;
   };
+
 
   // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,6 +137,7 @@ const Testimonials: React.FC = () => {
       reader.readAsDataURL(file);
     }
   };
+
 
   // Open edit form
   const handleEdit = (story: Story) => {
@@ -141,17 +154,36 @@ const Testimonials: React.FC = () => {
     setShowForm(true);
   };
 
+
   // Delete story with confirmation
   const handleDelete = async (storyId: number) => {
-    // Show confirmation dialog
-    const confirmDelete = window.confirm("Are you sure you want to delete this story? This action cannot be undone.");
+    // Show SweetAlert2 confirmation dialog
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      timer: 2000,
+      timerProgressBar: true,
+    });
     
-    if (!confirmDelete) {
-      return; // User clicked "Cancel" or "No"
+    if (!result.isConfirmed) {
+      return; // User clicked "Cancel"
     }
     
     if (currentUserId === null) {
-      alert("❌ You must be logged in to delete a story.");
+      await Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "You must be logged in to delete a story.",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       return;
     }
     
@@ -166,36 +198,69 @@ const Testimonials: React.FC = () => {
       if (response.status === 200) {
         // Remove from userStories state
         setUserStories(userStories.filter(s => s.id !== storyId));
-        alert("✅ Story deleted successfully!");
+        await Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Story deleted successfully!",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
       }
     } catch (err: any) {
       console.error("Error deleting story:", err);
       const errorMsg = err.response?.data?.message || "Failed to delete story.";
-      alert(`❌ ${errorMsg}`);
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMsg,
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
     }
   };
+
 
   // View full story
   const handleViewStory = (story: Story) => {
     navigate(`/story/${story.id}`, { state: { story } });
   };
 
+
   // Submit or update story
   const handleSubmit = async () => {
     if (!formData.names || !formData.location || !formData.story) {
-      alert("❌ Please fill in all required fields.");
+      await Swal.fire({
+        icon: "error",
+        title: "Missing Fields",
+        text: "Please fill in all required fields.",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       return;
     }
 
+
     if (currentUserId === null) {
-      alert("❌ You must be logged in to submit a story.");
+      await Swal.fire({
+        icon: "error",
+        title: "Not Logged In",
+        text: "You must be logged in to submit a story.",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       return;
     }
+
 
     // Validate story has minimum 164 characters
     if (!validateStory(formData.story)) {
       return;
     }
+
 
     try {
       const form = new FormData();
@@ -207,6 +272,7 @@ const Testimonials: React.FC = () => {
       if (formData.imageFile) {
         form.append("image", formData.imageFile);
       }
+
 
       if (editingStory) {
         // Update existing story
@@ -221,7 +287,14 @@ const Testimonials: React.FC = () => {
           updatedStory.userId = currentUserId;
           // Update in userStories
           setUserStories(userStories.map(s => s.id === editingStory.id ? updatedStory : s));
-          alert("✅ Story updated successfully!");
+          await Swal.fire({
+            icon: "success",
+            title: "Updated!",
+            text: "Story updated successfully!",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
         }
       } else {
         // Create new story
@@ -231,13 +304,22 @@ const Testimonials: React.FC = () => {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
 
+
         if (res.status === 201) {
           const newStory = res.data.story;
           newStory.userId = currentUserId;
           setUserStories([newStory, ...userStories]);
-          alert("🎉 Story submitted successfully!");
+          await Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Story submitted successfully!",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
         }
       }
+
 
       // Close form and reset
       setShowForm(false);
@@ -254,14 +336,23 @@ const Testimonials: React.FC = () => {
     } catch (err: any) {
       console.error("Error submitting story:", err);
       const errorMsg = err.response?.data?.message || "Failed to submit. Try again later.";
-      alert(`❌ ${errorMsg}`);
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMsg,
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
     }
   };
+
 
   // Story Card Component
   const StoryCard = ({ story, isUserStory }: { story: Story; isUserStory: boolean }) => (
     <div className="relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border border-slate-100 p-5 sm:p-6 shadow-md hover:shadow-2xl transform transition-all duration-500 hover:-translate-y-2">
       <div className="absolute -top-12 -right-12 w-36 h-36 bg-accent-200/30 rounded-full blur-3xl" />
+
 
       <div className="flex items-start gap-3 xs:gap-4">
         {/* Profile Image */}
@@ -276,6 +367,7 @@ const Testimonials: React.FC = () => {
           />
         </div>
 
+
         {/* Text */}
         <div className="flex-1">
           <div className="flex items-center gap-1.5">
@@ -283,23 +375,27 @@ const Testimonials: React.FC = () => {
               <Star key={idx} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
             ))}
           </div>
-          <p className="mt-2 text-gray-600 text-sm leading-relaxed">
-            {truncateStory(story.story)}
-          </p>
-          
-          {needsViewMore(story.story) && (
-            <button
-              onClick={() => handleViewStory(story)}
-              className="mt-2 text-brand-600 hover:text-brand-700 text-sm font-medium flex items-center gap-1"
-            >
-              <Eye className="w-4 h-4" />
-              View More
-            </button>
-          )}
+          <div className="mt-2 text-gray-600 text-sm leading-relaxed">
+            <span>{truncateStory(story.story)}</span>
+            {needsViewMore(story.story) && (
+              <>
+                <span>... </span>
+                <button
+                  onClick={() => handleViewStory(story)}
+                  className="text-brand-600 hover:text-brand-700 font-medium inline-flex items-center gap-1"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  View More
+                </button>
+              </>
+            )}
+          </div>
+
 
           <div className="mt-2 font-semibold text-gray-900 text-sm">{story.names}</div>
           {story.location && <div className="text-xs text-gray-500">{story.location}</div>}
           {story.marriedDate && <div className="mt-1 text-xs text-gray-400">{story.marriedDate}</div>}
+
 
           {/* User Actions - Only show for story owner */}
           {isUserStory && currentUserId !== null && story.userId === currentUserId && (
@@ -322,6 +418,7 @@ const Testimonials: React.FC = () => {
           )}
         </div>
 
+
         {/* Quote Icon */}
         <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-full bg-brand-50 flex items-center justify-center">
           <Quote className="w-4 h-4 text-brand-600" />
@@ -329,6 +426,7 @@ const Testimonials: React.FC = () => {
       </div>
     </div>
   );
+
 
   return (
     <section className="mt-10 relative py-16 sm:py-20 px-3 xs:px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden">
@@ -356,11 +454,13 @@ const Testimonials: React.FC = () => {
         .animate-fadeIn { animation: fadeIn 0.3s ease-out both; }
       `}</style>
 
+
       {/* Decorative Blobs */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 top-0 w-64 h-64 bg-pink-200/40 rounded-full blur-3xl opacity-60 animate-float" />
         <div className="absolute right-0 bottom-0 w-80 h-80 bg-indigo-200/40 rounded-full blur-3xl opacity-60 animate-float" />
       </div>
+
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Share Story Button */}
@@ -388,6 +488,7 @@ const Testimonials: React.FC = () => {
           </div>
         )}
 
+
         {/* Your Stories Section - Only show if user is logged in and has stories */}
         {currentUserId !== null && userStories.length > 0 && (
           <div className="mb-16">
@@ -404,6 +505,7 @@ const Testimonials: React.FC = () => {
           </div>
         )}
 
+
         {/* Others' Stories Section */}
         {stories.length > 0 && (
           <>
@@ -419,6 +521,7 @@ const Testimonials: React.FC = () => {
               </p>
             </div>
 
+
             {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-8">
               {stories.map((story) => (
@@ -427,6 +530,7 @@ const Testimonials: React.FC = () => {
             </div>
           </>
         )}
+
 
         {/* Bottom Call-to-Action */}
         <div className="mt-12 text-center animate-fadeUp">
@@ -437,6 +541,7 @@ const Testimonials: React.FC = () => {
           </div>
         </div>
       </div>
+
 
       {/* Submit/Edit Form Modal */}
       {showForm && (
@@ -460,6 +565,7 @@ const Testimonials: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
             </div>
+
 
             <div className="space-y-3">
               <input
@@ -539,5 +645,6 @@ const Testimonials: React.FC = () => {
     </section>
   );
 };
+
 
 export default Testimonials;
