@@ -40,16 +40,16 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/biodata" element={<BioData />} />
+            <Route path="/brides&groom" element={<BioData />} />
             <Route path="/profiledetails/:id" element={<ProfileDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/premiumpayment" element={<PremiumPayment />} />
-            <Route path="/profilePage" element={<ProfilePage />} />
+            <Route path="/myprofile" element={<ProfilePage />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/requestmanager" element={<RequestManager />} />
             <Route path="/myconnected" element={<MyConnected />} />
-            <Route path="/successStory" element={<SuccessStory/>}/>
+            <Route path="/share-your-story" element={<SuccessStory/>}/>
              <Route path="/story/:id" element={<StoryDetail />} />
             <Route
               path="/admin"

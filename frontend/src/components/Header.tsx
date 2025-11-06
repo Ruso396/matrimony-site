@@ -75,7 +75,7 @@ const Header: React.FC = () => {
 
   const navLinks = [
     { name: "Home", path: "/", icon: Home },
-    { name: "Brides/Grooms", path: "/biodata", icon: Users },
+    { name: "Brides/Grooms", path: "/brides&groom", icon: Users },
     { name: "Contact Us", path: "/contact", icon: Phone },
     { name: "FAQ", path: "/faq", icon: HelpCircle },
   ];
@@ -151,7 +151,7 @@ const Header: React.FC = () => {
           ))}
 
           {/* 🏆 Trophy icon now inside nav, next to FAQ */}
-          <Link to="/successStory" className="flex items-center">
+          <Link to="/share-your-story" className="flex items-center">
             <Trophy
               size={18}
               className={`${
@@ -211,7 +211,7 @@ const Header: React.FC = () => {
                   onMouseLeave={() => setShowDropdown(false)}
                 >
                   <Link
-                    to="/profilePage"
+                    to="/myprofile"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
                     onClick={() => setShowDropdown(false)}
                   >
@@ -305,7 +305,7 @@ const Header: React.FC = () => {
 
               {/* Trophy - Success Stories */}
               <Link
-                to="/successStory"
+                to="/share-your-story"
                 onClick={closeMenuWithAnimation}
                 className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
               >
@@ -340,7 +340,7 @@ const Header: React.FC = () => {
                 <div className="space-y-2">
                   {/* Profile Link */}
                   <Link
-                    to="/profilePage"
+                    to="/myprofile"
                     onClick={closeMenuWithAnimation}
                     className="flex items-center gap-3 py-3 px-2 text-base text-gray-800 hover:bg-gray-100 rounded-lg transition"
                   >

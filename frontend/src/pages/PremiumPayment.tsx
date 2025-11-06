@@ -138,8 +138,8 @@ const PremiumPayment = () => {
           setShowSuccess(true);
           // Auto navigate after 3 seconds
           setTimeout(() => {
-            if (userId) navigate(`/biodata?userId=${userId}`);
-            else navigate('/biodata');
+            if (userId) navigate(`/brides&groom?userId=${userId}`);
+            else navigate('/brides&groom');
           }, 3000);
         }, 500);
       } else {

@@ -88,7 +88,7 @@ const Hero: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate('/biodata')}
+                  onClick={() => navigate('/brides&groom')}
                   className="gradient-btn w-[200px] mx-auto xs5:w-auto lg:w-auto px-5 xs:px-8 lg:px-10 py-2.5 xs:py-4 lg:py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm xs:text-base lg:text-lg hover:opacity-90 transition-all duration-300 lg:mx-0 flex items-center justify-center gap-2"
                 >
                   <Users className="w-4 h-4 xs:w-5 xs:h-5 text-white" />

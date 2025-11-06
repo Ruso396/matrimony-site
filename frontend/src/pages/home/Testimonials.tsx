@@ -154,7 +154,7 @@ const Testimonials: React.FC = () => {
           </div>
 
           <button
-            onClick={() => navigate('/successStory')}
+            onClick={() => navigate('/share-your-story')}
             className="mt-6 px-5 xs:px-6 py-2.5 xs:py-3 bg-gradient-to-r from-brand-600 to-accent-500 text-white rounded-full font-semibold text-sm sm:text-base shadow-md hover:shadow-2xl transition-all hover:scale-105 animate-float flex items-center gap-2 justify-center"
           >
             <Share2 className="w-4 h-4" />

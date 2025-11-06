@@ -56,7 +56,7 @@ const Login = () => {
         setUserName(userNameFromDB);
 
   // navigate to biodata; use the returned user id if available
-  setTimeout(() => navigate(`/biodata?userId=${data.user?.id || ''}`), 1000);
+  setTimeout(() => navigate(`/brides&groom?userId=${data.user?.id || ''}`), 1000);
       } else {
         setErrors({ submit: data.message });
       }

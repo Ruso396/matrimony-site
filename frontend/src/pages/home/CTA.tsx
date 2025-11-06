@@ -216,12 +216,12 @@ const CTA = () => {
       {/* ---------- Enhanced CTA Button ---------- */}
       <div className="relative z-10 mt-5 xs:mt-6 sm:mt-8 md:mt-10 lg:mt-12 animate-fadeInUp px-3" style={{ animationDelay: '0.6s' }}>
        <button
-  onClick={() => navigate('/register')}
+  onClick={() => navigate('/brides&groom')}
   className="gradient-btn group relative text-white font-bold text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-lg py-2 px-5 xs:py-2.5 xs:px-6 sm:py-3 sm:px-8 md:py-3.5 md:px-10 lg:py-4 lg:px-12 rounded-full hover:scale-105 transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
 >
   <span className="relative flex items-center gap-1.5 xs:gap-2">
     <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 transform rotate-180" />
-    <span>Upgrade to Elite Matchmaking</span>
+    <span>Find Your Matchmaking Profiles</span>
   </span>
 </button>
 
